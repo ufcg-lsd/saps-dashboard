@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="lnil.css" />
+
+</head>
+
+<body>
+   
+
+<br>
+<br>
+<br>
+<br>
+
+  <!-- <span class="input-group-addon" id="basic-addon3">https://example.com/users/</span> -->
+
+<p>Items List with hidden input</p>
+<div id="items-list-1"></div>
+<br>
+<p>Items List with permanent input</p>
+<div id="items-list-2"></div>
+<br>
+<p>Items List with validation for user inputs</p>
+<div id="items-list-3"></div>
+
+<script
+  src="https://code.jquery.com/jquery-2.2.4.min.js"
+  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+  crossorigin="anonymous"></script>
+<script src="lnil.js"></script>
+<script type="text/javascript">
+var count = 0;
+
+var keyGeneratorTeste = function(value){
+  return value+"-id-"+(++count);
+}
+
+// Validates if the value contains something
+var validateValue = function(str){
+    return !(!str || 0 === str.length);
+}
+
+var sbilConfg1 = {
+  target:'items-list-1',
+  items:['Value 1', 'Value 2'],
+  options:{
+    width: 800,
+    editButton:undefined,
+    permanentInput:false
+  },
+  keyGenerator:keyGeneratorTeste
+}
+var sbilConfg2 = {
+  target:'items-list-2',
+  items:['Value 3', 'Value 4'],
+  options:{
+    width: 800,
+    editButton:undefined,
+    permanentInput:true
+  },
+  keyGenerator:keyGeneratorTeste
+}
+var sbilConfg3 = {
+  target:'items-list-3',
+  items:['Value 5', 'Value 6', ''],
+  options:{
+    width: 800,
+    editButton:undefined,
+    permanentInput:true
+  },
+  keyGenerator:keyGeneratorTeste,
+  valueValidator:validateValue,
+}
+
+var inputList1 = lnil.NLItemsList(sbilConfg1);
+var inputList2 = lnil.NLItemsList(sbilConfg2);
+var inputList3 = lnil.NLItemsList(sbilConfg3);
+
+// inputList.on('listchange', function(itemsList){
+//  console.log('New list of items: '+JSON.stringify(itemsList));
+// })
+
+
+
+</script>
+
+  <!-- BEGIN: PAGE SCRIPTS -->
+
+  <!-- END: PAGE SCRIPTS -->
+
+</body>
+
+</html>

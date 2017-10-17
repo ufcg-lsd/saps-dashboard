@@ -1,0 +1,34 @@
+<!-- Begin: Content -->
+<div class="sb-login-box" ng-controller="LoginController">
+
+  <div align="center" class="row"><img src="/images/logo-abertura.png" class="sb-logo-lg"/></div>
+  <div align="center" class="row" style="margin-top: 5%;">
+    <form action="/" id="loginFormId">
+      <div>
+          <input type="text" class="saps-input"  id="nameInput" 
+           ng-model="username" required placeholder="{{languageContent.login.placeholdName}}">
+          </input>
+      </div>
+      <div >
+          <input type="password" class="saps-input" id="passwordInput" 
+           ng-model="password" required placeholder="{{languageContent.login.placeholdEmail}}">
+          </input>
+      </div>
+      <div margin-top: 5px;">
+          <div ng-show="errorMsg !== undefined" class="saps-label sb-error sb-md" id="alert-login">
+                <button type="button" class="close" ng-click="clearLoginMsg()" aria-hidden="true">×</button>
+                <i class="fa fa-info"></i>
+                {{errorMsg}}
+          </div>
+      </div>
+      <div>
+          <div ng-click="doLogin()" class="sb-button sb-main">{{languageContent.login.buttonEnter}}</div>
+          <div style="margin-bottom: 30px">
+            <a ng-click="forgotPassword()" style="color: rgb(30,100,80); cursor: pointer; margin-bottom: 30px">{{languageContent.login.forgotPassword}}</a>
+          </div>
+          <span ng-click="loadCreateNewUser()" class="glyphicon glyphicon-plus-sign span-button main" aria-hidden="true"></span>
+          <div style="color: rgb(30,100,80)">{{languageContent.login.createAccount}}</div>
+      </div>
+    </form>
+  </div>
+</div>

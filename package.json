@@ -1,0 +1,22 @@
+{
+  "name": "saps-dashboard",
+  "version": "1.0.0",
+  "description": "SAPS - Image Monitor",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Fogbow",
+    "Cloud",
+    "SAPS",
+    "SEBAL"
+  ],
+  "author": "Gustavo Guimaraes",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.2",
+    "body-parser": "~1.16.0",
+    "debug": "~2.6.0"
+  }
+}

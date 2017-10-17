@@ -1,0 +1,97 @@
+	<div class="sb-map-feature-label" 
+		ng-click="switchVisibility('sb-map-feature-options')">
+		<span class="glyphicon glyphicon-search" aria-hidden="true"></span> - {{languageContent.mapFeature.searchBox.title}}
+	</div>
+	<div id="sb-map-feature-options" class="sb-map-feature-options sb-hidden">
+		<form>
+			
+			<div class="sb-map-feature-field-label">{{languageContent.mapFeature.searchBox.label.region}}</div>
+			<div>
+			  <input type="text" class="saps-input sb-width-md sb-height-sm"
+			  	id="search-region-filter" ng-model="$parent.searchFilters.regionFilter">
+			  	<span class="glyphicon glyphicon-info-sign sb-tooltip" aria-hidden="true"
+			  		style="font-size: 1.5em">
+			  		<div class="sb-info">
+				  		<p>{{languageContent.infos.regionSearchFilter.info}}</p>
+				  		<p>{{languageContent.infos.regionSearchFilter.eg}}</p>
+			  		</div>		
+			  	</span>
+			</div>
+			<div class="sb-map-feature-field-label">{{languageContent.mapFeature.searchBox.label.generalSearch}}</div>
+			<div>
+			  <input type="text" class="saps-input sb-width-md sb-height-sm" 
+			  	id="search-term" ng-model="$parent.searchFilters.generalSearch">
+			</div>
+
+			<div class="row">
+				<div class="col-lg-5 col-md-5 col-sm-5 sb-map-feature-field-label">{{languageContent.mapFeature.searchBox.label.firstDate}}</div>
+				<div class="col-lg-6 col-md-6 col-sm-6 sb-map-feature-field-label">{{languageContent.mapFeature.searchBox.label.lastDate}}</div>	
+			</div>
+			<div class="row">
+				<div class="col-lg-5 col-md-5 col-sm-5">
+				  <div id="search-first-year-field">
+		              <input type="text" class="saps-input sb-width-xs sb-height-sm saps-datepicker" id="search-first-year-input">
+		          </div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-6">
+				  <div id="search-last-year-field">
+		              <input type="text" class="saps-input sb-width-xs sb-height-sm saps-datepicker" id="search-last-year-input">
+		          </div>
+				</div>	
+			</div>
+
+			<!-- Satellite field -->
+			<div id="satellite-field">
+	      		<div class="sb-map-feature-field-label">{{languageContent.mapFeature.searchBox.label.satellite}}</div>
+				<label class="radio-inline" ng-repeat="sat in satelliteOpts">
+				  <input type="radio" name="inlineRadioOptions" id="radio-satellite-{{$index + 1}}" value="{{sat.value}}" ng-model="$parent.searchFilters.satellite">{{sat.label}}
+				</label>
+			</div>
+
+			<!-- Dropdown for Processing Script -->
+			<br>
+			<div class="sb-map-feature-field-label">{{languageContent.mapFeature.searchBox.label.processingScript}}</div>
+			<div class="dropdown">
+			  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownProcScript" aria-haspopup="true" aria-expanded="true" 
+			  	ng-click="showHide('dropdown-proc-script-opt')">
+			    {{searchFilters.processingScriptName}}
+			    <span class="caret"></span>
+			  </button>
+			  <ul id="dropdown-proc-script-opt" class="dropdown-menu" 
+			  	aria-labelledby="dropdownProcScript">
+			    <li ng-repeat="procScript in processingScripts"
+			    	ng-click="showHide('dropdown-proc-script-opt');changeProcScript(procScript)">{{procScript.name}}</li>
+			  </ul>
+			</div>
+
+			<!-- Dropdown for Pre Processing Script -->
+			<br>
+			<div class="sb-map-feature-field-label">{{languageContent.mapFeature.searchBox.label.preProcessingScript}}</div>
+			<div class="dropdown">
+			  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownPreProcScript" ng-click="showHide('dropdown-pre-proc-script-opt')" aria-haspopup="true" aria-expanded="true">
+			    {{searchFilters.preProcessingScriptName}}
+			    <span class="caret"></span>
+			  </button>
+			  <ul id='dropdown-pre-proc-script-opt' class="dropdown-menu" aria-labelledby="dropdownPreProcScript">
+			    <li ng-repeat="preProcScript in preProcessingScripts"
+			    	ng-click="showHide('dropdown-pre-proc-script-opt');changePreProcScript(preProcScript)">{{preProcScript.name}}</li>
+			  </ul>
+			</div>
+
+			<br>
+			<br>
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-6" align="right">
+					<div ng-click="cleanSearch()" class="sb-button sb-second sb-width-sm" align="center">
+					  {{languageContent.mapFeature.searchBox.button.clear}}
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-4">
+					<div ng-click="submitSearch()" class="sb-button sb-main sb-width-xs" align="center">
+					  {{languageContent.mapFeature.searchBox.button.search}}
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	
