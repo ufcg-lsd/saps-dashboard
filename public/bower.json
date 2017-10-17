@@ -1,0 +1,14 @@
+{
+  "name": "saps-dashboard",
+  "homepage": "https://github.com/fogbow/saps-dashboard",
+  "authors": [
+    "Arnett <arn3tt@gmail.com>"
+  ],
+  "description": "The front-end application used to submit images to SAPS",
+  "main": "",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "eonasdan-bootstrap-datetimepicker": "^4.17.47"
+  }
+}
