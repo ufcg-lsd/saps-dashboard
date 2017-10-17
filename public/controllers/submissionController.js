@@ -666,7 +666,7 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
     }
 
 
-    $scope.newSubmission = function() {
+    $scope.processNewSubmission = function() {
 
         hasError = false;
         $scope.modalMsgError = undefined;
@@ -693,7 +693,7 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
             hasError = true
         }
 
-        if (!$scope.region || $scope.region.length == 0) {
+        if (!$scope.newSubmission.region || $scope.newSubmission.region.length == 0) {
             hasError = true
             msgRequiredShowHide('regionField', true);
         } else {

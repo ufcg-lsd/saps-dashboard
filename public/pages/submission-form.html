@@ -3,23 +3,24 @@
 
         <div style="font-weight: bold; font-size: 1.2em;  ">{{languageContent.mapFeature.submissionBox.label.region}} *</div>
         <div id="regionField" style=" ">
-            <div style="font-weight: bold; font-size: 1em;" class="sb-col-lg-9">Top Left</div>
-            <br>
-            <input type="text" class="saps-input saps-input input-small sb-width-49" ng-model="$scope.newSubmission.topLeftCoord.lat" required placeholder="Latitude">
-            <input type="text" class="saps-input saps-input input-small sb-width-49" ng-model="$scope.newSubmission.topLeftCoord.lat" required placeholder="Longitude">
-            <div style="font-weight: bold; font-size: 1em;" class="sb-col-lg-9">Bottom Right</div>
-            <br>
-            <input type="text" class="saps-input saps-input input-small sb-width-49" ng-model="$scope.newSubmission.bottomRightCoord.lat" required placeholder="Latitude">
-            <input type="text" class="saps-input saps-input input-small sb-width-49" ng-model="$scope.newSubmission.bottomRightCoord.long" required placeholder="Longitude">
-
-            <div class="sb-required sb-hidden">{{languageContent.mapFeature.submissionBox.label.requiredField}}</div>
-          <!--   <span class="glyphicon glyphicon-plus-sign sb-tooltip" aria-hidden="true" style="font-size: 1.5em">
-                <div class="sb-info">
-                    <p>{{languageContent.infos.regionSearchFilter.info}}</p>
-                    <p>{{languageContent.infos.regionSearchFilter.eg}}</p>
-                </div>      
-            </span> -->
+          <input type="text" class="saps-input input-small sb-width-100" ng-model="newSubmission.region">
         </div>
+        <div style="font-weight: bold; font-size: 1em;" class="sb-col-lg-9">Top Left</div>
+        <br>
+        <input type="text" class="saps-input saps-input input-small sb-width-49" ng-model="newSubmission.topLeftCoord.lat" required placeholder="Latitude">
+        <input type="text" class="saps-input saps-input input-small sb-width-49" ng-model="newSubmission.topLeftCoord.long" required placeholder="Longitude">
+        <div style="font-weight: bold; font-size: 1em;" class="sb-col-lg-9">Bottom Right</div>
+        <br>
+        <input type="text" class="saps-input saps-input input-small sb-width-49" ng-model="newSubmission.bottomRightCoord.lat" required placeholder="Latitude">
+        <input type="text" class="saps-input saps-input input-small sb-width-49" ng-model="newSubmission.bottomRightCoord.long" required placeholder="Longitude">
+
+        <div class="sb-required sb-hidden">{{languageContent.mapFeature.submissionBox.label.requiredField}}</div>
+      <!--   <span class="glyphicon glyphicon-plus-sign sb-tooltip" aria-hidden="true" style="font-size: 1.5em">
+            <div class="sb-info">
+                <p>{{languageContent.infos.regionSearchFilter.info}}</p>
+                <p>{{languageContent.infos.regionSearchFilter.eg}}</p>
+            </div>      
+        </span> -->
 
         <div style="font-weight: bold; font-size: 1.2em;" class="sb-col-lg-11">{{languageContent.mapFeature.submissionBox.label.firstDate}} *</div>
         <div style="font-weight: bold; font-size: 1.2em;" class="sb-col-lg-9">{{languageContent.mapFeature.submissionBox.label.lastDate}} *</div>
@@ -103,7 +104,7 @@
         </div>
 
         <div align="right">
-          <div ng-click="newSubmission()" class="sb-button sb-main sb-width-sm" align="center">
+          <div ng-click="processNewSubmission()" class="sb-button sb-main sb-width-sm" align="center">
             {{languageContent.mapFeature.submissionBox.button.submit}}
           </div>
         </div>
