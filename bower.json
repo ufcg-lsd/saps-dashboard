@@ -5,7 +5,7 @@
     "Arnett <arn3tt@gmail.com>"
   ],
   "description": "The front-end application used to submit images to SAPS",
-  "main": "",
+  "main": "app.js",
   "license": "MIT",
   "private": true,
   "dependencies": {
