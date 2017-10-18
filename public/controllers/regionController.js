@@ -530,9 +530,9 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
                 return true;
             }
             $scope.regionsDetails[index].images.forEach(function(img, i) {
-                console.log("Img Checked? " + img.checked)
+                console.log("Img Checked? " + img.checked);
                 if (img.checked) {
-                    return true
+                    return true;
                 }
             })
         }
@@ -540,9 +540,9 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
     }
 
     $scope.zoomIn = function() {
-        sapsMap.zoomIn()
+        sapsMap.zoomIn();
     }
     $scope.zoomOut = function() {
-        sapsMap.zoomOut()
+        sapsMap.zoomOut();
     }
 });

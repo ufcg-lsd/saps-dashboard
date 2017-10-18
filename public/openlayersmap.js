@@ -169,10 +169,10 @@ function initiateMap(elementId) {
     }
 
     /** MAP INITIALIZATION **/
-    var vectorSource = new ol.source.Vector({
-        url: 'https://openlayers.org/en/v3.20.1/examples/data/geojson/countries.geojson',
-        format: new ol.format.GeoJSON()
-    });
+    // var vectorSource = new ol.source.Vector({
+    //     url: 'https://openlayers.org/en/v3.20.1/examples/data/geojson/countries.geojson',
+    //     format: new ol.format.GeoJSON()
+    // });
 
     var osmSource = new ol.source.OSM();
 
@@ -180,11 +180,11 @@ function initiateMap(elementId) {
         new ol.layer.Tile({
             name: "tile",
             source: osmSource
-        }),
-        new ol.layer.Vector({
-            name: "vector",
-            source: vectorSource
-        })
+        })// ,  
+        // new ol.layer.Vector({
+        //     name: "vector",
+        //     source: vectorSource
+        // })
     ];
     var mapView = new ol.View({
         center: [-4180799.456017701, -768009.2602094514],
@@ -415,14 +415,42 @@ function initiateMap(elementId) {
     // a normal select interaction to handle click
     var select = new ol.interaction.Select();
     select.previous = undefined;
-    select.cleanSelectionStyle = function(polygon) {
-        if (polygon != undefined) {
+    select.cleanSelectionStyle = function() {
+        console.log("Call: cleanSelectionStyle");
+        if (this.previous != undefined) {
             //console.log("Previous: "+polygon.get("regionName"))
             var style = this.previous.getStyle();
             if (style) {
                 style.setStroke(new ol.style.Stroke({
                     width: 1,
                     color: [0, 0, 0, 1]
+                }));
+                var fill = style.getFill();
+                var color = fill.getColor();
+                color[3] = 0.25;
+                fill.setColor(color);
+            } else {
+                // var style = new ol.style.Style({
+                //   stroke: new ol.style.Stroke({
+                //     width: 1,
+                //     color: [0, 0, 0, 1]
+                //   }),
+                //   fill: new ol.style.Fill({
+                //     color: [255, 255, 255, 0]
+                //   })
+                // });
+                // polygon.setStyle(style);
+            }
+        }
+    };
+    select.applySelectionStyle = function(polygon) {
+        console.log("Call: applySelectionStyle");
+        if (polygon != undefined) {
+            var style = polygon.getStyle();
+            if (style) {
+                style.setStroke(new ol.style.Stroke({
+                    width: 4,
+                    color: [0, 125, 111, 1]
                 }));
                 var fill = style.getFill();
                 var color = fill.getColor();
@@ -442,41 +470,13 @@ function initiateMap(elementId) {
             }
         }
     };
-    select.applySelectionStyle = function(polygon) {
-        if (polygon != undefined) {
-            var style = polygon.getStyle();
-            if (style) {
-                style.setStroke(new ol.style.Stroke({
-                    width: 4,
-                    color: [0, 125, 111, 1]
-                }));
-                var fill = style.getFill();
-                var color = fill.getColor();
-                color[3] = 1;
-                fill.setColor(color);
-            } else {
-                // var style = new ol.style.Style({
-                //   stroke: new ol.style.Stroke({
-                //     width: 1,
-                //     color: [0, 0, 0, 1]
-                //   }),
-                //   fill: new ol.style.Fill({
-                //     color: [255, 255, 255, 0]
-                //   })
-                // });
-                // polygon.setStyle(style);
-            }
-        }
-    }
     select.on('select', function(event) {
-    
         // This cancel multiple select by holding shift key
         this.cleanSelectionStyle(this.previous);
-    
+
         console.log("Selecionado: " + event.selected.length)
         //polygonFeature
         if (event.selected[0] != undefined) {
-    
             var polygon = event.selected[0];
             this.previous = polygon;
             this.applySelectionStyle(this.previous);
@@ -484,8 +484,6 @@ function initiateMap(elementId) {
                 eventHandlers.regionSelect(polygon.get('regionName'));
             }
         }
-    
-    
     });
     // a DragBox interaction used to select features by drawing boxes
     var dragBox = new ol.interaction.DragBox({
@@ -548,8 +546,6 @@ function initiateMap(elementId) {
         }
 
     });
-
-
 
     //API
     var sapsMapAPI = {
