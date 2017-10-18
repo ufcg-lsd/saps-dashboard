@@ -169,6 +169,7 @@ function initiateMap(elementId) {
     }
 
     /** MAP INITIALIZATION **/
+    // Layer containing polygon for all countries
     // var vectorSource = new ol.source.Vector({
     //     url: 'https://openlayers.org/en/v3.20.1/examples/data/geojson/countries.geojson',
     //     format: new ol.format.GeoJSON()
@@ -475,8 +476,9 @@ function initiateMap(elementId) {
         this.cleanSelectionStyle(this.previous);
 
         console.log("Selecionado: " + event.selected.length)
-        //polygonFeature
-        if (event.selected[0] != undefined) {
+        if (event.selected.length == 0) {
+            eventHandlers.regionSelect(undefined);
+        } else {
             var polygon = event.selected[0];
             this.previous = polygon;
             this.applySelectionStyle(this.previous);

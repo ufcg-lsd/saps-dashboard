@@ -93,12 +93,21 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
 
     //Handle for action of selecting an specific region on map
     function selectRegionOnMap(regionName) {
-
-        $scope.$apply(function() {
-            $scope.searchFilters.regionFilter = regionName;
-            $('#sb-map-feature-options').removeClass("sb-hidden");
-        });
-
+        if (regionName === undefined) {
+            $scope.$apply(function() {
+                $scope.searchFilters.regionFilter = "";
+                if (! $('#sb-map-feature-options').hasClass("sb-hidden")) {
+                    $('#sb-map-feature-options').addClass("sb-hidden");
+                }
+            });
+        } else {
+            $scope.$apply(function() {
+                $scope.searchFilters.regionFilter = regionName;
+                if ($('#sb-map-feature-options').hasClass("sb-hidden")) {
+                    $('#sb-map-feature-options').removeClass("sb-hidden");
+                }
+            });
+        }
     };
 
     function callbackBoxSelectionInfo(selectionInfo) {
