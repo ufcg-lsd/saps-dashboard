@@ -429,17 +429,6 @@ function initiateMap(elementId) {
                 var color = fill.getColor();
                 color[3] = 0.25;
                 fill.setColor(color);
-            } else {
-                // var style = new ol.style.Style({
-                //   stroke: new ol.style.Stroke({
-                //     width: 1,
-                //     color: [0, 0, 0, 1]
-                //   }),
-                //   fill: new ol.style.Fill({
-                //     color: [255, 255, 255, 0]
-                //   })
-                // });
-                // polygon.setStyle(style);
             }
         }
     };
@@ -456,17 +445,6 @@ function initiateMap(elementId) {
                 var color = fill.getColor();
                 color[3] = 0.5;
                 fill.setColor(color);
-            } else {
-                // var style = new ol.style.Style({
-                //   stroke: new ol.style.Stroke({
-                //     width: 1,
-                //     color: [0, 0, 0, 1]
-                //   }),
-                //   fill: new ol.style.Fill({
-                //     color: [255, 255, 255, 0]
-                //   })
-                // });
-                // polygon.setStyle(style);
             }
         }
     };
