@@ -108,7 +108,7 @@ app.run(function($rootScope) {
     loadDefaultLang();
 
     $rootScope.heatMap = {
-        transparency: 0.5,
+        transparency: 0.25,
         colours: [{
             "minValue": undefined,
             "maxValue": 0,

@@ -169,10 +169,11 @@ function initiateMap(elementId) {
     }
 
     /** MAP INITIALIZATION **/
-    var vectorSource = new ol.source.Vector({
-        url: 'https://openlayers.org/en/v3.20.1/examples/data/geojson/countries.geojson',
-        format: new ol.format.GeoJSON()
-    });
+    // Layer containing polygon for all countries
+    // var vectorSource = new ol.source.Vector({
+    //     url: 'https://openlayers.org/en/v3.20.1/examples/data/geojson/countries.geojson',
+    //     format: new ol.format.GeoJSON()
+    // });
 
     var osmSource = new ol.source.OSM();
 
@@ -180,11 +181,11 @@ function initiateMap(elementId) {
         new ol.layer.Tile({
             name: "tile",
             source: osmSource
-        }),
-        new ol.layer.Vector({
-            name: "vector",
-            source: vectorSource
-        })
+        })// ,  
+        // new ol.layer.Vector({
+        //     name: "vector",
+        //     source: vectorSource
+        // })
     ];
     var mapView = new ol.View({
         center: [-4180799.456017701, -768009.2602094514],
@@ -213,15 +214,10 @@ function initiateMap(elementId) {
         var gridLayers = [];
 
         if (regions) {
-            //console.log("regions: "+JSON.stringify(regions))
+            // console.log("regions: "+JSON.stringify(regions));
             regions.forEach(function(item, index) {
                 //console.log("Region: "+JSON.stringify(item));
-                var polygonCoords = [
-                    item.coordinates[0],
-                    item.coordinates[1],
-                    item.coordinates[2],
-                    item.coordinates[3]
-                ];
+                var polygonCoords = item.coordinates;
 
                 gridLayers.push(createNewRegion(item.regionName, item.regionId, polygonCoords));
 
@@ -278,10 +274,14 @@ function initiateMap(elementId) {
     };
 
     function createNewRegion(regionName, regionId, polygonCoords) {
-
+        
         var polygonFeature = new ol.Feature(
-            new ol.geom.Polygon([polygonCoords]));
+            new ol.geom.Polygon([polygonCoords])
+        );
 
+        var heatMap = new ol.style.Fill({
+            color: [255, 255, 255, 0]
+        });
         var style = new ol.style.Style({
             stroke: new ol.style.Stroke({
                 width: 1,
@@ -293,10 +293,6 @@ function initiateMap(elementId) {
         polygonFeature.setStyle(style);
         polygonFeature.set("regionName", regionName);
         polygonFeature.set("regionId", regionId);
-
-        var heatMap = new ol.style.Fill({
-            color: [255, 255, 255, 0]
-        })
 
         var newLayerVector = new ol.layer.Vector({
             regionName: regionName,
@@ -380,6 +376,7 @@ function initiateMap(elementId) {
         })
 
     }
+
     var getRegionsByName = function(regionName) {
 
         var regionsName = [];
@@ -418,11 +415,11 @@ function initiateMap(elementId) {
 
     // a normal select interaction to handle click
     var select = new ol.interaction.Select();
-    select.previous = undefined;
     select.cleanSelectionStyle = function(polygon) {
+        console.log("Call: cleanSelectionStyle");
         if (polygon != undefined) {
-            //console.log("Previous: "+polygon.get("regionName"))
-            var style = this.previous.getStyle();
+            console.log("Previous: "+polygon.get("regionName"))
+            var style = polygon.getStyle();
             if (style) {
                 style.setStroke(new ol.style.Stroke({
                     width: 1,
@@ -430,23 +427,13 @@ function initiateMap(elementId) {
                 }));
                 var fill = style.getFill();
                 var color = fill.getColor();
-                color[3] = 0.5;
+                color[3] = 0.25;
                 fill.setColor(color);
-            } else {
-                // var style = new ol.style.Style({
-                //   stroke: new ol.style.Stroke({
-                //     width: 1,
-                //     color: [0, 0, 0, 1]
-                //   }),
-                //   fill: new ol.style.Fill({
-                //     color: [255, 255, 255, 0]
-                //   })
-                // });
-                // polygon.setStyle(style);
             }
         }
     };
     select.applySelectionStyle = function(polygon) {
+        console.log("Call: applySelectionStyle");
         if (polygon != undefined) {
             var style = polygon.getStyle();
             if (style) {
@@ -456,50 +443,32 @@ function initiateMap(elementId) {
                 }));
                 var fill = style.getFill();
                 var color = fill.getColor();
-                color[3] = 1;
+                color[3] = 0.5;
                 fill.setColor(color);
-            } else {
-                // var style = new ol.style.Style({
-                //   stroke: new ol.style.Stroke({
-                //     width: 1,
-                //     color: [0, 0, 0, 1]
-                //   }),
-                //   fill: new ol.style.Fill({
-                //     color: [255, 255, 255, 0]
-                //   })
-                // });
-                // polygon.setStyle(style);
             }
         }
-    }
+    };
+    select.on('select', function(event) {
+        // This cancel multiple select by holding shift key
+        event.deselected.forEach(function(polygon) {
+            this.cleanSelectionStyle(polygon);
+        }, this);
+
+        console.log("Selecionado: " + event.selected.length)
+        var name = undefined;
+        if (event.selected.length > 0) {
+            var polygon = event.selected[0];
+            name = polygon.get('regionName');
+            this.applySelectionStyle(polygon);
+        }
+        if (eventHandlers.regionSelect !== undefined) {
+            eventHandlers.regionSelect(name);
+        }
+    });
     // a DragBox interaction used to select features by drawing boxes
     var dragBox = new ol.interaction.DragBox({
         condition: ol.events.condition.platformModifierKeyOnly
     });
-
-    map.addInteraction(select);
-    map.addInteraction(dragBox);
-
-    select.on('select', function(event) {
-
-        // This cancel multiple select by holding shift key
-        this.cleanSelectionStyle(this.previous);
-
-        console.log("Selecionado: " + event.selected.length)
-        //polygonFeature
-        if (event.selected[0] != undefined) {
-
-            var polygon = event.selected[0];
-            this.previous = polygon;
-            this.applySelectionStyle(this.previous);
-            if (eventHandlers.regionSelect !== undefined) {
-                eventHandlers.regionSelect(polygon.get('regionName'));
-            }
-        }
-
-
-    });
-
     dragBox.on('boxend', function() {
         // features that intersect the box are added to the collection of
         // selected features, and their names are displayed in the "info"
@@ -525,12 +494,14 @@ function initiateMap(elementId) {
         }
 
     });
-
     // clear selection when drawing a new box and when clicking on the map
     dragBox.on('boxstart', function() {
-        selectedFeatures.clear();
+        // selectedFeatures.clear();
         //Do anything else after this?
     });
+
+    map.addInteraction(select);
+    map.addInteraction(dragBox);
     map.on('click', function(event) {
         // var feature = map.forEachFeatureAtPixel(evt.pixel,
         //   function(feature) {
@@ -547,7 +518,6 @@ function initiateMap(elementId) {
         }
 
     });
-
     map.on('movestart', function() {
         //console.log("movestart")
 
@@ -556,8 +526,6 @@ function initiateMap(elementId) {
         }
 
     });
-
-
 
     //API
     var sapsMapAPI = {

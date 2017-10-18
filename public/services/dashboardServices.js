@@ -285,17 +285,19 @@ dashboardServices.service('SubmissionService', function($log, $http,
 dashboardServices.service('RegionService', function($log, $http, AuthenticationService, appConfig) {
 
     var resourceUrl = appConfig.urlSapsService + appConfig.regionPath;
-    var resourceDetailsUrl = appConfig.urlSapsService + appConfig.regionDetailsPath
+    var resourceDetailsUrl = appConfig.urlSapsService + appConfig.regionDetailsPath;
     var regionService = {};
 
     regionService.getRegions = function(successCallback, errorCalback) {
 
         var headerCredentials = AuthenticationService.getHeaderCredentials();
 
-        $http.get(resourceUrl, {
+        $http.get(
+            resourceUrl,
+            {
                 headers: headerCredentials
-            })
-            .success(successCallback).error(errorCalback);
+            }
+        ).success(successCallback).error(errorCalback);
 
     };
 

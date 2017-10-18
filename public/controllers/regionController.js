@@ -93,12 +93,21 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
 
     //Handle for action of selecting an specific region on map
     function selectRegionOnMap(regionName) {
-
-        $scope.$apply(function() {
-            $scope.searchFilters.regionFilter = regionName;
-            $('#sb-map-feature-options').show();
-        });
-
+        if (regionName === undefined) {
+            $scope.$apply(function() {
+                $scope.searchFilters.regionFilter = "";
+                if (! $('#sb-map-feature-options').hasClass("sb-hidden")) {
+                    $('#sb-map-feature-options').addClass("sb-hidden");
+                }
+            });
+        } else {
+            $scope.$apply(function() {
+                $scope.searchFilters.regionFilter = regionName;
+                if ($('#sb-map-feature-options').hasClass("sb-hidden")) {
+                    $('#sb-map-feature-options').removeClass("sb-hidden");
+                }
+            });
+        }
     };
 
     function callbackBoxSelectionInfo(selectionInfo) {
@@ -179,8 +188,8 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
             },
             function(error) {
                 console.log('Error while trying to ge regions: ' + error)
-            });
-
+            }
+        );
     }
 
     function processRegionHeatmap(region) {
@@ -195,7 +204,7 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
                 (region.regionDetail.processedImages.length >= item.minValue && region.regionDetail.processedImages.length <= item.maxValue)) {
 
                 region.regionDetail.color = [item.r, item.g, item.b, transparency];
-                region.regionDetail.cssColor = "rgb(" + item.r + "," + item.g + "," + item.b + ")"
+                region.regionDetail.cssColor = "rgb(" + item.r + "," + item.g + "," + item.b + ")";
                 break;
             }
         };
@@ -530,9 +539,9 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
                 return true;
             }
             $scope.regionsDetails[index].images.forEach(function(img, i) {
-                console.log("Img Checked? " + img.checked)
+                console.log("Img Checked? " + img.checked);
                 if (img.checked) {
-                    return true
+                    return true;
                 }
             })
         }
@@ -540,9 +549,9 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
     }
 
     $scope.zoomIn = function() {
-        sapsMap.zoomIn()
+        sapsMap.zoomIn();
     }
     $scope.zoomOut = function() {
-        sapsMap.zoomOut()
+        sapsMap.zoomOut();
     }
 });
