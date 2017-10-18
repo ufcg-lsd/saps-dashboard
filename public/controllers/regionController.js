@@ -96,7 +96,7 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
 
         $scope.$apply(function() {
             $scope.searchFilters.regionFilter = regionName;
-            $('#sb-map-feature-options').show();
+            $('#sb-map-feature-options').removeClass("sb-hidden");
         });
 
     };

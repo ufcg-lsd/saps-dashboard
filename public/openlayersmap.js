@@ -216,12 +216,7 @@ function initiateMap(elementId) {
             // console.log("regions: "+JSON.stringify(regions));
             regions.forEach(function(item, index) {
                 //console.log("Region: "+JSON.stringify(item));
-                var polygonCoords = [
-                    item.coordinates[0],
-                    item.coordinates[1],
-                    item.coordinates[2],
-                    item.coordinates[3]
-                ];
+                var polygonCoords = item.coordinates;
 
                 gridLayers.push(createNewRegion(item.regionName, item.regionId, polygonCoords));
 
@@ -280,8 +275,12 @@ function initiateMap(elementId) {
     function createNewRegion(regionName, regionId, polygonCoords) {
         
         var polygonFeature = new ol.Feature(
-            new ol.geom.Polygon([polygonCoords]));
+            new ol.geom.Polygon([polygonCoords])
+        );
 
+        var heatMap = new ol.style.Fill({
+            color: [255, 255, 255, 0]
+        });
         var style = new ol.style.Style({
             stroke: new ol.style.Stroke({
                 width: 1,
@@ -293,10 +292,6 @@ function initiateMap(elementId) {
         polygonFeature.setStyle(style);
         polygonFeature.set("regionName", regionName);
         polygonFeature.set("regionId", regionId);
-
-        var heatMap = new ol.style.Fill({
-            color: [255, 255, 255, 0]
-        })
 
         var newLayerVector = new ol.layer.Vector({
             regionName: regionName,
