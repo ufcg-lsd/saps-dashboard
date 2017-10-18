@@ -179,8 +179,8 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
             },
             function(error) {
                 console.log('Error while trying to ge regions: ' + error)
-            });
-
+            }
+        );
     }
 
     function processRegionHeatmap(region) {
@@ -195,7 +195,7 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
                 (region.regionDetail.processedImages.length >= item.minValue && region.regionDetail.processedImages.length <= item.maxValue)) {
 
                 region.regionDetail.color = [item.r, item.g, item.b, transparency];
-                region.regionDetail.cssColor = "rgb(" + item.r + "," + item.g + "," + item.b + ")"
+                region.regionDetail.cssColor = "rgb(" + item.r + "," + item.g + "," + item.b + ")";
                 break;
             }
         };

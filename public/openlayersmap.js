@@ -213,7 +213,7 @@ function initiateMap(elementId) {
         var gridLayers = [];
 
         if (regions) {
-            //console.log("regions: "+JSON.stringify(regions))
+            // console.log("regions: "+JSON.stringify(regions));
             regions.forEach(function(item, index) {
                 //console.log("Region: "+JSON.stringify(item));
                 var polygonCoords = [
@@ -278,7 +278,7 @@ function initiateMap(elementId) {
     };
 
     function createNewRegion(regionName, regionId, polygonCoords) {
-
+        
         var polygonFeature = new ol.Feature(
             new ol.geom.Polygon([polygonCoords]));
 
@@ -380,6 +380,7 @@ function initiateMap(elementId) {
         })
 
     }
+
     var getRegionsByName = function(regionName) {
 
         var regionsName = [];
@@ -472,23 +473,15 @@ function initiateMap(elementId) {
             }
         }
     }
-    // a DragBox interaction used to select features by drawing boxes
-    var dragBox = new ol.interaction.DragBox({
-        condition: ol.events.condition.platformModifierKeyOnly
-    });
-
-    map.addInteraction(select);
-    map.addInteraction(dragBox);
-
     select.on('select', function(event) {
-
+    
         // This cancel multiple select by holding shift key
         this.cleanSelectionStyle(this.previous);
-
+    
         console.log("Selecionado: " + event.selected.length)
         //polygonFeature
         if (event.selected[0] != undefined) {
-
+    
             var polygon = event.selected[0];
             this.previous = polygon;
             this.applySelectionStyle(this.previous);
@@ -496,10 +489,13 @@ function initiateMap(elementId) {
                 eventHandlers.regionSelect(polygon.get('regionName'));
             }
         }
-
-
+    
+    
     });
-
+    // a DragBox interaction used to select features by drawing boxes
+    var dragBox = new ol.interaction.DragBox({
+        condition: ol.events.condition.platformModifierKeyOnly
+    });
     dragBox.on('boxend', function() {
         // features that intersect the box are added to the collection of
         // selected features, and their names are displayed in the "info"
@@ -525,12 +521,14 @@ function initiateMap(elementId) {
         }
 
     });
-
     // clear selection when drawing a new box and when clicking on the map
     dragBox.on('boxstart', function() {
         selectedFeatures.clear();
         //Do anything else after this?
     });
+
+    map.addInteraction(select);
+    map.addInteraction(dragBox);
     map.on('click', function(event) {
         // var feature = map.forEachFeatureAtPixel(evt.pixel,
         //   function(feature) {
@@ -547,7 +545,6 @@ function initiateMap(elementId) {
         }
 
     });
-
     map.on('movestart', function() {
         //console.log("movestart")
 
