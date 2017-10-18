@@ -415,12 +415,11 @@ function initiateMap(elementId) {
 
     // a normal select interaction to handle click
     var select = new ol.interaction.Select();
-    select.previous = undefined;
-    select.cleanSelectionStyle = function() {
+    select.cleanSelectionStyle = function(polygon) {
         console.log("Call: cleanSelectionStyle");
-        if (this.previous != undefined) {
-            //console.log("Previous: "+polygon.get("regionName"))
-            var style = this.previous.getStyle();
+        if (polygon != undefined) {
+            console.log("Previous: "+polygon.get("regionName"))
+            var style = polygon.getStyle();
             if (style) {
                 style.setStroke(new ol.style.Stroke({
                     width: 1,
@@ -473,18 +472,19 @@ function initiateMap(elementId) {
     };
     select.on('select', function(event) {
         // This cancel multiple select by holding shift key
-        this.cleanSelectionStyle(this.previous);
+        event.deselected.forEach(function(polygon) {
+            this.cleanSelectionStyle(polygon);
+        }, this);
 
         console.log("Selecionado: " + event.selected.length)
-        if (event.selected.length == 0) {
-            eventHandlers.regionSelect(undefined);
-        } else {
+        var name = undefined;
+        if (event.selected.length > 0) {
             var polygon = event.selected[0];
-            this.previous = polygon;
-            this.applySelectionStyle(this.previous);
-            if (eventHandlers.regionSelect !== undefined) {
-                eventHandlers.regionSelect(polygon.get('regionName'));
-            }
+            name = polygon.get('regionName');
+            this.applySelectionStyle(polygon);
+        }
+        if (eventHandlers.regionSelect !== undefined) {
+            eventHandlers.regionSelect(name);
         }
     });
     // a DragBox interaction used to select features by drawing boxes
@@ -518,7 +518,7 @@ function initiateMap(elementId) {
     });
     // clear selection when drawing a new box and when clicking on the map
     dragBox.on('boxstart', function() {
-        selectedFeatures.clear();
+        // selectedFeatures.clear();
         //Do anything else after this?
     });
 
