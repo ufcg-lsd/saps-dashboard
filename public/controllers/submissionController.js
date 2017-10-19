@@ -435,7 +435,6 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
             },
             function(error) {
                 var msg = "An error occurred when tried to get Images";
-                $log.error(msg + " : " + error);
                 GlobalMsgService.pushMessageFail(msg)
             }
         );
@@ -668,6 +667,7 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
 
     $scope.processNewSubmission = function() {
 
+
         hasError = false;
         $scope.modalMsgError = undefined;
 
@@ -700,21 +700,22 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
             msgRequiredShowHide('regionField', false);
         }
 
-        $scope.newSubmission = {
-            topLeftCoord: {
-                lat: 0,
-                long: 0
-            },
-            bottomRightCoord: {
-                lat: 0,
-                long: 0
-            },
-            initialDate: undefined,
-            finalDate: undefined,
-            inputGathering: undefined,
-            inputPreprocessing: undefined,
-            algorithimExecution: undefined
-        }
+        // $scope.newSubmission = {
+        //     topLeftCoord: {
+        //         lat: 0,
+        //         long: 0
+        //     },
+        //     bottomRightCoord: {
+        //         lat: 0,
+        //         long: 0
+        //     },
+        //     initialDate: undefined,
+        //     finalDate: undefined,
+        //     inputGathering: undefined,
+        //     inputPreprocessing: undefined,
+        //     algorithimExecution: undefined
+        // }
+
 
         // $scope.satelliteOpts.forEach(function(item, index){
 
@@ -740,13 +741,14 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
         }
 
         var data = {
-            'imageName': $scope.submissionName,
-            'firstYear': $scope.firstYear,
-            'lastYear': $scope.lastYear,
-            'region': $scope.region,
-            'processingScript': $scope.processingScriptValue,
-            'preProcessingScript': $scope.preProcessingScriptValue,
-            'dataSet': $scope.satellite
+            'region': $scope.newSubmission.region,
+            'firstYear': $scope.newSubmission.initialDate.getFullYear(),
+            'lastYear': $scope.newSubmission.finalDate.getFullYear(),
+            'processingScript': "PLACEHOLDER",
+            'preProcessingScript': "PLACEHOLDER",
+            'dataSet': "PLACEHOLDER",
+            'topLeftCoord': [$scope.newSubmission.topLeftCoord.lat, $scope.newSubmission.topLeftCoord.long],
+            'topRightCoord': [$scope.newSubmission.bottomRightCoord.lat, $scope.newSubmission.bottomRightCoord.long]
         }
 
         console.log("Sending " + JSON.stringify(data));

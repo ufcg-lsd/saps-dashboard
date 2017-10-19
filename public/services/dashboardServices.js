@@ -249,14 +249,14 @@ dashboardServices.service('SubmissionService', function($log, $http,
     var resourceUrl = appConfig.urlSapsService + appConfig.submissionPath;
     var submissionService = {};
 
-    submissionService.getSubmissions = function(successCallback, errorCalback) {
+    submissionService.getSubmissions = function(successCallback, errorCallback) {
 
         var headerCredentials = AuthenticationService.getHeaderCredentials();
 
         $http.get(resourceUrl, {
                 headers: headerCredentials
             })
-            .success(successCallback).error(errorCalback);
+            .success(successCallback).error(errorCallback);
 
     };
 
