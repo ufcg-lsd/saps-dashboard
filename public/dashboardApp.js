@@ -151,15 +151,15 @@ app.run(function($rootScope) {
 });
 
 app.constant("appConfig", {
-    "urlSapsService": "http://localhost:8080/",
-    "authPath": "auth",
-    "authCreatePath": "auth/create",
+    "urlSapsService": "http://localhost:8091/",
+    "authPath": "user?auth",
+    "authCreatePath": "user?register",
     "submissionPath": "images",
     "regionPath": "regions",
     "regionDetailsPath": "regions/details",
     "emailPath": "email",
     "LOGIN_SUCCEED": "login.succeed",
-    "LOGIN_FAILED": "login.faild",
+    "LOGIN_FAILED": "login.failed",
     "LOGOUT_SUCCEED": "logout.succed",
     "DEFAULT_SB_VERSION": "version-001",
     "DEFAULT_SB_TAG": "tag-001",

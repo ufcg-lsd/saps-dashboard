@@ -84,21 +84,22 @@ dashboardServices.service('AuthenticationService', function($log, $http,
         var loginSuccessHandler = function(response) {
             //console.log("Return: "+JSON.stringify(response));
             callbackSuccess(response)
-        }
+        };
 
         var loginErrorHandler = function(error) {
             console.log("Error no login: " + JSON.stringify(error))
             Session.destroy();
             callbackError(error);
-        }
+        };
         //console.log("Getting images with headers: "+JSON.stringify(headerCredentials))
-        $http.get(resourceAuthUrl, {
-                headers: {
-                    'userEmail': userLogin,
-                    'userPass': password
-                }
-            })
-            .success(loginSuccessHandler).error(loginErrorHandler);
+        var loginInfo = $.param({
+            'userEmail': userLogin,
+            'userPass': password
+        });
+        $http
+            .post(resourceAuthUrl, loginInfo)
+            .success(loginSuccessHandler)
+            .error(loginErrorHandler);
 
         // $.ajax({
         //   type: 'GET',
@@ -151,16 +152,14 @@ dashboardServices.service('AuthenticationService', function($log, $http,
     authService.createNewUser = function(name, email, password, passwordConfirm, callbackSuccess, callbackError) {
 
         //Session.createBasicSession(userName, email, password);
-        newUser = {
+        var newUser = $.param({
             'userEmail': email,
             'userName': name,
             'userPass': password,
-            'userPassConfirm': passwordConfirm
-        }
-        var data = {
-            data: newUser,
-        }
-        $http.post(resourceCreateUrl, data)
+            'userPassConfirm': passwordConfirm,
+            'userNotify': "no"
+        });
+        $http.post(resourceCreateUrl, newUser)
             .success(callbackSuccess).error(callbackError);
 
     }
