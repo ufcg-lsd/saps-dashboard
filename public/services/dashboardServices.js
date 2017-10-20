@@ -157,7 +157,7 @@ dashboardServices.service('AuthenticationService', function($log, $http,
             'userName': name,
             'userPass': password,
             'userPassConfirm': passwordConfirm,
-            'userNotify': "no"
+            'userNotify': 'no'
         });
         $http.post(resourceCreateUrl, newUser)
             .success(callbackSuccess).error(callbackError);
