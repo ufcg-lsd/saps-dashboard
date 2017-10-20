@@ -153,7 +153,6 @@ app.run(function($rootScope) {
 app.constant("appConfig", {
     "urlSapsService": "http://localhost:8091/",
     "authPath": "users?auth",
-    "authCreatePath": "users?register",
     "submissionPath": "images",
     "regionPath": "regions",
     "regionDetailsPath": "regions/details",

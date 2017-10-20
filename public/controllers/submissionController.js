@@ -3,10 +3,16 @@ var dashboardControllers = angular.module('dashboardControllers');
 dashboardControllers.controller('ListSubmissionsController', function($scope, $rootScope, $log, $filter, $timeout, $filter,
     SubmissionService, AuthenticationService, GlobalMsgService, EmailService, appConfig) {
 
-    $scope.sapsSubmissions = [];
-    $scope.allSubmissionsChecked = false;
+    $scope.ongoingTasks = [];
+    $scope.completedTasks = [];
+
+    $scope.tasksByState = [{name:"Ongoing", tasks: $scope.ongoingTasks, checkAll: false},
+                              {name:"Completed", tasks: $scope.completedTasks, checkAll: false}];
+
     $scope.elementShowingDetail = undefined;
     $scope.showEmailInfo = false;
+
+    $scope.allChecked = false;
 
     $scope.detail = {
         downloadLink: "",
@@ -27,6 +33,7 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
     }
 
     $scope.satelliteOpts = appConfig.SATELLITE_OPTS;
+
     // Script options
     $scope.processingScripts = [{
         name: 'DEFAULT',
@@ -226,140 +233,26 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
         })
     }
 
-    $scope.switchSubmitionDetail = function(submissionId) {
-
-        //console.log("Switching "+submissionId);
-
-        $scope.sapsSubmissions.forEach(function(item, index) {
-
-            if (item.id == submissionId) {
-                //console.log("Found "+submissionId);
-                item.showDetail = !item.showDetail;
-            }
-        })
+    function isCompleted(processing) {
+        return 'state' in processing &&
+            (processing.state === 'fetched' || processing.state === 'error');
     }
 
-    function processImages(images) {
+    function isOngoing(processing) {
+        return !isCompleted(processing);
+    }
 
-        submissions = []
+    var updateProcessingsByState = function(tasks) {
+        $scope.ongoingTasks.splice(0, $scope.ongoingTasks.length);
+        $scope.completedTasks.splice(0, $scope.completedTasks.length)
 
-        var dateSb1 = $rootScope.parseDate("01/05/2017");
-        var dateSb2 = $rootScope.parseDate("27/06/2017");
-
-        console.log("Date 1: " + dateSb1)
-
-        submission1 = {
-            id: "sb01",
-            name: "Submission 01",
-            tags: ["tag1", "New tag2", "tag3"],
-            region: "Region1",
-            processingScript: 'scp-01',
-            preProcessingScript: 'pscp-01',
-            show: true,
-            showDetail: false,
-            date: dateSb1,
-            totalImages: 0,
-            totalDownloading: 0,
-            totalDownloaded: 0,
-            totalQueued: 0,
-            totalFeched: 0,
-            totalError: 0,
-            images: [],
-            sat4: false,
-            sat5: false,
-            sat7: false,
-            allChecked: false
-        }
-
-        submission2 = {
-            id: "sb02",
-            name: "Submission 02",
-            tags: [],
-            region: "Region2",
-            processingScript: 'scp-02',
-            preProcessingScript: 'pscp-02',
-            show: true,
-            showDetail: false,
-            date: dateSb2,
-            totalImages: 0,
-            totalDownloading: 0,
-            totalDownloaded: 0,
-            totalQueued: 0,
-            totalFeched: 0,
-            totalError: 0,
-            images: [],
-            sat4: false,
-            sat5: false,
-            sat7: false,
-            allChecked: false
-        }
-
-        var sub1Count = 0;
-        var sub2Count = 0;
-
-        images.forEach(function(item, index) {
-
-            var submission;
-            if (index % 2 == 0) {
-                sub1Count++;
-                submission = submission1;
-                if (sub1Count == 1) {
-                    item.sat = 'L4'
-                    submission1.sat4 = true;
-                }
-                if (sub1Count == 2) {
-                    item.sat = 'L5'
-                    submission1.sat5 = true;
-                }
-                if (sub1Count == 3) {
-                    item.sat = 'L7'
-                    sub1Count = 0;
-                    submission1.sat7 = true;
-                }
-            } else {
-                sub2Count++
-                submission = submission2;
-                if (sub1Count == 1) {
-                    item.sat = 'L4'
-                    submission2.sat4 = true;
-                }
-                if (sub1Count == 2) {
-                    item.sat = 'L7'
-                    sub1Count = 0;
-                    submission2.sat7 = true;
-                }
+        tasks.forEach(function(currentProcessing, index) {
+            if (isOngoing(currentProcessing)) {
+                $scope.ongoingTasks.push(currentProcessing)
+            } else if (isCompleted(currentProcessing)) {
+                $scope.completedTasks.push(currentProcessing)
             }
-
-            submission.totalImages = submission.totalImages + 1
-
-            if (item.state === 'downloading') {
-                submission.totalDownloading = submission.totalDownloading + 1
-            }
-            if (item.state === 'downloaded') {
-                submission.totalDownloaded = submission.totalDownloaded + 1
-            }
-            if (item.state === 'queued') {
-                submission.totalQueued = submission.totalQueued + 1
-            }
-            if (item.state === 'fetched') {
-                submission.totalFeched = submission.totalFeched + 1
-            }
-            if (item.state === 'error') {
-                submission.totalError = submission.totalError + 1
-            }
-
-            //Converting string to date
-            item.creationTime = new Date(item.creationTime)
-            item.updateTime = new Date(item.updateTime)
-            item.checked = false;
-
-            submission.images.push(item)
-
-        })
-
-        submissions.push(submission1);
-        submissions.push(submission2);
-        return submissions
+        });
     }
 
     $scope.generateTagsComponent = function(submission) {
@@ -388,63 +281,27 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
 
     }
 
-    $scope.checkAllImages = function() {
-        $scope.sapsSubmissions.forEach(function(submission, index) {
-            submission.allChecked = $scope.allSubmissionsChecked;
-            $scope.checkUncheckAllBySubId(submission.id)
-        });
-    }
-
-    $scope.checkUncheckAllBySubId = function(submissionId) {
-
-        for (var index = 0; index < $scope.sapsSubmissions.length; index++) {
-            if ($scope.sapsSubmissions[index].id == submissionId) {
-                //$scope.sapsSubmissions[index].allChecked = !$scope.sapsSubmissions[index].allChecked;
-                $scope.sapsSubmissions[index].images.forEach(function(image, ind) {
-                    image.checked = $scope.sapsSubmissions[index].allChecked;
-                });
-
-                break;
-            }
-        }
-    }
-    $scope.checkUncheckImageByName = function(submissionId, checked) {
-        console.log("Checking for " + submissionId + " ...")
-        for (var index = 0; index < $scope.sapsSubmissions.length; index++) {
-            if ($scope.sapsSubmissions[index].id == submissionId) {
-                if (!checked) {
-                    $scope.sapsSubmissions[index].allChecked = false;
-                } else {
-                    var allChecked = true;
-                    $scope.sapsSubmissions[index].images.forEach(function(image, ind) {
-                        if (!image.checked) {
-                            allChecked = false;
-                        }
-                    });
-                    $scope.sapsSubmissions[index].allChecked = allChecked;
-                }
-                break;
-            }
+    $scope.setChecked = function(value, tasks) {
+        for (var i = 0; i < tasks.length; i++) {
+            tasks[i].checked = value;
         }
     }
 
     $scope.getSapsSubmissions = function() {
         SubmissionService.getSubmissions(
             function(data) {
-                $scope.sapsSubmissions = processImages(data);
+                updateProcessingsByState(data)
             },
             function(error) {
                 var msg = "An error occurred when tried to get Images";
-                $log.error(msg + " : " + error);
                 GlobalMsgService.pushMessageFail(msg)
             }
         );
     }
 
     $scope.sendEmail = function() {
-
         var imgLinks = [];
-        $scope.sapsSubmissions.forEach(function(submission, index) {
+        $scope.tasksByState.forEach(function(submission, index) {
             if (submission.checked) {
                 submission.images.forEach(function(img, i) {
                     if (img.checked) {
@@ -481,61 +338,7 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
             })
     }
 
-
-    $scope.showDetail = function(elementId, item) {
-
-        var detailContent =
-            "<div class='col-md-12'>" +
-            "<table class='sb-sub-detail-table'>" +
-            "<tr>" +
-            "<td class='title-col'>ID:</td>" +
-            "<td>" + item.stationId + "</td>" +
-            "</tr>" +
-            "<tr>" +
-            "<td class='title-col'>State:</td>" +
-            "<td>" + item.state + "</td>" +
-            "</tr>" +
-            "<tr>" +
-            "<td class='title-col'>Creation Time:</td>" +
-            "<td>" + $filter('date')(item.creationTime, 'yyyy-MM-dd hh:mm:ss') + "</td>" +
-            "</tr>" +
-            "<tr>" +
-            "<td class='title-col'>Update Time:</td>" +
-            "<td>" + $filter('date')(item.updateTime, 'yyyy-MM-dd hh:mm:ss') + "</td>" +
-            "</tr>" +
-            "<tr>" +
-            "<td class='title-col'>Version/Tag:</td>" +
-            "<td><input type='text' readonly class='sb-width-lg' value='" + item.sebalVersion + "'/></td>" +
-            "</tr>" +
-            "<tr>" +
-            "<td class='title-col'>Fmask Version</td>" +
-            "<td><input type='text' readonly class='sb-width-lg' value='" + item.fmaskVersion + "'/></td>" +
-            "</tr>" +
-            "<tr>" +
-            "<td class='title-col'>Download Link</td>" +
-            "<td><input type='text' readonly class='sb-width-lg' value='" + item.downloadLink + "'/></td>" +
-            "</tr>" +
-            "</table>" +
-            "</div>";
-
-        //console.log(elementId+" -- "+JSON.stringify(item));
-        if ($scope.elementShowingDetail !== undefined ||
-            $scope.elementShowingDetail === elementId) {
-            $("#" + elementId).empty();
-            $("#" + elementId).addClass('hidden');
-            $scope.elementShowingDetail = undefined;
-
-        } else {
-
-
-            $("#" + elementId).append(detailContent);
-            $("#" + elementId).removeClass('hidden');
-            $scope.elementShowingDetail = elementId;
-        }
-    }
-
     $scope.getSapsSubmissions();
-
 });
 
 dashboardControllers.controller('NewSubmissionsController', function($scope, $rootScope, $log, $filter,
@@ -668,6 +471,7 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
 
     $scope.processNewSubmission = function() {
 
+
         hasError = false;
         $scope.modalMsgError = undefined;
 
@@ -700,21 +504,22 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
             msgRequiredShowHide('regionField', false);
         }
 
-        $scope.newSubmission = {
-            topLeftCoord: {
-                lat: 0,
-                long: 0
-            },
-            bottomRightCoord: {
-                lat: 0,
-                long: 0
-            },
-            initialDate: undefined,
-            finalDate: undefined,
-            inputGathering: undefined,
-            inputPreprocessing: undefined,
-            algorithimExecution: undefined
-        }
+        // $scope.newSubmission = {
+        //     topLeftCoord: {
+        //         lat: 0,
+        //         long: 0
+        //     },
+        //     bottomRightCoord: {
+        //         lat: 0,
+        //         long: 0
+        //     },
+        //     initialDate: undefined,
+        //     finalDate: undefined,
+        //     inputGathering: undefined,
+        //     inputPreprocessing: undefined,
+        //     algorithimExecution: undefined
+        // }
+
 
         // $scope.satelliteOpts.forEach(function(item, index){
 
@@ -740,13 +545,14 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
         }
 
         var data = {
-            'imageName': $scope.submissionName,
-            'firstYear': $scope.firstYear,
-            'lastYear': $scope.lastYear,
-            'region': $scope.region,
-            'processingScript': $scope.processingScriptValue,
-            'preProcessingScript': $scope.preProcessingScriptValue,
-            'dataSet': $scope.satellite
+            'region': $scope.newSubmission.region,
+            'firstYear': $scope.newSubmission.initialDate.getFullYear(),
+            'lastYear': $scope.newSubmission.finalDate.getFullYear(),
+            'processingScript': "PLACEHOLDER",
+            'preProcessingScript': "PLACEHOLDER",
+            'dataSet': "PLACEHOLDER",
+            'topLeftCoord': [$scope.newSubmission.topLeftCoord.lat, $scope.newSubmission.topLeftCoord.long],
+            'topRightCoord': [$scope.newSubmission.bottomRightCoord.lat, $scope.newSubmission.bottomRightCoord.long]
         }
 
         console.log("Sending " + JSON.stringify(data));
@@ -766,6 +572,5 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
                 //$scope.cleanForm();
             });
     };
-
 
 });
