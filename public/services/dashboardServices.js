@@ -260,19 +260,25 @@ dashboardServices.service('SubmissionService', function($log, $http,
     };
 
     submissionService.postSubmission = function(dataForm, successCallback, errorCalback) {
-        //console.log('Service will send '+JSON.stringify(dataForm));
-
         var headerCredentials = AuthenticationService.getHeaderCredentials();
+        console.log(headerCredentials);
 
-        // var req = {
-        //   method: 'POST',
-        //   url: resourceUrl,
-        //   data: dataForm,
-        //   headers: headerCredentials
-        // };
+        var submissionSuccessHandler = function(response) {
+            //console.log("Return: "+JSON.stringify(response));
+            successCallback(response)
+        };
+        var submissionErrorHandler = function(error) {
+            console.log("Error on submission: " + JSON.stringify(error));
+            errorCalback(error);
+        };
+        dataForm.userEmail = headerCredentials.userEmail;
+        dataForm.userPass = headerCredentials.userPass;
+        var dataInfo = $.param(dataForm);
+        $http
+            .post(resourceUrl, dataInfo)
+            .success(submissionSuccessHandler)
+            .error(submissionErrorHandler);
 
-        // $http(req).success(successCallback).error(errorCalback);
-        successCallback("OK");
 
     };
 

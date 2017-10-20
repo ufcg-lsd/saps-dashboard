@@ -470,8 +470,6 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
 
 
     $scope.processNewSubmission = function() {
-
-
         hasError = false;
         $scope.modalMsgError = undefined;
 
@@ -546,13 +544,13 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
 
         var data = {
             'region': $scope.newSubmission.region,
-            'firstYear': $scope.newSubmission.initialDate.getFullYear(),
-            'lastYear': $scope.newSubmission.finalDate.getFullYear(),
-            'processingScript': "PLACEHOLDER",
-            'preProcessingScript': "PLACEHOLDER",
-            'dataSet': "PLACEHOLDER",
-            'topLeftCoord': [$scope.newSubmission.topLeftCoord.lat, $scope.newSubmission.topLeftCoord.long],
-            'topRightCoord': [$scope.newSubmission.bottomRightCoord.lat, $scope.newSubmission.bottomRightCoord.long]
+            'initialDate': $scope.newSubmission.initialDate.toISOString().slice(0,11),
+            'finalDate': $scope.newSubmission.finalDate.toISOString().slice(0,11),
+            'inputGatheringTag': "PLACEHOLDER",
+            'inputPreprocessingTag': "PLACEHOLDER",
+            'algorithmExecutionTag': "PLACEHOLDER",
+            'topLeft': [$scope.newSubmission.topLeftCoord.lat, $scope.newSubmission.topLeftCoord.long],
+            'bottomRight': [$scope.newSubmission.bottomRightCoord.lat, $scope.newSubmission.bottomRightCoord.long]
         }
 
         console.log("Sending " + JSON.stringify(data));
