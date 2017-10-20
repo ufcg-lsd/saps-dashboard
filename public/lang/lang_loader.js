@@ -141,11 +141,12 @@
                     },
                 },
                 table: {
-                    columnName: "Name",
-                    columnCreationDate: "Creation date",
-                    columnEndDate: "End date",
-                    columnState: "State",
-                    columnSatellite: "Satellite",
+                    landsatTile: "Landsat tile",
+                    date: "Date",
+                    inputGathering: "Input gathering",
+                    inputPreprocessing: "Input preprocessing",
+                    algorithmExecution: "Algorithm execution",
+                    state: "State"
                 },
             },
         },
@@ -288,12 +289,13 @@
                     },
                 },
                 table: {
-                    columnName: "Nome",
-                    columnCreationDate: "Data de criação",
-                    columnEndDate: "Data de finalização",
-                    columnState: "Estado",
-                    columnSatellite: "Satelite",
-                },
+                    landsatTile: "Região",
+                    date: "Data",
+                    inputGathering: "Gathering da entrada",
+                    inputPreprocessing: "Preprocessamento da entrada",
+                    algorithmExecution: "Execução do algoritmo",
+                    state: "Estado"
+                }
             }
         },
     }]
