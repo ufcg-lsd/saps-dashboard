@@ -172,19 +172,13 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
         RegionService.getRegions(
             function(response) {
                 sapsMap.generateGrid(response);
-
                 response.forEach(function(region, index) {
-
                     if (region.regionDetail && region.regionDetail.processedImages) {
                         processRegionHeatmap(region);
                         sapsMap.updateRegionMapColor(region.regionDetail);
                     }
-
                 });
-
                 loadedregions = response;
-
-
             },
             function(error) {
                 console.log('Error while trying to ge regions: ' + error)
