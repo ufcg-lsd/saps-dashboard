@@ -6,6 +6,8 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
     $scope.ongoingTasks = [];
     $scope.completedTasks = [];
 
+    $scope.listFilter = "";
+
     $scope.elementShowingDetail = undefined;
     $scope.showEmailInfo = false;
 
@@ -77,6 +79,37 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
     $scope.changePreProcScript = function(newScriptOpt) {
         $scope.searchFilters.preProcessingScriptName = newScriptOpt.name;
         $scope.searchFilters.preProcessingScriptValue = newScriptOpt.value;
+    }
+
+    $scope.filterTable = function(str) {
+        var newOngoing = [];
+        var newCompleted = [];
+        this.ongoingTasks.forEach(function(item) {
+            if (item.name.includes(str) ||
+                item.imageDate.includes(str) ||
+                item.inputGatheringTag.includes(str) ||
+                item.inputPreprocessingTag.includes(str) ||
+                item.algorithmExecutionTag.includes(str) ||
+                item.state.includes(str)
+            ) {
+                newOngoing.push(item);
+            }
+        });
+        this.completedTasks.forEach(function(item) {
+            if (item.name.includes(str) ||
+                item.date.includes(str) ||
+                item.inputGatheringTag.includes(str) ||
+                item.inputPreprocessingTag.includes(str) ||
+                item.algorithmExecutionTag.includes(str) ||
+                item.state.includes(str)
+            ) {
+                newCompleted.push(item);
+            }
+        });
+        self.ongoingTasksCount = newOngoing.length;
+        self.ongoingTasks = new NgTableParams({count:4}, { dataset: newOngoing, counts: [] });
+        self.completedTasksCount = newCompleted.length;
+        self.completedTasks = new NgTableParams({count:4}, { dataset: newCompleted, counts: [] });
     }
 
     $scope.filterSubmissions = function() {
@@ -252,7 +285,6 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
                 $scope.completedTasks.push(currentProcessing)
             }
         });
-        console.log($scope.ongoingTasks);
         self.ongoingTasksCount = $scope.ongoingTasks.length;
         self.ongoingTasks = new NgTableParams({count:4}, { dataset: $scope.ongoingTasks, counts: [] });
         self.completedTasksCount = $scope.completedTasks.length;
