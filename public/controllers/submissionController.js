@@ -1,13 +1,10 @@
 var dashboardControllers = angular.module('dashboardControllers');
 
 dashboardControllers.controller('ListSubmissionsController', function($scope, $rootScope, $log, $filter, $timeout, $filter,
-    SubmissionService, AuthenticationService, GlobalMsgService, EmailService, appConfig) {
+    SubmissionService, AuthenticationService, GlobalMsgService, EmailService, appConfig, NgTableParams) {
 
     $scope.ongoingTasks = [];
     $scope.completedTasks = [];
-
-    $scope.tasksByState = [{name:"Ongoing", tasks: $scope.ongoingTasks, checkAll: false},
-                              {name:"Completed", tasks: $scope.completedTasks, checkAll: false}];
 
     $scope.elementShowingDetail = undefined;
     $scope.showEmailInfo = false;
@@ -233,6 +230,8 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
         })
     }
 
+    var self = this;
+
     function isCompleted(processing) {
         return 'state' in processing &&
             (processing.state === 'fetched' || processing.state === 'error');
@@ -253,6 +252,11 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
                 $scope.completedTasks.push(currentProcessing)
             }
         });
+        console.log($scope.ongoingTasks);
+        self.ongoingTasksCount = $scope.ongoingTasks.length;
+        self.ongoingTasks = new NgTableParams({count:4}, { dataset: $scope.ongoingTasks, counts: [] });
+        self.completedTasksCount = $scope.completedTasks.length;
+        self.completedTasks = new NgTableParams({count:4}, { dataset: $scope.completedTasks, counts: [] });
     }
 
     $scope.generateTagsComponent = function(submission) {
