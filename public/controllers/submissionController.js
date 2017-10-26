@@ -348,13 +348,17 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
     // $scope.satelliteOpts = appConfig.SATELLITE_OPTS;
 
     $scope.newSubmission = {
-        topLeftCoord: {
-            lat: 0,
-            long: 0
+        lowerLeftCoord: {
+            lat: -8.676947,
+            long: -37.095067
+            // lat: 0.0,
+            // long: 0.0
         },
-        bottomRightCoord: {
-            lat: 0,
-            long: 0
+        upperRightCoord: {
+            lat: -8.676947,
+            long: -37.095067
+            // lat: 0.0,
+            // long: 0.0
         },
         initialDate: undefined,
         finalDate: undefined,
@@ -495,49 +499,6 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
             hasError = true
         }
 
-        if (!$scope.newSubmission.region || $scope.newSubmission.region.length == 0) {
-            hasError = true
-            msgRequiredShowHide('regionField', true);
-        } else {
-            msgRequiredShowHide('regionField', false);
-        }
-
-        // $scope.newSubmission = {
-        //     topLeftCoord: {
-        //         lat: 0,
-        //         long: 0
-        //     },
-        //     bottomRightCoord: {
-        //         lat: 0,
-        //         long: 0
-        //     },
-        //     initialDate: undefined,
-        //     finalDate: undefined,
-        //     inputGathering: undefined,
-        //     inputPreprocessing: undefined,
-        //     algorithimExecution: undefined
-        // }
-
-
-        // $scope.satelliteOpts.forEach(function(item, index){
-
-        //   var radioId = '#radioSatellite'+(index+1)
-
-        //   if($(radioId).prop('checked')){
-        //     $scope.satellite = $(radioId).prop('value');
-        //   }
-        //     // console.log(radioId+' Value: '+$(radioId).prop('value'))
-        //     // console.log(radioId+' Checked: '+$(radioId).prop('checked'))
-        // });
-
-        // console.log('$scope.satellite: '+$scope.satellite)
-        // if(!$scope.satellite){
-        //   hasError = true
-        //   msgRequiredShowHide('satelliteField',true);
-        // }else{
-        //   msgRequiredShowHide('satelliteField',false);
-        // }
-
         if (hasError) {
             return
         }
@@ -549,8 +510,8 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
             'inputGatheringTag': "PLACEHOLDER",
             'inputPreprocessingTag': "PLACEHOLDER",
             'algorithmExecutionTag': "PLACEHOLDER",
-            'topLeft': [$scope.newSubmission.topLeftCoord.lat, $scope.newSubmission.topLeftCoord.long],
-            'bottomRight': [$scope.newSubmission.bottomRightCoord.lat, $scope.newSubmission.bottomRightCoord.long]
+            'lowerLeft': [$scope.newSubmission.lowerLeftCoord.lat, $scope.newSubmission.lowerLeftCoord.long],
+            'upperRight': [$scope.newSubmission.upperRightCoord.lat, $scope.newSubmission.upperRightCoord.long]
         }
 
         console.log("Sending " + JSON.stringify(data));
@@ -567,7 +528,6 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
             function(error) {
                 $log.error(JSON.stringify(error));
                 $scope.modalMsgError = 'Error while trying to submit a job.';
-                //$scope.cleanForm();
             });
     };
 
