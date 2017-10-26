@@ -45,28 +45,20 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
     $scope.allDetailsChecked = false;
 
     // Script options
-    $scope.processingScripts = [{
-        name: 'DEFAULT',
-        value: 'default_script'
-    }, {
-        name: 'Script-01',
-        value: 'scp-01'
-    }, {
-        name: 'Script-02',
-        value: 'scp-02'
-    }, ]
+    $scope.processingScripts = [
+        {
+            name: 'DEFAULT',
+            value: 'default_script'
+        }
+    ]
 
 
-    $scope.preProcessingScripts = [{
-        name: 'DEFAULT',
-        value: 'default_pre-script'
-    }, {
-        name: 'Pre-Script-01',
-        value: 'pscp-01'
-    }, {
-        name: 'Pre-Script-02',
-        value: 'pscp-02'
-    }, ]
+    $scope.preProcessingScripts = [
+        {
+            name: 'DEFAULT',
+            value: 'default_pre-script'
+        }
+    ];
 
     //Initializing data picker
     $(function() {

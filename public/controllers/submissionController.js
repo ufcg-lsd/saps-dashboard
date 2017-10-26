@@ -34,28 +34,20 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
     $scope.satelliteOpts = appConfig.SATELLITE_OPTS;
 
     // Script options
-    $scope.processingScripts = [{
-        name: 'DEFAULT',
-        value: 'default_script'
-    }, {
-        name: 'Script-01',
-        value: 'scp-01'
-    }, {
-        name: 'Script-02',
-        value: 'scp-02'
-    }, ]
+    $scope.processingScripts = [
+        {
+            name: 'DEFAULT',
+            value: 'default_script'
+        }
+    ]
 
 
-    $scope.preProcessingScripts = [{
-        name: 'DEFAULT',
-        value: 'default_pre-script'
-    }, {
-        name: 'Pre-Script-01',
-        value: 'pscp-01'
-    }, {
-        name: 'Pre-Script-02',
-        value: 'pscp-02'
-    }, ]
+    $scope.preProcessingScripts = [
+        {
+            name: 'DEFAULT',
+            value: 'default_pre-script'
+        }
+    ]
     console.log("procScriptOpts: " + JSON.stringify($scope.processingScripts));
     // Filters
     $scope.searchFilters = {
@@ -404,38 +396,26 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
     }
 
     // Script options
-    $scope.inputGatheringOptions = [{
-        name: 'DEFAULT',
-        value: 'default_script'
-    }, {
-        name: 'Script-01',
-        value: 'scp-01'
-    }, {
-        name: 'Script-02',
-        value: 'scp-02'
-    }, ]
+    $scope.inputGatheringOptions = [
+        {
+            name: 'DEFAULT',
+            value: 'default_script'
+        }
+    ];
 
-    $scope.inputPreprocessingOptions = [{
-        name: 'DEFAULT',
-        value: 'default_pre-script'
-    }, {
-        name: 'Pre-Script-01',
-        value: 'pscp-01'
-    }, {
-        name: 'Pre-Script-02',
-        value: 'pscp-02'
-    }, ]
+    $scope.inputPreprocessingOptions = [
+        {
+            name: 'DEFAULT',
+            value: 'default_pre-script'
+        }
+    ];
 
-    $scope.algorithimExecutionOptions = [{
-        name: 'DEFAULT',
-        value: 'default_algorithim'
-    }, {
-        name: 'Algo-Script-01',
-        value: 'ascp-01'
-    }, {
-        name: 'Algo-Script-02',
-        value: 'ascp-02'
-    }, ]
+    $scope.algorithimExecutionOptions = [
+        {
+            name: 'DEFAULT',
+            value: 'default_algorithim'
+        }
+    ];
 
     $scope.selectedInputGatheringName = $scope.inputGatheringOptions[0].name;
     $scope.selectedInputGatheringValue = $scope.inputGatheringOptions[0].value;
