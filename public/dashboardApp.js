@@ -7,7 +7,7 @@ var app = angular.module('schedulerDashboard', [
 ]);
 
 //Initializing controllers module.
-angular.module('dashboardControllers', []);
+angular.module('dashboardControllers', ['ngTable']);
 
 //Global Functions available on pages
 app.run(function($rootScope) {

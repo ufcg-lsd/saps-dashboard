@@ -1,13 +1,12 @@
 var dashboardControllers = angular.module('dashboardControllers');
 
 dashboardControllers.controller('ListSubmissionsController', function($scope, $rootScope, $log, $filter, $timeout, $filter,
-    SubmissionService, AuthenticationService, GlobalMsgService, EmailService, appConfig) {
+    SubmissionService, AuthenticationService, GlobalMsgService, EmailService, appConfig, NgTableParams) {
 
     $scope.ongoingTasks = [];
     $scope.completedTasks = [];
 
-    $scope.tasksByState = [{name:"Ongoing", tasks: $scope.ongoingTasks, checkAll: false},
-                              {name:"Completed", tasks: $scope.completedTasks, checkAll: false}];
+    $scope.listFilter = "";
 
     $scope.elementShowingDetail = undefined;
     $scope.showEmailInfo = false;
@@ -80,6 +79,37 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
     $scope.changePreProcScript = function(newScriptOpt) {
         $scope.searchFilters.preProcessingScriptName = newScriptOpt.name;
         $scope.searchFilters.preProcessingScriptValue = newScriptOpt.value;
+    }
+
+    $scope.filterTable = function(str) {
+        var newOngoing = [];
+        var newCompleted = [];
+        this.ongoingTasks.forEach(function(item) {
+            if (item.name.includes(str) ||
+                item.imageDate.includes(str) ||
+                item.inputGatheringTag.includes(str) ||
+                item.inputPreprocessingTag.includes(str) ||
+                item.algorithmExecutionTag.includes(str) ||
+                item.state.includes(str)
+            ) {
+                newOngoing.push(item);
+            }
+        });
+        this.completedTasks.forEach(function(item) {
+            if (item.name.includes(str) ||
+                item.date.includes(str) ||
+                item.inputGatheringTag.includes(str) ||
+                item.inputPreprocessingTag.includes(str) ||
+                item.algorithmExecutionTag.includes(str) ||
+                item.state.includes(str)
+            ) {
+                newCompleted.push(item);
+            }
+        });
+        self.ongoingTasksCount = newOngoing.length;
+        self.ongoingTasks = new NgTableParams({count:4}, { dataset: newOngoing, counts: [] });
+        self.completedTasksCount = newCompleted.length;
+        self.completedTasks = new NgTableParams({count:4}, { dataset: newCompleted, counts: [] });
     }
 
     $scope.filterSubmissions = function() {
@@ -233,6 +263,8 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
         })
     }
 
+    var self = this;
+
     function isCompleted(processing) {
         return 'state' in processing &&
             (processing.state === 'fetched' || processing.state === 'error');
@@ -253,6 +285,10 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
                 $scope.completedTasks.push(currentProcessing)
             }
         });
+        self.ongoingTasksCount = $scope.ongoingTasks.length;
+        self.ongoingTasks = new NgTableParams({count:4}, { dataset: $scope.ongoingTasks, counts: [] });
+        self.completedTasksCount = $scope.completedTasks.length;
+        self.completedTasks = new NgTableParams({count:4}, { dataset: $scope.completedTasks, counts: [] });
     }
 
     $scope.generateTagsComponent = function(submission) {
@@ -507,9 +543,9 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
             'region': $scope.newSubmission.region,
             'initialDate': $scope.newSubmission.initialDate.toISOString().slice(0,11),
             'finalDate': $scope.newSubmission.finalDate.toISOString().slice(0,11),
-            'inputGatheringTag': "PLACEHOLDER",
-            'inputPreprocessingTag': "PLACEHOLDER",
-            'algorithmExecutionTag': "PLACEHOLDER",
+            'inputGatheringTag': "DEFAULT",
+            'inputPreprocessingTag': "DEFAULT",
+            'algorithmExecutionTag': "DEFAULT",
             'lowerLeft': [$scope.newSubmission.lowerLeftCoord.lat, $scope.newSubmission.lowerLeftCoord.long],
             'upperRight': [$scope.newSubmission.upperRightCoord.lat, $scope.newSubmission.upperRightCoord.long]
         }
@@ -523,11 +559,19 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
 
                 $scope.openCloseModal('submissionsModal', false);
 
-                GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.successNewSubmission)
+                GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.successNewSubmission);
             },
             function(error) {
                 $log.error(JSON.stringify(error));
-                $scope.modalMsgError = 'Error while trying to submit a job.';
+
+                $scope.openCloseModal('submissionsModal', false);
+                if (error.code == 401) {
+                    GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.unauthorizedNewSubmission);
+                } else {
+                    GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.failedNewSubmission);
+                }
+                //$scope.cleanForm();
+
             });
     };
 

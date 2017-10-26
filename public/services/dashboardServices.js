@@ -294,21 +294,51 @@ dashboardServices.service('RegionService', function($log, $http, AuthenticationS
     var regionService = {};
 
     regionService.getRegions = function(successCallback, errorCalback) {
-
-        var headerCredentials = AuthenticationService.getHeaderCredentials();
-
-        $http.get(
-            resourceUrl,
-            {
-                headers: headerCredentials
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.status == 200) {
+                var myObj = JSON.parse(this.responseText);
+                
+                myObj.forEach(function(region, index) {
+                    region.regionDetail = {
+                        regionName: region.regionName,
+                        processedImages: [],
+                        totalImgBySatelitte: [
+                            {
+                                name: "L4",
+                                total: 0
+                            },
+                            {
+                                name: "L5",
+                                total: 0
+                            },
+                            {
+                                name: "L7",
+                                total: 0
+                            }
+                        ]
+                    };
+                });
+                successCallback(myObj);
+            } else {
+                errorCalback("Failed to load region json.");
             }
-        ).success(successCallback).error(errorCalback);
+        };
+        xmlhttp.open("GET", "regions/regions.json", true);
+        xmlhttp.send();
+        // var headerCredentials = AuthenticationService.getHeaderCredentials();
+
+        // $http.get(
+        //     resourceUrl,
+        //     {
+        //         headers: headerCredentials
+        //     }
+        // ).success(successCallback).error(errorCalback);
 
     };
 
     regionService.getRegionsDetails = function(regionsToLoad, successCallback, errorCalback) {
-
-        //console.log(JSON.stringify(regionsToLoad))
+        console.log(JSON.stringify(regionsToLoad))
         var headerCredentials = AuthenticationService.getHeaderCredentials();
         var visibleRegionsNames = regionsToLoad.join(",");
         var config = {

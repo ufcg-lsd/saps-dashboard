@@ -4,7 +4,8 @@
   "description": "SAPS - Image Monitor",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "rm -rf public/node_modules && cp -r node_modules public/node_modules"
   },
   "keywords": [
     "Fogbow",
@@ -17,6 +18,9 @@
   "dependencies": {
     "express": "^4.15.2",
     "body-parser": "~1.16.0",
-    "debug": "~2.6.0"
+    "debug": "~2.6.0",
+    "angular": "1.6.6",
+    "ng-table": "latest",
+    "eonasdan-bootstrap-datetimepicker": "^4.17.47"    
   }
 }
