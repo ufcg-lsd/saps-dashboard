@@ -12,7 +12,9 @@
             },
             messages: {
                 sendEmailSuccess: "Sent successfully,<br>check your email box.",
-                successNewSubmission: 'Successfully submitted',
+                successNewSubmission: 'Successfully submitted.',
+                failedNewSubmission: 'Failed to submit.',
+                unauthorizedNewSubmission: 'Unauthorized submission.'
             },
             login: {
                 placeholdName: "NAME/EMAIL",
@@ -160,7 +162,9 @@
             },
             messages: {
                 sendEmailSuccess: "Enviado com sucesso,<br>verifique sua caixa de email.",
-                successNewSubmission: 'Submetido com sucesso.'
+                successNewSubmission: 'Submetido com sucesso.',
+                failedNewSubmission: 'Falha ao submeter.',
+                unauthorizedNewSubmission: 'Submissão não autorizada.'
             },
             login: {
                 placeholdName: "NOME/EMAIL",

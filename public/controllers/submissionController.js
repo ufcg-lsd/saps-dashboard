@@ -598,11 +598,16 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
 
                 $scope.openCloseModal('submissionsModal', false);
 
-                GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.successNewSubmission)
+                GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.successNewSubmission);
             },
             function(error) {
                 $log.error(JSON.stringify(error));
-                $scope.modalMsgError = 'Error while trying to submit a job.';
+                $scope.openCloseModal('submissionsModal', false);
+                if (error.code == 401) {
+                    GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.unauthorizedNewSubmission);
+                } else {
+                    GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.failedNewSubmission);
+                }
                 //$scope.cleanForm();
             });
     };
