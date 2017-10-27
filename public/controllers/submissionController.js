@@ -340,7 +340,6 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
     $scope.getSapsSubmissions = function() {
         SubmissionService.getSubmissions(
             function(data) {
-                data[0].state = 'archived';
                 beautifyStateNames(data);
                 updateProcessingsByState(data);
             },
@@ -422,21 +421,21 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
     // Script options
     $scope.inputGatheringOptions = [
         {
-            name: 'DEFAULT',
+            name: 'Default',
             value: 'default_script'
         }
     ];
 
     $scope.inputPreprocessingOptions = [
         {
-            name: 'DEFAULT',
+            name: 'Default',
             value: 'default_pre-script'
         }
     ];
 
     $scope.algorithimExecutionOptions = [
         {
-            name: 'DEFAULT',
+            name: 'Default',
             value: 'default_algorithim'
         }
     ];
@@ -547,28 +546,31 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
             'region': $scope.newSubmission.region,
             'initialDate': $scope.newSubmission.initialDate.toISOString().slice(0,11),
             'finalDate': $scope.newSubmission.finalDate.toISOString().slice(0,11),
-            'inputGatheringTag': "DEFAULT",
-            'inputPreprocessingTag': "DEFAULT",
-            'algorithmExecutionTag': "DEFAULT",
+            'inputGatheringTag': "Default",
+            'inputPreprocessingTag': "Default",
+            'algorithmExecutionTag': "Default",
             'lowerLeft': [$scope.newSubmission.lowerLeftCoord.lat, $scope.newSubmission.lowerLeftCoord.long],
             'upperRight': [$scope.newSubmission.upperRightCoord.lat, $scope.newSubmission.upperRightCoord.long]
-        }
+        };
 
         console.log("Sending " + JSON.stringify(data));
 
+        $scope.openCloseModal('submissionsModal', false);
+        $scope.openCloseModal('loadingModal', true);
+
         SubmissionService.postSubmission(data,
-            function(response) {
+            function() {
                 // GlobalMsgService.pushMessageSuccess('Your job was submitted. Wait for the processing be completed. ' 
                 //       + 'If you activated the notifications you will get an email when finished.');
 
-                $scope.openCloseModal('submissionsModal', false);
+                $scope.openCloseModal('loadingModal', false);
 
                 GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.successNewSubmission);
             },
             function(error) {
                 $log.error(JSON.stringify(error));
 
-                $scope.openCloseModal('submissionsModal', false);
+                $scope.openCloseModal('loadingModal', false);
                 if (error.code == 401) {
                     GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.unauthorizedNewSubmission);
                 } else {
