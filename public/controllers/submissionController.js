@@ -259,7 +259,7 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
 
     function isCompleted(processing) {
         return 'state' in processing &&
-            (processing.state === 'archived' || processing.state === 'failed');
+            (processing.state.toUpperCase() === 'SUCCESS' || processing.state.toUpperCase() === 'FAILURE');
     }
 
     function isOngoing(processing) {
@@ -277,10 +277,11 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
                 $scope.completedTasks.push(currentProcessing)
             }
         });
+
         self.ongoingTasksCount = $scope.ongoingTasks.length;
-        self.ongoingTasks = new NgTableParams({count:4}, { dataset: $scope.ongoingTasks, counts: [] });
+        self.ongoingTasks = new NgTableParams({ count: 4 }, { dataset: $scope.ongoingTasks, counts: [] });
         self.completedTasksCount = $scope.completedTasks.length;
-        self.completedTasks = new NgTableParams({count:4}, { dataset: $scope.completedTasks, counts: [] });
+        self.completedTasks = new NgTableParams({ count: 4 }, { dataset: $scope.completedTasks, counts: [] });
     }
 
     $scope.generateTagsComponent = function(submission) {
@@ -304,7 +305,6 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
                     submission.tags = submission.tagListComponent.getValues();
                 })
             });
-
         }
 
     }
@@ -315,10 +315,33 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
         }
     }
 
+    function beautifyStateNames(data) {
+        if (data) {
+            data.forEach(function(task, index) {
+                if (task.state === 'archived') {
+                    task.state = 'success';
+                } else if (task.state === 'failed') {
+                    task.state = 'failure';
+                }
+
+                task.state = capitalize(task.state);
+            });
+        }
+    }
+
+    function capitalize(string) {
+        if (string) {
+            return string.slice(0, 1).toUpperCase() + string.slice(1, string.length);
+        } else {
+            return string;
+        }
+    }
+
     $scope.getSapsSubmissions = function() {
         SubmissionService.getSubmissions(
             function(data) {
-                updateProcessingsByState(data)
+                beautifyStateNames(data);
+                updateProcessingsByState(data);
             },
             function(error) {
                 var msg = "An error occurred when tried to get Images";
