@@ -1,12 +1,17 @@
 var dashboardControllers = angular.module('dashboardControllers');
 
 dashboardControllers.controller('ListSubmissionsController', function($scope, $rootScope, $log, $filter, $timeout, $filter,
-    SubmissionService, AuthenticationService, GlobalMsgService, EmailService, appConfig) {
+    SubmissionService, AuthenticationService, GlobalMsgService, EmailService, appConfig, NgTableParams) {
 
-    $scope.sapsSubmissions = [];
-    $scope.allSubmissionsChecked = false;
+    $scope.ongoingTasks = [];
+    $scope.completedTasks = [];
+
+    $scope.listFilter = "";
+
     $scope.elementShowingDetail = undefined;
     $scope.showEmailInfo = false;
+
+    $scope.allChecked = false;
 
     $scope.detail = {
         downloadLink: "",
@@ -27,29 +32,22 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
     }
 
     $scope.satelliteOpts = appConfig.SATELLITE_OPTS;
+
     // Script options
-    $scope.processingScripts = [{
-        name: 'DEFAULT',
-        value: 'default_script'
-    }, {
-        name: 'Script-01',
-        value: 'scp-01'
-    }, {
-        name: 'Script-02',
-        value: 'scp-02'
-    }, ]
+    $scope.processingScripts = [
+        {
+            name: 'DEFAULT',
+            value: 'default_script'
+        }
+    ]
 
 
-    $scope.preProcessingScripts = [{
-        name: 'DEFAULT',
-        value: 'default_pre-script'
-    }, {
-        name: 'Pre-Script-01',
-        value: 'pscp-01'
-    }, {
-        name: 'Pre-Script-02',
-        value: 'pscp-02'
-    }, ]
+    $scope.preProcessingScripts = [
+        {
+            name: 'DEFAULT',
+            value: 'default_pre-script'
+        }
+    ]
     console.log("procScriptOpts: " + JSON.stringify($scope.processingScripts));
     // Filters
     $scope.searchFilters = {
@@ -73,6 +71,37 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
     $scope.changePreProcScript = function(newScriptOpt) {
         $scope.searchFilters.preProcessingScriptName = newScriptOpt.name;
         $scope.searchFilters.preProcessingScriptValue = newScriptOpt.value;
+    }
+
+    $scope.filterTable = function(str) {
+        var newOngoing = [];
+        var newCompleted = [];
+        this.ongoingTasks.forEach(function(item) {
+            if (item.name.includes(str) ||
+                item.imageDate.includes(str) ||
+                item.inputGatheringTag.includes(str) ||
+                item.inputPreprocessingTag.includes(str) ||
+                item.algorithmExecutionTag.includes(str) ||
+                item.state.includes(str)
+            ) {
+                newOngoing.push(item);
+            }
+        });
+        this.completedTasks.forEach(function(item) {
+            if (item.name.includes(str) ||
+                item.date.includes(str) ||
+                item.inputGatheringTag.includes(str) ||
+                item.inputPreprocessingTag.includes(str) ||
+                item.algorithmExecutionTag.includes(str) ||
+                item.state.includes(str)
+            ) {
+                newCompleted.push(item);
+            }
+        });
+        self.ongoingTasksCount = newOngoing.length;
+        self.ongoingTasks = new NgTableParams({count:4}, { dataset: newOngoing, counts: [] });
+        self.completedTasksCount = newCompleted.length;
+        self.completedTasks = new NgTableParams({count:4}, { dataset: newCompleted, counts: [] });
     }
 
     $scope.filterSubmissions = function() {
@@ -226,140 +255,33 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
         })
     }
 
-    $scope.switchSubmitionDetail = function(submissionId) {
+    var self = this;
 
-        //console.log("Switching "+submissionId);
-
-        $scope.sapsSubmissions.forEach(function(item, index) {
-
-            if (item.id == submissionId) {
-                //console.log("Found "+submissionId);
-                item.showDetail = !item.showDetail;
-            }
-        })
+    function isCompleted(processing) {
+        return 'state' in processing &&
+            (processing.state.toUpperCase() === 'SUCCESS' || processing.state.toUpperCase() === 'FAILURE');
     }
 
-    function processImages(images) {
+    function isOngoing(processing) {
+        return !isCompleted(processing);
+    }
 
-        submissions = []
+    var updateProcessingsByState = function(tasks) {
+        $scope.ongoingTasks.splice(0, $scope.ongoingTasks.length);
+        $scope.completedTasks.splice(0, $scope.completedTasks.length)
 
-        var dateSb1 = $rootScope.parseDate("01/05/2017");
-        var dateSb2 = $rootScope.parseDate("27/06/2017");
-
-        console.log("Date 1: " + dateSb1)
-
-        submission1 = {
-            id: "sb01",
-            name: "Submission 01",
-            tags: ["tag1", "New tag2", "tag3"],
-            region: "Region1",
-            processingScript: 'scp-01',
-            preProcessingScript: 'pscp-01',
-            show: true,
-            showDetail: false,
-            date: dateSb1,
-            totalImages: 0,
-            totalDownloading: 0,
-            totalDownloaded: 0,
-            totalQueued: 0,
-            totalFeched: 0,
-            totalError: 0,
-            images: [],
-            sat4: false,
-            sat5: false,
-            sat7: false,
-            allChecked: false
-        }
-
-        submission2 = {
-            id: "sb02",
-            name: "Submission 02",
-            tags: [],
-            region: "Region2",
-            processingScript: 'scp-02',
-            preProcessingScript: 'pscp-02',
-            show: true,
-            showDetail: false,
-            date: dateSb2,
-            totalImages: 0,
-            totalDownloading: 0,
-            totalDownloaded: 0,
-            totalQueued: 0,
-            totalFeched: 0,
-            totalError: 0,
-            images: [],
-            sat4: false,
-            sat5: false,
-            sat7: false,
-            allChecked: false
-        }
-
-        var sub1Count = 0;
-        var sub2Count = 0;
-
-        images.forEach(function(item, index) {
-
-            var submission;
-            if (index % 2 == 0) {
-                sub1Count++;
-                submission = submission1;
-                if (sub1Count == 1) {
-                    item.sat = 'L4'
-                    submission1.sat4 = true;
-                }
-                if (sub1Count == 2) {
-                    item.sat = 'L5'
-                    submission1.sat5 = true;
-                }
-                if (sub1Count == 3) {
-                    item.sat = 'L7'
-                    sub1Count = 0;
-                    submission1.sat7 = true;
-                }
-            } else {
-                sub2Count++
-                submission = submission2;
-                if (sub1Count == 1) {
-                    item.sat = 'L4'
-                    submission2.sat4 = true;
-                }
-                if (sub1Count == 2) {
-                    item.sat = 'L7'
-                    sub1Count = 0;
-                    submission2.sat7 = true;
-                }
+        tasks.forEach(function(currentProcessing, index) {
+            if (isOngoing(currentProcessing)) {
+                $scope.ongoingTasks.push(currentProcessing)
+            } else if (isCompleted(currentProcessing)) {
+                $scope.completedTasks.push(currentProcessing)
             }
+        });
 
-            submission.totalImages = submission.totalImages + 1
-
-            if (item.state === 'downloading') {
-                submission.totalDownloading = submission.totalDownloading + 1
-            }
-            if (item.state === 'downloaded') {
-                submission.totalDownloaded = submission.totalDownloaded + 1
-            }
-            if (item.state === 'queued') {
-                submission.totalQueued = submission.totalQueued + 1
-            }
-            if (item.state === 'fetched') {
-                submission.totalFeched = submission.totalFeched + 1
-            }
-            if (item.state === 'error') {
-                submission.totalError = submission.totalError + 1
-            }
-
-            //Converting string to date
-            item.creationTime = new Date(item.creationTime)
-            item.updateTime = new Date(item.updateTime)
-            item.checked = false;
-
-            submission.images.push(item)
-
-        })
-
-        submissions.push(submission1);
-        submissions.push(submission2);
-        return submissions
+        self.ongoingTasksCount = $scope.ongoingTasks.length;
+        self.ongoingTasks = new NgTableParams({ count: 4 }, { dataset: $scope.ongoingTasks, counts: [] });
+        self.completedTasksCount = $scope.completedTasks.length;
+        self.completedTasks = new NgTableParams({ count: 4 }, { dataset: $scope.completedTasks, counts: [] });
     }
 
     $scope.generateTagsComponent = function(submission) {
@@ -383,68 +305,54 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
                     submission.tags = submission.tagListComponent.getValues();
                 })
             });
-
         }
 
     }
 
-    $scope.checkAllImages = function() {
-        $scope.sapsSubmissions.forEach(function(submission, index) {
-            submission.allChecked = $scope.allSubmissionsChecked;
-            $scope.checkUncheckAllBySubId(submission.id)
-        });
-    }
-
-    $scope.checkUncheckAllBySubId = function(submissionId) {
-
-        for (var index = 0; index < $scope.sapsSubmissions.length; index++) {
-            if ($scope.sapsSubmissions[index].id == submissionId) {
-                //$scope.sapsSubmissions[index].allChecked = !$scope.sapsSubmissions[index].allChecked;
-                $scope.sapsSubmissions[index].images.forEach(function(image, ind) {
-                    image.checked = $scope.sapsSubmissions[index].allChecked;
-                });
-
-                break;
-            }
+    $scope.setChecked = function(value, tasks) {
+        for (var i = 0; i < tasks.length; i++) {
+            tasks[i].checked = value;
         }
     }
-    $scope.checkUncheckImageByName = function(submissionId, checked) {
-        console.log("Checking for " + submissionId + " ...")
-        for (var index = 0; index < $scope.sapsSubmissions.length; index++) {
-            if ($scope.sapsSubmissions[index].id == submissionId) {
-                if (!checked) {
-                    $scope.sapsSubmissions[index].allChecked = false;
-                } else {
-                    var allChecked = true;
-                    $scope.sapsSubmissions[index].images.forEach(function(image, ind) {
-                        if (!image.checked) {
-                            allChecked = false;
-                        }
-                    });
-                    $scope.sapsSubmissions[index].allChecked = allChecked;
+
+    function beautifyStateNames(data) {
+        if (data) {
+            data.forEach(function(task, index) {
+                if (task.state === 'archived') {
+                    task.state = 'success';
+                } else if (task.state === 'failed') {
+                    task.state = 'failure';
                 }
-                break;
-            }
+
+                task.state = capitalize(task.state);
+            });
+        }
+    }
+
+    function capitalize(string) {
+        if (string) {
+            return string.slice(0, 1).toUpperCase() + string.slice(1, string.length);
+        } else {
+            return string;
         }
     }
 
     $scope.getSapsSubmissions = function() {
         SubmissionService.getSubmissions(
             function(data) {
-                $scope.sapsSubmissions = processImages(data);
+                beautifyStateNames(data);
+                updateProcessingsByState(data);
             },
             function(error) {
                 var msg = "An error occurred when tried to get Images";
-                $log.error(msg + " : " + error);
                 GlobalMsgService.pushMessageFail(msg)
             }
         );
     }
 
     $scope.sendEmail = function() {
-
         var imgLinks = [];
-        $scope.sapsSubmissions.forEach(function(submission, index) {
+        $scope.tasksByState.forEach(function(submission, index) {
             if (submission.checked) {
                 submission.images.forEach(function(img, i) {
                     if (img.checked) {
@@ -481,61 +389,7 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
             })
     }
 
-
-    $scope.showDetail = function(elementId, item) {
-
-        var detailContent =
-            "<div class='col-md-12'>" +
-            "<table class='sb-sub-detail-table'>" +
-            "<tr>" +
-            "<td class='title-col'>ID:</td>" +
-            "<td>" + item.stationId + "</td>" +
-            "</tr>" +
-            "<tr>" +
-            "<td class='title-col'>State:</td>" +
-            "<td>" + item.state + "</td>" +
-            "</tr>" +
-            "<tr>" +
-            "<td class='title-col'>Creation Time:</td>" +
-            "<td>" + $filter('date')(item.creationTime, 'yyyy-MM-dd hh:mm:ss') + "</td>" +
-            "</tr>" +
-            "<tr>" +
-            "<td class='title-col'>Update Time:</td>" +
-            "<td>" + $filter('date')(item.updateTime, 'yyyy-MM-dd hh:mm:ss') + "</td>" +
-            "</tr>" +
-            "<tr>" +
-            "<td class='title-col'>Version/Tag:</td>" +
-            "<td><input type='text' readonly class='sb-width-lg' value='" + item.sebalVersion + "'/></td>" +
-            "</tr>" +
-            "<tr>" +
-            "<td class='title-col'>Fmask Version</td>" +
-            "<td><input type='text' readonly class='sb-width-lg' value='" + item.fmaskVersion + "'/></td>" +
-            "</tr>" +
-            "<tr>" +
-            "<td class='title-col'>Download Link</td>" +
-            "<td><input type='text' readonly class='sb-width-lg' value='" + item.downloadLink + "'/></td>" +
-            "</tr>" +
-            "</table>" +
-            "</div>";
-
-        //console.log(elementId+" -- "+JSON.stringify(item));
-        if ($scope.elementShowingDetail !== undefined ||
-            $scope.elementShowingDetail === elementId) {
-            $("#" + elementId).empty();
-            $("#" + elementId).addClass('hidden');
-            $scope.elementShowingDetail = undefined;
-
-        } else {
-
-
-            $("#" + elementId).append(detailContent);
-            $("#" + elementId).removeClass('hidden');
-            $scope.elementShowingDetail = elementId;
-        }
-    }
-
     $scope.getSapsSubmissions();
-
 });
 
 dashboardControllers.controller('NewSubmissionsController', function($scope, $rootScope, $log, $filter,
@@ -545,13 +399,17 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
     // $scope.satelliteOpts = appConfig.SATELLITE_OPTS;
 
     $scope.newSubmission = {
-        topLeftCoord: {
-            lat: 0,
-            long: 0
+        lowerLeftCoord: {
+            lat: -8.676947,
+            long: -37.095067
+            // lat: 0.0,
+            // long: 0.0
         },
-        bottomRightCoord: {
-            lat: 0,
-            long: 0
+        upperRightCoord: {
+            lat: -8.676947,
+            long: -37.095067
+            // lat: 0.0,
+            // long: 0.0
         },
         initialDate: undefined,
         finalDate: undefined,
@@ -561,38 +419,26 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
     }
 
     // Script options
-    $scope.inputGatheringOptions = [{
-        name: 'DEFAULT',
-        value: 'default_script'
-    }, {
-        name: 'Script-01',
-        value: 'scp-01'
-    }, {
-        name: 'Script-02',
-        value: 'scp-02'
-    }, ]
+    $scope.inputGatheringOptions = [
+        {
+            name: 'Default',
+            value: 'default_script'
+        }
+    ];
 
-    $scope.inputPreprocessingOptions = [{
-        name: 'DEFAULT',
-        value: 'default_pre-script'
-    }, {
-        name: 'Pre-Script-01',
-        value: 'pscp-01'
-    }, {
-        name: 'Pre-Script-02',
-        value: 'pscp-02'
-    }, ]
+    $scope.inputPreprocessingOptions = [
+        {
+            name: 'Default',
+            value: 'default_pre-script'
+        }
+    ];
 
-    $scope.algorithimExecutionOptions = [{
-        name: 'DEFAULT',
-        value: 'default_algorithim'
-    }, {
-        name: 'Algo-Script-01',
-        value: 'ascp-01'
-    }, {
-        name: 'Algo-Script-02',
-        value: 'ascp-02'
-    }, ]
+    $scope.algorithimExecutionOptions = [
+        {
+            name: 'Default',
+            value: 'default_algorithim'
+        }
+    ];
 
     $scope.selectedInputGatheringName = $scope.inputGatheringOptions[0].name;
     $scope.selectedInputGatheringValue = $scope.inputGatheringOptions[0].value;
@@ -667,7 +513,6 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
 
 
     $scope.processNewSubmission = function() {
-
         hasError = false;
         $scope.modalMsgError = undefined;
 
@@ -693,79 +538,47 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
             hasError = true
         }
 
-        if (!$scope.newSubmission.region || $scope.newSubmission.region.length == 0) {
-            hasError = true
-            msgRequiredShowHide('regionField', true);
-        } else {
-            msgRequiredShowHide('regionField', false);
-        }
-
-        $scope.newSubmission = {
-            topLeftCoord: {
-                lat: 0,
-                long: 0
-            },
-            bottomRightCoord: {
-                lat: 0,
-                long: 0
-            },
-            initialDate: undefined,
-            finalDate: undefined,
-            inputGathering: undefined,
-            inputPreprocessing: undefined,
-            algorithimExecution: undefined
-        }
-
-        // $scope.satelliteOpts.forEach(function(item, index){
-
-        //   var radioId = '#radioSatellite'+(index+1)
-
-        //   if($(radioId).prop('checked')){
-        //     $scope.satellite = $(radioId).prop('value');
-        //   }
-        //     // console.log(radioId+' Value: '+$(radioId).prop('value'))
-        //     // console.log(radioId+' Checked: '+$(radioId).prop('checked'))
-        // });
-
-        // console.log('$scope.satellite: '+$scope.satellite)
-        // if(!$scope.satellite){
-        //   hasError = true
-        //   msgRequiredShowHide('satelliteField',true);
-        // }else{
-        //   msgRequiredShowHide('satelliteField',false);
-        // }
-
         if (hasError) {
             return
         }
 
         var data = {
-            'imageName': $scope.submissionName,
-            'firstYear': $scope.firstYear,
-            'lastYear': $scope.lastYear,
-            'region': $scope.region,
-            'processingScript': $scope.processingScriptValue,
-            'preProcessingScript': $scope.preProcessingScriptValue,
-            'dataSet': $scope.satellite
-        }
+            'region': $scope.newSubmission.region,
+            'initialDate': $scope.newSubmission.initialDate.toISOString().slice(0,11),
+            'finalDate': $scope.newSubmission.finalDate.toISOString().slice(0,11),
+            'inputGatheringTag': "Default",
+            'inputPreprocessingTag': "Default",
+            'algorithmExecutionTag': "Default",
+            'lowerLeft': [$scope.newSubmission.lowerLeftCoord.lat, $scope.newSubmission.lowerLeftCoord.long],
+            'upperRight': [$scope.newSubmission.upperRightCoord.lat, $scope.newSubmission.upperRightCoord.long]
+        };
 
         console.log("Sending " + JSON.stringify(data));
 
+        $scope.openCloseModal('submissionsModal', false);
+        $scope.openCloseModal('loadingModal', true);
+
         SubmissionService.postSubmission(data,
-            function(response) {
+            function() {
                 // GlobalMsgService.pushMessageSuccess('Your job was submitted. Wait for the processing be completed. ' 
                 //       + 'If you activated the notifications you will get an email when finished.');
 
-                $scope.openCloseModal('submissionsModal', false);
+                $scope.openCloseModal('loadingModal', false);
 
-                GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.successNewSubmission)
+                GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.successNewSubmission);
             },
             function(error) {
                 $log.error(JSON.stringify(error));
-                $scope.modalMsgError = 'Error while trying to submit a job.';
+
+                $scope.openCloseModal('loadingModal', false);
+                if (error.code == 401) {
+                    GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.unauthorizedNewSubmission);
+                } else {
+                    GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.failedNewSubmission);
+                }
                 //$scope.cleanForm();
+
             });
     };
-
 
 });

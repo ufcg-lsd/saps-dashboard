@@ -159,12 +159,12 @@ var startApi = function() {
                             response.status = "ERROR";
                             response.code = 401;
                             response.data = "User unauthorized";
-                            callbackFunction(response);
                         } else {
                             response.status = "SUCCESS"
                             response.code = 200;
                             response.data = content
                         }
+                        callbackFunction(response);
                     });
                 }
             });

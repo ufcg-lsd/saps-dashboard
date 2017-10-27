@@ -7,7 +7,7 @@ var app = angular.module('schedulerDashboard', [
 ]);
 
 //Initializing controllers module.
-angular.module('dashboardControllers', []);
+angular.module('dashboardControllers', ['ngTable']);
 
 //Global Functions available on pages
 app.run(function($rootScope) {
@@ -151,15 +151,15 @@ app.run(function($rootScope) {
 });
 
 app.constant("appConfig", {
-    "urlSapsService": "http://localhost:8080/",
-    "authPath": "auth",
-    "authCreatePath": "auth/create",
-    "submissionPath": "images",
+    "urlSapsService": "http://localhost:8091/",
+    "authPath": "users?auth",
+    "authCreatePath":"users?register",
+    "submissionPath": "processings",
     "regionPath": "regions",
     "regionDetailsPath": "regions/details",
     "emailPath": "email",
     "LOGIN_SUCCEED": "login.succeed",
-    "LOGIN_FAILED": "login.faild",
+    "LOGIN_FAILED": "login.failed",
     "LOGOUT_SUCCEED": "logout.succed",
     "DEFAULT_SB_VERSION": "version-001",
     "DEFAULT_SB_TAG": "tag-001",

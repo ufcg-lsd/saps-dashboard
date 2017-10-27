@@ -12,7 +12,9 @@
             },
             messages: {
                 sendEmailSuccess: "Sent successfully,<br>check your email box.",
-                successNewSubmission: 'Successfully submitted',
+                successNewSubmission: 'Successfully submitted.',
+                failedNewSubmission: 'Failed to submit.',
+                unauthorizedNewSubmission: 'Unauthorized submission.'
             },
             login: {
                 placeholdName: "NAME/EMAIL",
@@ -81,6 +83,7 @@
                         sapsTag: "Processing script",
                         satellite: "Satellites",
                         requiredField: "Required Field",
+                        loadSubmission: "Processing submission",
                     },
                     button: {
                         submit: "Process",
@@ -141,11 +144,12 @@
                     },
                 },
                 table: {
-                    columnName: "Name",
-                    columnCreationDate: "Creation date",
-                    columnEndDate: "End date",
-                    columnState: "State",
-                    columnSatellite: "Satellite",
+                    landsatTile: "Landsat tile",
+                    date: "Date",
+                    inputGathering: "Input gathering",
+                    inputPreprocessing: "Input preprocessing",
+                    algorithmExecution: "Algorithm execution",
+                    state: "State"
                 },
             },
         },
@@ -159,7 +163,9 @@
             },
             messages: {
                 sendEmailSuccess: "Enviado com sucesso,<br>verifique sua caixa de email.",
-                successNewSubmission: 'Submetido com sucesso.'
+                successNewSubmission: 'Submetido com sucesso.',
+                failedNewSubmission: 'Falha ao submeter.',
+                unauthorizedNewSubmission: 'Submissão não autorizada.'
             },
             login: {
                 placeholdName: "NOME/EMAIL",
@@ -228,6 +234,7 @@
                         sapsTag: "TAG do SAPS",
                         satellite: "Satelites",
                         requiredField: "Campo Requerido",
+                        loadSubmission: "Processando submissão"
                     },
                     button: {
                         submit: "Enviar",
@@ -288,12 +295,13 @@
                     },
                 },
                 table: {
-                    columnName: "Nome",
-                    columnCreationDate: "Data de criação",
-                    columnEndDate: "Data de finalização",
-                    columnState: "Estado",
-                    columnSatellite: "Satelite",
-                },
+                    landsatTile: "Região",
+                    date: "Data",
+                    inputGathering: "Gathering da entrada",
+                    inputPreprocessing: "Preprocessamento da entrada",
+                    algorithmExecution: "Execução do algoritmo",
+                    state: "Estado"
+                }
             }
         },
     }]

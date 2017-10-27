@@ -6,7 +6,6 @@ var exec = require('child_process').exec;
 var sebalApi;
 
 var app = express();
-var port = 8080;
 
 var appConfig;
 
@@ -102,9 +101,9 @@ var startApp = function() {
     });
 
     /**** API TO RETURN DATA TO FRONTEND ****/
-    /*	
-    	- images
-    	- regions
+    /*  
+        - images
+        - regions
     */
     app.get("/auth", extractUserInfo, function(req, res) {
 
@@ -118,6 +117,7 @@ var startApp = function() {
         });
 
     });
+
     app.post("/auth/create", function(req, res) {
 
         logger.debug("Creating user")
@@ -126,20 +126,22 @@ var startApp = function() {
         sebalApi.createUser(data, callbackFunction);
 
     });
+
     //Return list of images
     app.get("/images", extractUserInfo, function(req, res) {
-
         logger.debug("Getting images")
-        var callbackFunction = registerCallBack(handleResponsePassthrough, req, res);
+        var callbackFunction = registerCallBack(handleGetImages, req, res);
         sebalApi.getImages(reqUserInfo, callbackFunction);
 
     });
+
     app.get("/regions", extractUserInfo, function(req, res) {
         logger.debug("Getting regions")
         var callbackFunction = registerCallBack(handleGetRegionsResponse, req, res);
         sebalApi.getRegions(reqUserInfo, callbackFunction);
 
     });
+
     app.get("/regions/details", extractUserInfo, function(req, res) {
         var regionsNames = req.query.regionsNames.split(',');
         logger.debug("Getting regions details")
@@ -147,6 +149,7 @@ var startApp = function() {
         sebalApi.getRegionsDetails(reqUserInfo, regionsNames, callbackFunction);
 
     });
+
     app.get("/regions/search", extractUserInfo, function(req, res) {
         var regionsNames = req.query.regionsNames.split(',');
         logger.debug("Getting regions details")
@@ -154,6 +157,7 @@ var startApp = function() {
         sebalApi.getRegionsDetails(reqUserInfo, regionsNames, callbackFunction);
 
     });
+
     app.post("/email", extractUserInfo, function(req, res) {
         var data = req.body.data;
         logger.debug("Sending email: " + JSON.stringify(data))
@@ -161,7 +165,6 @@ var startApp = function() {
         sebalApi.sendEmail(reqUserInfo, data, callbackFunction);
 
     });
-
 
     //**** CALLBACK FUNCTIONS TO HANDLE SEBAL API RESPONSES ****//
     function registerCallBack(callBackfunction, httpReq, httpRes) {
@@ -181,6 +184,10 @@ var startApp = function() {
         httpRes.end(data);
     }
 
+    function handleGetImages(response, httpReq, httpRes) {
+        httpRes.status(response.code);
+        httpRes.end(JSON.stringify(response.data));
+    }
 
     //TODO create one handle for each API endpoint? Format response for FRONTEND
     function handleGetRegionsResponse(responseRegions, httpReq, httpRes) {
@@ -291,7 +298,6 @@ var startApp = function() {
             httpRes.status(response.code);
             httpRes.end(response.data);
         }
-
 
     }
 

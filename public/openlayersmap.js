@@ -188,8 +188,8 @@ function initiateMap(elementId) {
         // })
     ];
     var mapView = new ol.View({
-        center: [-4180799.456017701, -768009.2602094514],
-        zoom: 9,
+        center: [-4680799.456017701, -798009.2602094514],
+        zoom: 7,
         maxZoom: 14,
         minZoom: 4,
         zoomFactor: 2
@@ -216,6 +216,11 @@ function initiateMap(elementId) {
         if (regions) {
             // console.log("regions: "+JSON.stringify(regions));
             regions.forEach(function(item, index) {
+                item.coordinates[0] = ol.proj.fromLonLat(item.coordinates[0]);
+                item.coordinates[1] = ol.proj.fromLonLat(item.coordinates[1]);
+                item.coordinates[2] = ol.proj.fromLonLat(item.coordinates[2]);
+                item.coordinates[3] = ol.proj.fromLonLat(item.coordinates[3]);
+                console.log(item.coordinates);
                 //console.log("Region: "+JSON.stringify(item));
                 var polygonCoords = item.coordinates;
 
@@ -274,7 +279,6 @@ function initiateMap(elementId) {
     };
 
     function createNewRegion(regionName, regionId, polygonCoords) {
-        
         var polygonFeature = new ol.Feature(
             new ol.geom.Polygon([polygonCoords])
         );

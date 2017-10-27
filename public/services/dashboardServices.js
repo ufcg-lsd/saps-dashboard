@@ -84,21 +84,22 @@ dashboardServices.service('AuthenticationService', function($log, $http,
         var loginSuccessHandler = function(response) {
             //console.log("Return: "+JSON.stringify(response));
             callbackSuccess(response)
-        }
+        };
 
         var loginErrorHandler = function(error) {
             console.log("Error no login: " + JSON.stringify(error))
             Session.destroy();
             callbackError(error);
-        }
+        };
         //console.log("Getting images with headers: "+JSON.stringify(headerCredentials))
-        $http.get(resourceAuthUrl, {
-                headers: {
-                    'userEmail': userLogin,
-                    'userPass': password
-                }
-            })
-            .success(loginSuccessHandler).error(loginErrorHandler);
+        var loginInfo = $.param({
+            'userEmail': userLogin,
+            'userPass': password
+        });
+        $http
+            .post(resourceAuthUrl, loginInfo)
+            .success(loginSuccessHandler)
+            .error(loginErrorHandler);
 
         // $.ajax({
         //   type: 'GET',
@@ -151,16 +152,14 @@ dashboardServices.service('AuthenticationService', function($log, $http,
     authService.createNewUser = function(name, email, password, passwordConfirm, callbackSuccess, callbackError) {
 
         //Session.createBasicSession(userName, email, password);
-        newUser = {
+        var newUser = $.param({
             'userEmail': email,
             'userName': name,
             'userPass': password,
-            'userPassConfirm': passwordConfirm
-        }
-        var data = {
-            data: newUser,
-        }
-        $http.post(resourceCreateUrl, data)
+            'userPassConfirm': passwordConfirm,
+            'userNotify': 'no'
+        });
+        $http.post(resourceCreateUrl, newUser)
             .success(callbackSuccess).error(callbackError);
 
     }
@@ -249,31 +248,36 @@ dashboardServices.service('SubmissionService', function($log, $http,
     var resourceUrl = appConfig.urlSapsService + appConfig.submissionPath;
     var submissionService = {};
 
-    submissionService.getSubmissions = function(successCallback, errorCalback) {
+    submissionService.getSubmissions = function(successCallback, errorCallback) {
 
         var headerCredentials = AuthenticationService.getHeaderCredentials();
 
         $http.get(resourceUrl, {
                 headers: headerCredentials
             })
-            .success(successCallback).error(errorCalback);
+            .success(successCallback).error(errorCallback);
 
     };
 
     submissionService.postSubmission = function(dataForm, successCallback, errorCalback) {
-        //console.log('Service will send '+JSON.stringify(dataForm));
-
         var headerCredentials = AuthenticationService.getHeaderCredentials();
 
-        // var req = {
-        //   method: 'POST',
-        //   url: resourceUrl,
-        //   data: dataForm,
-        //   headers: headerCredentials
-        // };
+        var submissionSuccessHandler = function(response) {
+            //console.log("Return: "+JSON.stringify(response));
+            successCallback(response)
+        };
+        var submissionErrorHandler = function(error) {
+            console.log("Error on submission: " + JSON.stringify(error));
+            errorCalback(error);
+        };
+        dataForm.userEmail = headerCredentials.userEmail;
+        dataForm.userPass = headerCredentials.userPass;
+        var dataInfo = $.param(dataForm);
+        $http
+            .post(resourceUrl, dataInfo)
+            .success(submissionSuccessHandler)
+            .error(submissionErrorHandler);
 
-        // $http(req).success(successCallback).error(errorCalback);
-        successCallback("OK");
 
     };
 
@@ -289,21 +293,51 @@ dashboardServices.service('RegionService', function($log, $http, AuthenticationS
     var regionService = {};
 
     regionService.getRegions = function(successCallback, errorCalback) {
-
-        var headerCredentials = AuthenticationService.getHeaderCredentials();
-
-        $http.get(
-            resourceUrl,
-            {
-                headers: headerCredentials
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.status == 200) {
+                var myObj = JSON.parse(this.responseText);
+                
+                myObj.forEach(function(region, index) {
+                    region.regionDetail = {
+                        regionName: region.regionName,
+                        processedImages: [],
+                        totalImgBySatelitte: [
+                            {
+                                name: "L4",
+                                total: 0
+                            },
+                            {
+                                name: "L5",
+                                total: 0
+                            },
+                            {
+                                name: "L7",
+                                total: 0
+                            }
+                        ]
+                    };
+                });
+                successCallback(myObj);
+            } else {
+                errorCalback("Failed to load region json.");
             }
-        ).success(successCallback).error(errorCalback);
+        };
+        xmlhttp.open("GET", "regions/regions.json", true);
+        xmlhttp.send();
+        // var headerCredentials = AuthenticationService.getHeaderCredentials();
+
+        // $http.get(
+        //     resourceUrl,
+        //     {
+        //         headers: headerCredentials
+        //     }
+        // ).success(successCallback).error(errorCalback);
 
     };
 
     regionService.getRegionsDetails = function(regionsToLoad, successCallback, errorCalback) {
-
-        //console.log(JSON.stringify(regionsToLoad))
+        console.log(JSON.stringify(regionsToLoad))
         var headerCredentials = AuthenticationService.getHeaderCredentials();
         var visibleRegionsNames = regionsToLoad.join(",");
         var config = {
