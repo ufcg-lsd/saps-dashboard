@@ -148,9 +148,9 @@ dashboardControllers.controller('LoginController', function($scope, $rootScope, 
     $scope.doLogin = function() {
         $scope.errorMsg = undefined;
         AuthenticationService.basicSessionLogin($scope.username, $scope.password,
-            function(response) { //Success call back
+            function() { //Success call back
                 $rootScope.$broadcast(appConfig.LOGIN_SUCCEED, "Login succeed");
-                $location.path('/regions-map');
+                $location.path('/submissions-list');
             },
             function(response) { //Erro call back
                 console.log("Login error: " + JSON.stringify(response));

@@ -523,12 +523,12 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
             'region': $scope.newSubmission.region,
             'initialDate': $scope.newSubmission.initialDate.toISOString().slice(0,11),
             'finalDate': $scope.newSubmission.finalDate.toISOString().slice(0,11),
-            'inputGatheringTag': "DEFAULT",
-            'inputPreprocessingTag': "DEFAULT",
-            'algorithmExecutionTag': "DEFAULT",
+            'inputGatheringTag': "Default",
+            'inputPreprocessingTag': "Default",
+            'algorithmExecutionTag': "Default",
             'lowerLeft': [$scope.newSubmission.lowerLeftCoord.lat, $scope.newSubmission.lowerLeftCoord.long],
             'upperRight': [$scope.newSubmission.upperRightCoord.lat, $scope.newSubmission.upperRightCoord.long]
-        }
+        };
 
         console.log("Sending " + JSON.stringify(data));
 
