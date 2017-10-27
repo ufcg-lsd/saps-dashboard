@@ -398,21 +398,21 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
     // Script options
     $scope.inputGatheringOptions = [
         {
-            name: 'DEFAULT',
+            name: 'Default',
             value: 'default_script'
         }
     ];
 
     $scope.inputPreprocessingOptions = [
         {
-            name: 'DEFAULT',
+            name: 'Default',
             value: 'default_pre-script'
         }
     ];
 
     $scope.algorithimExecutionOptions = [
         {
-            name: 'DEFAULT',
+            name: 'Default',
             value: 'default_algorithim'
         }
     ];
