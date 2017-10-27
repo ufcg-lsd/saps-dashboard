@@ -532,19 +532,22 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
 
         console.log("Sending " + JSON.stringify(data));
 
+        $scope.openCloseModal('submissionsModal', false);
+        $scope.openCloseModal('loadingModal', true);
+
         SubmissionService.postSubmission(data,
-            function(response) {
+            function() {
                 // GlobalMsgService.pushMessageSuccess('Your job was submitted. Wait for the processing be completed. ' 
                 //       + 'If you activated the notifications you will get an email when finished.');
 
-                $scope.openCloseModal('submissionsModal', false);
+                $scope.openCloseModal('loadingModal', false);
 
                 GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.successNewSubmission);
             },
             function(error) {
                 $log.error(JSON.stringify(error));
 
-                $scope.openCloseModal('submissionsModal', false);
+                $scope.openCloseModal('loadingModal', false);
                 if (error.code == 401) {
                     GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.unauthorizedNewSubmission);
                 } else {

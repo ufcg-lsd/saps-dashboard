@@ -83,6 +83,7 @@
                         sapsTag: "Processing script",
                         satellite: "Satellites",
                         requiredField: "Required Field",
+                        loadSubmission: "Processing submission",
                     },
                     button: {
                         submit: "Process",
@@ -233,6 +234,7 @@
                         sapsTag: "TAG do SAPS",
                         satellite: "Satelites",
                         requiredField: "Campo Requerido",
+                        loadSubmission: "Processando submissão"
                     },
                     button: {
                         submit: "Enviar",
