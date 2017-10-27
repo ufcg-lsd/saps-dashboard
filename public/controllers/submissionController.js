@@ -259,7 +259,7 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
 
     function isCompleted(processing) {
         return 'state' in processing &&
-            (processing.state === 'fetched' || processing.state === 'error');
+            (processing.state === 'archived' || processing.state === 'failed');
     }
 
     function isOngoing(processing) {

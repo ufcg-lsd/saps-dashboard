@@ -261,7 +261,6 @@ dashboardServices.service('SubmissionService', function($log, $http,
 
     submissionService.postSubmission = function(dataForm, successCallback, errorCalback) {
         var headerCredentials = AuthenticationService.getHeaderCredentials();
-        console.log(headerCredentials);
 
         var submissionSuccessHandler = function(response) {
             //console.log("Return: "+JSON.stringify(response));
