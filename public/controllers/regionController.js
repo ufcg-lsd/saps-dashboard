@@ -159,11 +159,57 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
 
     //-------- END- Methods for action on MAP --------//
 
+    function setSampleColors(regionsDetails) {
+        regionsDetails.forEach(function(region, index) {
+            console.log(region.regionName);
+            if (region.regionName === '213_69') {
+                region.regionDetail.processedImages.length = 900;
+            } else if (region.regionName === '215_65') {
+                region.regionDetail.processedImages.length = 1000;
+            } else if (region.regionName === '216_66') {
+                region.regionDetail.processedImages.length = 700;
+            } else if (region.regionName === '214_65') {
+                region.regionDetail.processedImages.length = 1000;
+            } else if (region.regionName === '215_64') {
+                region.regionDetail.processedImages.length = 700;
+            } else if (region.regionName === '214_64') {
+                region.regionDetail.processedImages.length = 300;
+            } else if (region.regionName === '218_65') {
+                region.regionDetail.processedImages.length = 200;
+            } else if (region.regionName === '217_67') {
+                region.regionDetail.processedImages.length = 200;
+            } else if (region.regionName === '215_66') {
+                region.regionDetail.processedImages.length = 1000;
+            }
+            // if (region.regionName === '215_65') {
+            //     region.regionDetail.processedImages.length = 0;
+            // } else if (region.regionName === '215_61') {
+            //     region.regionDetail.processedImages.length = 0;
+            // } else if (region.regionName === '215_64') {
+            //     region.regionDetail.processedImages.length = 0;
+            // } else if (region.regionName === '215_62') {
+            //     region.regionDetail.processedImages.length = 0;
+            // } else if (region.regionName === '215_66') {
+            //     region.regionDetail.processedImages.length = 0;
+            // } else if (region.regionName === '214_65') {
+            //     region.regionDetail.processedImages.length = 0;
+            // } else if (region.regionName === '215_65') {
+            //     region.regionDetail.processedImages.length = 900;
+            // } else if (region.regionName === '215_65') {
+            //     region.regionDetail.processedImages.length = 0;
+            // } else if (region.regionName === '215_65') {
+            //     region.regionDetail.processedImages.length = 0;
+            // }
+        });
+    }
+
     function loadRegions() {
 
         RegionService.getRegions(
             function(response) {
+                setSampleColors(response);
                 sapsMap.generateGrid(response);
+
                 response.forEach(function(region, index) {
                     if (region.regionDetail && region.regionDetail.processedImages) {
                         processRegionHeatmap(region);
