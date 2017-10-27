@@ -188,17 +188,20 @@
           <div id="panel-body-ongoing" class="panel-body sb-hidden">
             <div id="table-div-ongoing">
               <!-- message listings table -->
-              <table id="image-table-ongoing" class="saps-table table" ng-table="ls.ongoingTasks">
+              <table id="image-table-ongoing" class="saps-table table container-fluid" ng-table="ls.ongoingTasks">
                 <tbody>
                   <tr ng-repeat="i in $data">
                     <!-- <td>
                       <input type="checkbox" class="checkbox-submission-list" ng-model="i.checked" />
                     </td> -->
-                    <td title="'Landsat Tile'" sortable="'region'">
-                      {{i.region}}
-                    </td>
                     <td title="'Date'" sortable="'imageDate'">
                       {{i.imageDate}}
+                    </td>
+                    <td title="'Satellite'" sortable="'dataset'">
+                      {{i.dataset}}
+                    </td>
+                    <td title="'Landsat Tile'" sortable="'region'">
+                      {{i.region}}
                     </td>
                     <td title="'Input Gathering'" sortable="'inputGatheringTag'">
                       {{i.inputGatheringTag}}
@@ -236,11 +239,14 @@
                     <!-- <td>
                       <input type="checkbox" class="checkbox-submission-list" ng-model="i.checked" />
                     </td> -->
-                    <td title="'Landsat Tile'" sortable="'taskId'">
-                      {{i.taskId}}
-                    </td>
                     <td title="'Date'" sortable="'imageDate'">
                       {{i.imageDate}}
+                    </td>
+                    <td title="'Satellite'" sortable="'dataset'">
+                      {{i.dataset}}
+                    </td>
+                    <td title="'Landsat Tile'" sortable="'taskId'">
+                      {{i.region}}
                     </td>
                     <td title="'Input Gathering'" sortable="'inputGatheringTag'">
                       {{i.inputGatheringTag}}
