@@ -89,7 +89,7 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
         });
         this.completedTasks.forEach(function(item) {
             if (item.name.includes(str) ||
-                item.date.includes(str) ||
+                item.imageDate.includes(str) ||
                 item.inputGatheringTag.includes(str) ||
                 item.inputPreprocessingTag.includes(str) ||
                 item.algorithmExecutionTag.includes(str) ||

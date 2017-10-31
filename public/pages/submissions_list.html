@@ -2,40 +2,12 @@
   <div ng-include="'pages/main.html'"></div>
 </div>
 
+<br>
+<br>
+
 <div id="sb-content" class="sb-content" ng-controller="ListSubmissionsController as ls">
   <div id="steps-panel">
-    <div class="panel panel-default sb-steps-panel">
-      <div class="row sb-steps-panel-ht" align="center">
-        {{languageContent.submissionsList.steps.title}}
-      </div>
-      <div class="row" align="center">
-        <div class="col-lg-2 col-md-2 col-sm-2"></div>
-        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
-          <img src="/images/steps/downloading.png" />
-          <p>{{languageContent.submissionsList.steps.downloading}}</p>
-          <img src="/images/steps/01.png" />
-        </div>
-        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
-          <img src="/images/steps/downloaded.png" />
-          <p>{{languageContent.submissionsList.steps.downloaded}}</p>
-          <img src="/images/steps/02.png" />
-        </div>
-        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
-          <img src="/images/steps/queued.png" />
-          <p>{{languageContent.submissionsList.steps.queued}}</p>
-          <img src="/images/steps/03.png" />
-        </div>
-        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3">
-          <img src="/images/steps/fetched.png" />
-          <p>{{languageContent.submissionsList.steps.fetched}}</p>
-          <img src="/images/steps/04.png" />
-        </div>
-        <div class="col-lg-2 col-md-2 col-sm-2"></div>
-      </div>
-    </div>
-
     <div>
-
       <div class="row panel-default" style="margin-bottom: 10px">
         <div>
           <div ng-click="openCloseModal('submissionsModal', true)" style="cursor: pointer; font-size: 1.5em; width: 70%;">

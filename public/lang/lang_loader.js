@@ -119,7 +119,7 @@
                     fetched: "Fetched",
                 },
                 button: {
-                    newSubmission: "New submission"
+                    newSubmission: "New processing"
                 },
                 scriptPanel: {
                     label: {
