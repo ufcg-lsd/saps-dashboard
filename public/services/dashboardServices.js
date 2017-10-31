@@ -296,29 +296,31 @@ dashboardServices.service('RegionService', function($log, $http, AuthenticationS
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function() {
             if (this.status == 200) {
-                var myObj = JSON.parse(this.responseText);
-                
-                myObj.forEach(function(region, index) {
-                    region.regionDetail = {
-                        regionName: region.regionName,
-                        processedImages: [],
-                        totalImgBySatelitte: [
-                            {
-                                name: "L4",
-                                total: 0
-                            },
-                            {
-                                name: "L5",
-                                total: 0
-                            },
-                            {
-                                name: "L7",
-                                total: 0
-                            }
-                        ]
-                    };
-                });
-                successCallback(myObj);
+                if (this.readyState == 4) {
+                    var myObj = JSON.parse(this.responseText);
+                    
+                    myObj.forEach(function(region, index) {
+                        region.regionDetail = {
+                            regionName: region.regionName,
+                            processedImages: [],
+                            totalImgBySatelitte: [
+                                {
+                                    name: "L4",
+                                    total: 0
+                                },
+                                {
+                                    name: "L5",
+                                    total: 0
+                                },
+                                {
+                                    name: "L7",
+                                    total: 0
+                                }
+                            ]
+                        };
+                    });
+                    successCallback(myObj);
+                }
             } else {
                 errorCalback("Failed to load region json.");
             }
