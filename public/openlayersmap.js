@@ -188,11 +188,11 @@ function initiateMap(elementId) {
         // })
     ];
     var mapView = new ol.View({
-        center: [-44400000, -800000],
-        extent: [-44400000, -800000, -44400000, -800000],
-        zoom: 8,
-        maxZoom: 8,
-        minZoom: 8,
+        center: [-46000000, -1300000],
+        extent: [-46000000, -1300000, -46000000, -1300000],
+        zoom: 6,
+        maxZoom: 6,
+        minZoom: 6,
         zoomFactor: 2
     })
 
