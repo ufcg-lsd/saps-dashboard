@@ -34,28 +34,20 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
     $scope.satelliteOpts = appConfig.SATELLITE_OPTS;
 
     // Script options
-    $scope.processingScripts = [{
-        name: 'DEFAULT',
-        value: 'default_script'
-    }, {
-        name: 'Script-01',
-        value: 'scp-01'
-    }, {
-        name: 'Script-02',
-        value: 'scp-02'
-    }, ]
+    $scope.processingScripts = [
+        {
+            name: 'DEFAULT',
+            value: 'default_script'
+        }
+    ]
 
 
-    $scope.preProcessingScripts = [{
-        name: 'DEFAULT',
-        value: 'default_pre-script'
-    }, {
-        name: 'Pre-Script-01',
-        value: 'pscp-01'
-    }, {
-        name: 'Pre-Script-02',
-        value: 'pscp-02'
-    }, ]
+    $scope.preProcessingScripts = [
+        {
+            name: 'DEFAULT',
+            value: 'default_pre-script'
+        }
+    ]
     console.log("procScriptOpts: " + JSON.stringify($scope.processingScripts));
     // Filters
     $scope.searchFilters = {
@@ -267,7 +259,7 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
 
     function isCompleted(processing) {
         return 'state' in processing &&
-            (processing.state === 'fetched' || processing.state === 'error');
+            (processing.state.toUpperCase() === 'SUCCESS' || processing.state.toUpperCase() === 'FAILURE');
     }
 
     function isOngoing(processing) {
@@ -285,10 +277,11 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
                 $scope.completedTasks.push(currentProcessing)
             }
         });
+
         self.ongoingTasksCount = $scope.ongoingTasks.length;
-        self.ongoingTasks = new NgTableParams({count:4}, { dataset: $scope.ongoingTasks, counts: [] });
+        self.ongoingTasks = new NgTableParams({ count: 4 }, { dataset: $scope.ongoingTasks, counts: [] });
         self.completedTasksCount = $scope.completedTasks.length;
-        self.completedTasks = new NgTableParams({count:4}, { dataset: $scope.completedTasks, counts: [] });
+        self.completedTasks = new NgTableParams({ count: 4 }, { dataset: $scope.completedTasks, counts: [] });
     }
 
     $scope.generateTagsComponent = function(submission) {
@@ -312,7 +305,6 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
                     submission.tags = submission.tagListComponent.getValues();
                 })
             });
-
         }
 
     }
@@ -323,10 +315,33 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
         }
     }
 
+    function beautifyStateNames(data) {
+        if (data) {
+            data.forEach(function(task, index) {
+                if (task.state === 'archived') {
+                    task.state = 'success';
+                } else if (task.state === 'failed') {
+                    task.state = 'failure';
+                }
+
+                task.state = capitalize(task.state);
+            });
+        }
+    }
+
+    function capitalize(string) {
+        if (string) {
+            return string.slice(0, 1).toUpperCase() + string.slice(1, string.length);
+        } else {
+            return string;
+        }
+    }
+
     $scope.getSapsSubmissions = function() {
         SubmissionService.getSubmissions(
             function(data) {
-                updateProcessingsByState(data)
+                beautifyStateNames(data);
+                updateProcessingsByState(data);
             },
             function(error) {
                 var msg = "An error occurred when tried to get Images";
@@ -384,13 +399,17 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
     // $scope.satelliteOpts = appConfig.SATELLITE_OPTS;
 
     $scope.newSubmission = {
-        topLeftCoord: {
-            lat: 0,
-            long: 0
+        lowerLeftCoord: {
+            lat: -8.676947,
+            long: -37.095067
+            // lat: 0.0,
+            // long: 0.0
         },
-        bottomRightCoord: {
-            lat: 0,
-            long: 0
+        upperRightCoord: {
+            lat: -8.676947,
+            long: -37.095067
+            // lat: 0.0,
+            // long: 0.0
         },
         initialDate: undefined,
         finalDate: undefined,
@@ -400,38 +419,26 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
     }
 
     // Script options
-    $scope.inputGatheringOptions = [{
-        name: 'DEFAULT',
-        value: 'default_script'
-    }, {
-        name: 'Script-01',
-        value: 'scp-01'
-    }, {
-        name: 'Script-02',
-        value: 'scp-02'
-    }, ]
+    $scope.inputGatheringOptions = [
+        {
+            name: 'Default',
+            value: 'default_script'
+        }
+    ];
 
-    $scope.inputPreprocessingOptions = [{
-        name: 'DEFAULT',
-        value: 'default_pre-script'
-    }, {
-        name: 'Pre-Script-01',
-        value: 'pscp-01'
-    }, {
-        name: 'Pre-Script-02',
-        value: 'pscp-02'
-    }, ]
+    $scope.inputPreprocessingOptions = [
+        {
+            name: 'Default',
+            value: 'default_pre-script'
+        }
+    ];
 
-    $scope.algorithimExecutionOptions = [{
-        name: 'DEFAULT',
-        value: 'default_algorithim'
-    }, {
-        name: 'Algo-Script-01',
-        value: 'ascp-01'
-    }, {
-        name: 'Algo-Script-02',
-        value: 'ascp-02'
-    }, ]
+    $scope.algorithimExecutionOptions = [
+        {
+            name: 'Default',
+            value: 'default_algorithim'
+        }
+    ];
 
     $scope.selectedInputGatheringName = $scope.inputGatheringOptions[0].name;
     $scope.selectedInputGatheringValue = $scope.inputGatheringOptions[0].value;
@@ -531,49 +538,6 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
             hasError = true
         }
 
-        if (!$scope.newSubmission.region || $scope.newSubmission.region.length == 0) {
-            hasError = true
-            msgRequiredShowHide('regionField', true);
-        } else {
-            msgRequiredShowHide('regionField', false);
-        }
-
-        // $scope.newSubmission = {
-        //     topLeftCoord: {
-        //         lat: 0,
-        //         long: 0
-        //     },
-        //     bottomRightCoord: {
-        //         lat: 0,
-        //         long: 0
-        //     },
-        //     initialDate: undefined,
-        //     finalDate: undefined,
-        //     inputGathering: undefined,
-        //     inputPreprocessing: undefined,
-        //     algorithimExecution: undefined
-        // }
-
-
-        // $scope.satelliteOpts.forEach(function(item, index){
-
-        //   var radioId = '#radioSatellite'+(index+1)
-
-        //   if($(radioId).prop('checked')){
-        //     $scope.satellite = $(radioId).prop('value');
-        //   }
-        //     // console.log(radioId+' Value: '+$(radioId).prop('value'))
-        //     // console.log(radioId+' Checked: '+$(radioId).prop('checked'))
-        // });
-
-        // console.log('$scope.satellite: '+$scope.satellite)
-        // if(!$scope.satellite){
-        //   hasError = true
-        //   msgRequiredShowHide('satelliteField',true);
-        // }else{
-        //   msgRequiredShowHide('satelliteField',false);
-        // }
-
         if (hasError) {
             return
         }
@@ -582,33 +546,38 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
             'region': $scope.newSubmission.region,
             'initialDate': $scope.newSubmission.initialDate.toISOString().slice(0,11),
             'finalDate': $scope.newSubmission.finalDate.toISOString().slice(0,11),
-            'inputGatheringTag': "PLACEHOLDER",
-            'inputPreprocessingTag': "PLACEHOLDER",
-            'algorithmExecutionTag': "PLACEHOLDER",
-            'topLeft': [$scope.newSubmission.topLeftCoord.lat, $scope.newSubmission.topLeftCoord.long],
-            'bottomRight': [$scope.newSubmission.bottomRightCoord.lat, $scope.newSubmission.bottomRightCoord.long]
-        }
+            'inputGatheringTag': "Default",
+            'inputPreprocessingTag': "Default",
+            'algorithmExecutionTag': "Default",
+            'lowerLeft': [$scope.newSubmission.lowerLeftCoord.lat, $scope.newSubmission.lowerLeftCoord.long],
+            'upperRight': [$scope.newSubmission.upperRightCoord.lat, $scope.newSubmission.upperRightCoord.long]
+        };
 
         console.log("Sending " + JSON.stringify(data));
 
+        $scope.openCloseModal('submissionsModal', false);
+        $scope.openCloseModal('loadingModal', true);
+
         SubmissionService.postSubmission(data,
-            function(response) {
+            function() {
                 // GlobalMsgService.pushMessageSuccess('Your job was submitted. Wait for the processing be completed. ' 
                 //       + 'If you activated the notifications you will get an email when finished.');
 
-                $scope.openCloseModal('submissionsModal', false);
+                $scope.openCloseModal('loadingModal', false);
 
                 GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.successNewSubmission);
             },
             function(error) {
                 $log.error(JSON.stringify(error));
-                $scope.openCloseModal('submissionsModal', false);
+
+                $scope.openCloseModal('loadingModal', false);
                 if (error.code == 401) {
                     GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.unauthorizedNewSubmission);
                 } else {
                     GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.failedNewSubmission);
                 }
                 //$scope.cleanForm();
+
             });
     };
 

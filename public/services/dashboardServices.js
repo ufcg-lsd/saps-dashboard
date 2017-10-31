@@ -261,7 +261,6 @@ dashboardServices.service('SubmissionService', function($log, $http,
 
     submissionService.postSubmission = function(dataForm, successCallback, errorCalback) {
         var headerCredentials = AuthenticationService.getHeaderCredentials();
-        console.log(headerCredentials);
 
         var submissionSuccessHandler = function(response) {
             //console.log("Return: "+JSON.stringify(response));
@@ -353,6 +352,17 @@ dashboardServices.service('RegionService', function($log, $http, AuthenticationS
         $http(config)
             .success(successCallback).error(errorCalback);
 
+    };
+
+    regionService.getImagesProcessedByRegion = function(successCallback, errorCallback) {
+        var headerCredentials = AuthenticationService.getHeaderCredentials();
+        var config = {
+            url: appConfig.urlSapsService + appConfig.imagesProcessedByRegionPath,
+            method: "GET",
+            headers: headerCredentials
+        }
+
+        $http(config).success(successCallback).error(errorCallback);
     };
 
     return regionService;

@@ -45,28 +45,20 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
     $scope.allDetailsChecked = false;
 
     // Script options
-    $scope.processingScripts = [{
-        name: 'DEFAULT',
-        value: 'default_script'
-    }, {
-        name: 'Script-01',
-        value: 'scp-01'
-    }, {
-        name: 'Script-02',
-        value: 'scp-02'
-    }, ]
+    $scope.processingScripts = [
+        {
+            name: 'DEFAULT',
+            value: 'default_script'
+        }
+    ]
 
 
-    $scope.preProcessingScripts = [{
-        name: 'DEFAULT',
-        value: 'default_pre-script'
-    }, {
-        name: 'Pre-Script-01',
-        value: 'pscp-01'
-    }, {
-        name: 'Pre-Script-02',
-        value: 'pscp-02'
-    }, ]
+    $scope.preProcessingScripts = [
+        {
+            name: 'DEFAULT',
+            value: 'default_pre-script'
+        }
+    ];
 
     //Initializing data picker
     $(function() {
@@ -167,18 +159,43 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
 
     //-------- END- Methods for action on MAP --------//
 
-    function loadRegions() {
+    function setProcessedCount(regions, imagesProcessedByRegion) {
+        imagesProcessedByRegion.forEach(function(processingsCount, index) {
+            var count = parseInt(processingsCount.count);
+            var path = parseInt(processingsCount.region.slice(0, 3));
+            var row = parseInt(processingsCount.region.slice(3));
+            var regionName = path + "_" + row;
 
+            regions.forEach(function(region, index) {
+                if (regionName === region.regionName) {
+                    region.regionDetail.processedImages.length = count;
+                }
+            });
+        });
+    }
+
+    function loadRegions() {
         RegionService.getRegions(
-            function(response) {
-                sapsMap.generateGrid(response);
-                response.forEach(function(region, index) {
-                    if (region.regionDetail && region.regionDetail.processedImages) {
-                        processRegionHeatmap(region);
-                        sapsMap.updateRegionMapColor(region.regionDetail);
-                    }
-                });
-                loadedregions = response;
+            function(regions) {
+                var succeededCallback = function(imagesProcessedByRegion) {
+                    setProcessedCount(regions, imagesProcessedByRegion);
+                    sapsMap.generateGrid(regions);
+
+                    regions.forEach(function(region, index) {
+                        if (region.regionDetail && region.regionDetail.processedImages) {
+                            processRegionHeatmap(region);
+                            sapsMap.updateRegionMapColor(region.regionDetail);
+                        }
+                    });
+
+                    loadedregions = regions;
+                }
+
+                var failedCallback = function(error) {
+                    console.log(error);
+                }
+
+                RegionService.getImagesProcessedByRegion(succeededCallback, failedCallback);
             },
             function(error) {
                 console.log('Error while trying to ge regions: ' + error)
