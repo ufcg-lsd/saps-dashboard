@@ -108,7 +108,7 @@ app.run(function($rootScope) {
     loadDefaultLang();
 
     $rootScope.heatMap = {
-        transparency: 0.25,
+        transparency: 0.50,
         colours: [{
             "minValue": undefined,
             "maxValue": 0,
@@ -158,6 +158,7 @@ app.constant("appConfig", {
     "regionPath": "regions",
     "regionDetailsPath": "regions/details",
     "emailPath": "email",
+    "imagesProcessedByRegionPath": "imagesProcessedByRegion",
     "LOGIN_SUCCEED": "login.succeed",
     "LOGIN_FAILED": "login.failed",
     "LOGOUT_SUCCEED": "logout.succed",
