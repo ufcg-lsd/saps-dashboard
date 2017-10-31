@@ -220,8 +220,8 @@ function initiateMap(elementId) {
                 item.coordinates[1] = ol.proj.fromLonLat(item.coordinates[1]);
                 item.coordinates[2] = ol.proj.fromLonLat(item.coordinates[2]);
                 item.coordinates[3] = ol.proj.fromLonLat(item.coordinates[3]);
-                console.log(item.coordinates);
-                //console.log("Region: "+JSON.stringify(item));
+                // console.log(item.coordinates);
+                // console.log("Region: "+JSON.stringify(item));
                 var polygonCoords = item.coordinates;
 
                 gridLayers.push(createNewRegion(item.regionName, item.regionId, polygonCoords));

@@ -354,6 +354,17 @@ dashboardServices.service('RegionService', function($log, $http, AuthenticationS
 
     };
 
+    regionService.getImagesProcessedByRegion = function(successCallback, errorCallback) {
+        var headerCredentials = AuthenticationService.getHeaderCredentials();
+        var config = {
+            url: appConfig.urlSapsService + appConfig.imagesProcessedByRegionPath,
+            method: "GET",
+            headers: headerCredentials
+        }
+
+        $http(config).success(successCallback).error(errorCallback);
+    };
+
     return regionService;
 });
 
