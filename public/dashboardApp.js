@@ -6,6 +6,34 @@ var app = angular.module('schedulerDashboard', [
     //'ui.bootstrap'
 ]);
 
+app.constant("appConfig", {
+    "urlSapsService": "http://localhost:8091/",
+    "authPath": "users?auth",
+    "authCreatePath":"users?register",
+    "submissionPath": "processings",
+    "regionPath": "regions",
+    "regionDetailsPath": "regions/details",
+    "emailPath": "email",
+    "imagesProcessedByRegionPath": "imagesProcessedByRegion",
+    "LOGIN_SUCCEED": "login.succeed",
+    "LOGIN_FAILED": "login.failed",
+    "LOGOUT_SUCCEED": "logout.succed",
+    "DEFAULT_SB_VERSION": "version-001",
+    "DEFAULT_SB_TAG": "tag-001",
+    "SATELLITE_OPTS": [{
+        "label": "Landsat 4",
+        "value": "l4"
+    }, {
+        "label": "Landsat 5",
+        "value": "l5"
+    }, {
+        "label": "Landsat 7",
+        "value": "l7"
+    }],
+    "MODAL_OPENED": "modalOpened",
+    "MODAL_CLOSED": "modalClosed"
+});
+
 //Initializing controllers module.
 angular.module('dashboardControllers', ['ngTable']);
 
@@ -149,35 +177,6 @@ app.run(function($rootScope) {
     }
 
 });
-
-app.constant("appConfig", {
-    "urlSapsService": "http://localhost:8091/",
-    "authPath": "users?auth",
-    "authCreatePath":"users?register",
-    "submissionPath": "processings",
-    "regionPath": "regions",
-    "regionDetailsPath": "regions/details",
-    "emailPath": "email",
-    "imagesProcessedByRegionPath": "imagesProcessedByRegion",
-    "LOGIN_SUCCEED": "login.succeed",
-    "LOGIN_FAILED": "login.failed",
-    "LOGOUT_SUCCEED": "logout.succed",
-    "DEFAULT_SB_VERSION": "version-001",
-    "DEFAULT_SB_TAG": "tag-001",
-    "SATELLITE_OPTS": [{
-        "label": "Landsat 4",
-        "value": "l4"
-    }, {
-        "label": "Landsat 5",
-        "value": "l5"
-    }, {
-        "label": "Landsat 7",
-        "value": "l7"
-    }],
-    "MODAL_OPENED": "modalOpened",
-    "MODAL_CLOSED": "modalClosed"
-});
-
 
 app.config(function($logProvider) {
     $logProvider.debugEnabled(true);
