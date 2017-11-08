@@ -339,7 +339,8 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
 
     $scope.getSapsSubmissions = function() {
         SubmissionService.getSubmissions(
-            function(data) {
+            function(response) {
+                var data = response.data;
                 beautifyStateNames(data);
                 updateProcessingsByState(data);
             },
@@ -467,13 +468,6 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
         }
 
     }
-
-    //Managing datepickers
-    $(function() {
-        $('.saps-datepicker').datetimepicker({
-            format: 'DD/MM/YYYY'
-        });
-    });
 
     //Interface controls
     $scope.changeInputGathering = function(newGatheringOpt) {

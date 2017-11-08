@@ -16,11 +16,19 @@
   "author": "Gustavo Guimaraes",
   "license": "ISC",
   "dependencies": {
+    "jquery": "latest",
     "express": "^4.15.2",
     "body-parser": "~1.16.0",
     "debug": "~2.6.0",
-    "angular": "1.6.6",
+    "angular": "latest",
+    "angular-sanitize": "latest",
+    "angular-resource": "latest",
+    "angular-route": "latest",
+    "angular-animate": "latest",
+    "angular-aria": "latest",
+    "angular-messages": "latest",
+    "angular-material": "latest",
     "ng-table": "latest",
-    "eonasdan-bootstrap-datetimepicker": "^4.17.47"    
+    "moment": "latest"
   }
 }

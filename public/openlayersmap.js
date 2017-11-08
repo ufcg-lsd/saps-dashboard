@@ -217,6 +217,12 @@ function initiateMap(elementId) {
         if (regions) {
             // console.log("regions: "+JSON.stringify(regions));
             regions.forEach(function(item, index) {
+                var latLon = [
+                    [item.coordinates[0][0], item.coordinates[0][1]],
+                    [item.coordinates[1][0], item.coordinates[1][1]],
+                    [item.coordinates[2][0], item.coordinates[2][1]],
+                    [item.coordinates[3][0], item.coordinates[3][1]]
+                ];
                 item.coordinates[0] = ol.proj.fromLonLat(item.coordinates[0]);
                 item.coordinates[1] = ol.proj.fromLonLat(item.coordinates[1]);
                 item.coordinates[2] = ol.proj.fromLonLat(item.coordinates[2]);
@@ -225,7 +231,7 @@ function initiateMap(elementId) {
                 // console.log("Region: "+JSON.stringify(item));
                 var polygonCoords = item.coordinates;
 
-                gridLayers.push(createNewRegion(item.regionName, item.regionId, polygonCoords));
+                gridLayers.push(createNewRegion(item.regionName, item.regionId, polygonCoords, latLon));
 
                 var newSquare = SquareSelection(polygonCoords);
                 gridArray.push(newSquare)
@@ -279,7 +285,7 @@ function initiateMap(elementId) {
 
     };
 
-    function createNewRegion(regionName, regionId, polygonCoords) {
+    function createNewRegion(regionName, regionId, polygonCoords, latLon) {
         var polygonFeature = new ol.Feature(
             new ol.geom.Polygon([polygonCoords])
         );
@@ -298,10 +304,12 @@ function initiateMap(elementId) {
         polygonFeature.setStyle(style);
         polygonFeature.set("regionName", regionName);
         polygonFeature.set("regionId", regionId);
+        polygonFeature.set("latLon", latLon);
 
         var newLayerVector = new ol.layer.Vector({
             regionName: regionName,
             regionId: regionId,
+            latLon: latLon,
             coordinates: polygonCoords,
             source: new ol.source.Vector({
                 features: [polygonFeature]
@@ -421,9 +429,7 @@ function initiateMap(elementId) {
     // a normal select interaction to handle click
     var select = new ol.interaction.Select();
     select.cleanSelectionStyle = function(polygon) {
-        console.log("Call: cleanSelectionStyle");
         if (polygon != undefined) {
-            console.log("Previous: "+polygon.get("regionName"))
             var style = polygon.getStyle();
             if (style) {
                 style.setStroke(new ol.style.Stroke({
@@ -438,7 +444,6 @@ function initiateMap(elementId) {
         }
     };
     select.applySelectionStyle = function(polygon) {
-        console.log("Call: applySelectionStyle");
         if (polygon != undefined) {
             var style = polygon.getStyle();
             if (style) {
@@ -460,14 +465,12 @@ function initiateMap(elementId) {
         }, this);
 
         console.log("Selecionado: " + event.selected.length)
-        var name = undefined;
         if (event.selected.length > 0) {
             var polygon = event.selected[0];
-            name = polygon.get('regionName');
             this.applySelectionStyle(polygon);
         }
         if (eventHandlers.regionSelect !== undefined) {
-            eventHandlers.regionSelect(name);
+            eventHandlers.regionSelect(polygon.get('latLon'));
         }
     });
     // a DragBox interaction used to select features by drawing boxes

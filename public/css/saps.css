@@ -106,7 +106,7 @@ div.div-table-row:hover, div.div-table-row:hover .main-column{
 }
 /*Z-INDEX LEVEL 5*/
 .sb-map-features,.sb-map-controls,.sb-heat-map-legends{
-	z-index: 8000;
+	z-index: 80;
 }
 .sb-head-panel-bar{
 	padding: 10px 10px 10px 10px;

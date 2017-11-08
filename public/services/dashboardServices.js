@@ -98,8 +98,7 @@ dashboardServices.service('AuthenticationService', function($log, $http,
         });
         $http
             .post(resourceAuthUrl, loginInfo)
-            .success(loginSuccessHandler)
-            .error(loginErrorHandler);
+            .then(loginSuccessHandler, loginErrorHandler);
 
         // $.ajax({
         //   type: 'GET',
@@ -122,15 +121,17 @@ dashboardServices.service('AuthenticationService', function($log, $http,
                     'x-auth-token': sessionToken
                 }
             })
-            .success(function(response) {
-                //console.log("Return: "+JSON.stringify(response));
-                var authToken = "TOKEN-SEBAL" // fix this hardcode to get token from HEADERS
-                callbackSuccess(response)
-            }).
-        error(function(error) {
-            Session.destroy();
-            callbackError(error);
-        });
+            .then(
+                function(response) {
+                    //console.log("Return: "+JSON.stringify(response));
+                    var authToken = "TOKEN-SEBAL" // fix this hardcode to get token from HEADERS
+                    callbackSuccess(response)
+                },
+                function(error) {
+                    Session.destroy();
+                    callbackError(error);
+                }
+            );
     };
 
     authService.mockLogin = function(username, password, callbackSuccess, callbackError) {
@@ -160,7 +161,7 @@ dashboardServices.service('AuthenticationService', function($log, $http,
             'userNotify': 'no'
         });
         $http.post(resourceCreateUrl, newUser)
-            .success(callbackSuccess).error(callbackError);
+            .then(callbackSuccess, callbackError);
 
     }
 
@@ -210,7 +211,7 @@ dashboardServices.service('Session', function() {
     }
 
     this.createTokenSession = function(userName, userToken) {
-        console.log('Creating user ')
+        console.log('Creating Token Session ')
         this.user = {
             name: userName,
             token: userToken
@@ -218,7 +219,7 @@ dashboardServices.service('Session', function() {
         window.sessionStorage.user = JSON.stringify(this.user);
     };
     this.createBasicSession = function(userName, login, pass) {
-        console.log('Creating user ')
+        console.log('Creating Basic Session ')
         this.user = {
             name: userName,
             login: login,
@@ -240,8 +241,6 @@ dashboardServices.service('Session', function() {
     };
 });
 
-
-
 dashboardServices.service('SubmissionService', function($log, $http,
     AuthenticationService, appConfig) {
 
@@ -249,14 +248,12 @@ dashboardServices.service('SubmissionService', function($log, $http,
     var submissionService = {};
 
     submissionService.getSubmissions = function(successCallback, errorCallback) {
-
         var headerCredentials = AuthenticationService.getHeaderCredentials();
 
         $http.get(resourceUrl, {
                 headers: headerCredentials
             })
-            .success(successCallback).error(errorCallback);
-
+            .then(successCallback, errorCallback);
     };
 
     submissionService.postSubmission = function(dataForm, successCallback, errorCalback) {
@@ -275,10 +272,7 @@ dashboardServices.service('SubmissionService', function($log, $http,
         var dataInfo = $.param(dataForm);
         $http
             .post(resourceUrl, dataInfo)
-            .success(submissionSuccessHandler)
-            .error(submissionErrorHandler);
-
-
+            .then(submissionSuccessHandler, submissionErrorHandler);
     };
 
     return submissionService;
@@ -287,9 +281,8 @@ dashboardServices.service('SubmissionService', function($log, $http,
 
 
 dashboardServices.service('RegionService', function($log, $http, AuthenticationService, appConfig) {
-
-    var resourceUrl = appConfig.urlSapsService + appConfig.regionPath;
     var resourceDetailsUrl = appConfig.urlSapsService + appConfig.regionDetailsPath;
+    var resourceSubmitSearch = appConfig.urlSapsService + appConfig.imagesProcessedSearch;
     var regionService = {};
 
     regionService.getRegions = function(successCallback, errorCalback) {
@@ -322,49 +315,32 @@ dashboardServices.service('RegionService', function($log, $http, AuthenticationS
                     successCallback(myObj);
                 }
             } else {
-                errorCalback("Failed to load region json.");
+                errorCalback(this);
             }
         };
         xmlhttp.open("GET", "regions/regions.json", true);
         xmlhttp.send();
-        // var headerCredentials = AuthenticationService.getHeaderCredentials();
-
-        // $http.get(
-        //     resourceUrl,
-        //     {
-        //         headers: headerCredentials
-        //     }
-        // ).success(successCallback).error(errorCalback);
-
     };
 
-    regionService.getRegionsDetails = function(regionsToLoad, successCallback, errorCalback) {
-        console.log(JSON.stringify(regionsToLoad))
+    regionService.getRegionsDetails = function(successCallback, errorCallback) {
         var headerCredentials = AuthenticationService.getHeaderCredentials();
-        var visibleRegionsNames = regionsToLoad.join(",");
         var config = {
             url: resourceDetailsUrl,
-            method: "GET",
-            headers: headerCredentials,
-            params: {
-                regionsNames: visibleRegionsNames
-            }
-        }
-
-        $http(config)
-            .success(successCallback).error(errorCalback);
-
-    };
-
-    regionService.getImagesProcessedByRegion = function(successCallback, errorCallback) {
-        var headerCredentials = AuthenticationService.getHeaderCredentials();
-        var config = {
-            url: appConfig.urlSapsService + appConfig.imagesProcessedByRegionPath,
             method: "GET",
             headers: headerCredentials
         }
 
-        $http(config).success(successCallback).error(errorCallback);
+        $http(config).then(successCallback, errorCallback);
+    };
+    
+    regionService.postSearch = function(data, successCallback, errorCallback) {
+        var headerCredentials = AuthenticationService.getHeaderCredentials();
+        data.userEmail = headerCredentials.userEmail;
+        data.userPass = headerCredentials.userPass;
+        var dataInfo = $.param(data);
+        $http
+            .post(resourceSubmitSearch, dataInfo)
+            .then(successCallback, errorCallback);
     };
 
     return regionService;
@@ -383,8 +359,7 @@ dashboardServices.service('EmailService', function($log, $http, AuthenticationSe
         $http.post(resourceUrl, data, {
                 headers: headerCredentials
             })
-            .success(successCallback).error(errorCalback);
-
+            .then(successCallback, errorCalback);
     };
 
     return emailService;

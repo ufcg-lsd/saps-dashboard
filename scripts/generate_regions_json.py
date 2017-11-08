@@ -66,8 +66,8 @@ if __name__ == "__main__":
             else:
                 json.write("    },\n")
             json.write("    {\n")
-            json.write("        \"regionId\": \"" + split_vals[0] + "_" + split_vals[1] + "\",\n")
-            json.write("        \"regionName\": \"" + split_vals[0] + "_" + split_vals[1] + "\",\n")
+            json.write("        \"regionId\": \"" + format(int(split_vals[0]), '03') + format(int(split_vals[1]), '03') + "\",\n")
+            json.write("        \"regionName\": \"" + format(int(split_vals[0]), '03') + format(int(split_vals[1]), '03') + "\",\n")
             json.write("        \"coordinates\": [\n")
             json.write("            [" + split_vals[5]+","+split_vals[4]+"],\n")
             json.write("            [" + split_vals[7]+","+split_vals[6]+"],\n")
