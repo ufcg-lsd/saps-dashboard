@@ -2,7 +2,9 @@ var dashboardControllers = angular.module('dashboardControllers');
 
 dashboardControllers.controller('RegionController', function($scope, $rootScope,
     $log, $filter, $http, $timeout, AuthenticationService, RegionService, EmailService,
-    GlobalMsgService, appConfig) {
+    GlobalMsgService, NgTableParams, appConfig) {
+
+    
 
     // Script options
     $scope.inputGatheringOptions = [
@@ -29,6 +31,8 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
         
     // Filters for region search
     $scope.searchedRegions = [];
+
+    $scope.tableSearchedRegions = undefined;
 
     //-------- BEGIN- Methods for action on MAP --------//
 
@@ -104,7 +108,7 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
                     loadedregions = regions;
                 }
                 var failedCallback = function(error) {
-                    console.log(error);
+                    console.log("Failed to load region details " + JSON.stringify(error));
                 }
                 RegionService.getRegionsDetails(succeededCallback, failedCallback);
             },
@@ -159,8 +163,8 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
                 GlobalMsgService.globalSuccessModalMsg("Coordinates are not numbers");
                 return;
             }
-            data.lowerLeft = [parseFloat($scope.searchFilters.lowerLeftCoord.lat), parseFloat($scope.searchFilters.lowerLeftCoord.long)];
-            data.upperRight = [parseFloat($scope.searchFilters.upperRightCoord.lat), parseFloat($scope.searchFilters.upperRightCoord.long)];
+            data.lowerLeft = [parseFloat($scope.searchFilters.lowerLeftCoord.lat)+0.5, parseFloat($scope.searchFilters.lowerLeftCoord.long)+0.5];
+            data.upperRight = [parseFloat($scope.searchFilters.upperRightCoord.lat)-0.5, parseFloat($scope.searchFilters.upperRightCoord.long)-0.5];
         }
         if ($scope.searchFilters.initialDate === undefined) {
             // TODO move message to language content
@@ -189,10 +193,19 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
         RegionService.postSearch(data,
             function(response) {
                 $scope.openCloseModal('loadingModal', false);
-                $scope.searchedRegions = response.result;
-                console.log($scope.searchedRegions);
-                // TODO move message to language content
-                GlobalMsgService.globalSuccessModalMsg("Results will be sent to your email in a few moments.");
+                $scope.searchedRegions = response.data.result;
+                $scope.searchedRegions.forEach(
+                    function(data) {
+                        data.checked = false;
+                    }
+                );
+                $scope.tableSearchedRegions = new NgTableParams(
+                    {
+                        group: "region"
+                    }, {
+                        dataset: $scope.searchedRegions
+                    }
+                );
             },
             function(error) {
                 $log.error(JSON.stringify(error));
@@ -208,7 +221,6 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
     };
 
     $scope.cleanSearch = function() {
-        console.log("clean search");
         $scope.searchFilters = {
             lowerLeftCoord: {
                 lat: undefined,
@@ -225,5 +237,93 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
             algorithmExecution: $scope.algorithmExecutionOptions[0]
         };
     };
+
+    $scope.allChecked = function() {
+        var res = false;
+        if (arguments.length > 0) {
+            var region = arguments[0];
+            res = $scope.searchedRegions.every(
+                function(data) {
+                    if (data.region != region) {
+                        return true;
+                    } else {
+                        return data.checked === true;
+                    }
+                }
+            );
+        } else {
+            res = $scope.searchedRegions.every(
+                function(data) {
+                    return data.checked === true;
+                }
+            );
+        }
+        return res;
+    };
+
+    $scope.someChecked = function() {
+        var res = false;
+        if (arguments.length > 0) {
+            var region = arguments[0];
+            res = $scope.searchedRegions.some(
+                function(data) {
+                    if (data.region != region) {
+                        return true;
+                    } else {
+                        return data.checked === true;
+                    }
+                }
+            );
+            res = res && !$scope.allChecked(region);
+        } else {
+            res = $scope.searchedRegions.some(
+                function(data) {
+                    return data.checked === true;
+                }
+            );
+            res = res && !$scope.allChecked();
+        }
+        return res;
+    };
+
+    $scope.toggleChecked = function() {
+        var region = undefined;
+        if (arguments.length > 0) {
+            region = arguments[0];
+        }
+        if (region === undefined) {
+            if ($scope.allChecked()) {
+                $scope.searchedRegions.forEach(
+                    function(data) {
+                        data.checked = false;
+                    }
+                )
+            } else {
+                $scope.searchedRegions.forEach(
+                    function(data) {
+                        data.checked = true;
+                    }
+                )
+            }
+        } else {
+            if ($scope.allChecked(region)) {
+                $scope.searchedRegions.forEach(
+                    function(data) {
+                        if (data.region == region) {
+                            data.checked = false;
+                        }
+                    }
+                )
+            } else {
+                $scope.searchedRegions.forEach(
+                    function(data) {
+                        if (data.region == region) {
+                            data.checked = true;
+                        }
+                    }
+                )
+            }
+        }
+    }
 
 });

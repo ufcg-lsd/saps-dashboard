@@ -479,3 +479,12 @@ div.div-table-row:hover, div.div-table-row:hover .main-column{
 .dropdown-menu li:hover{
 	background-color: rgba(10,10,10,0.2)
 }
+.sb-region-table-group{
+	background-color: #96e6c6;
+}
+.sb-region-detail-table {
+	margin: auto;
+	width: 100%;
+	max-height: 600px;
+	overflow-y: scroll;
+  }
