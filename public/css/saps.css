@@ -488,3 +488,9 @@ div.div-table-row:hover, div.div-table-row:hover .main-column{
 	max-height: 600px;
 	overflow-y: scroll;
   }
+  .sb-region-detail-row {
+	  height: 30px;
+  }
+  .sb-region-detail-row td{
+	  height: 30px;
+  }

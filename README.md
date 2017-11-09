@@ -36,7 +36,7 @@ Json Returned:
 regionDetail: {
 	"regionName":"",
 	"totalImages":100,
-	"processedImages":[processedImageObject]
+	"processedImages":count
 }
 
 processedImageObject:{

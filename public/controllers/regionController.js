@@ -80,13 +80,11 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
     function setProcessedCount(regions, imagesProcessedByRegion) {
         imagesProcessedByRegion.forEach(function(processingsCount, index) {
             var count = parseInt(processingsCount.count);
-            var path = parseInt(processingsCount.region.slice(0, 3));
-            var row = parseInt(processingsCount.region.slice(3));
-            var regionName = path + "_" + row;
+            var regionName = processingsCount.region;
 
             regions.forEach(function(region, index) {
                 if (regionName === region.regionName) {
-                    region.regionDetail.processedImages.length = count;
+                    region.regionDetail.processedImages = count;
                 }
             });
         });
@@ -95,12 +93,12 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
     function loadRegions() {
         RegionService.getRegions(
             function(regions) {
-                var succeededCallback = function(response1) {
-                    var imagesProcessedByRegion = response1.data;
+                var succeededCallback = function(response) {
+                    var imagesProcessedByRegion = response.data;
                     setProcessedCount(regions, imagesProcessedByRegion);
                     sapsMap.generateGrid(regions);
                     regions.forEach(function(region, index) {
-                        if (region.regionDetail && region.regionDetail.processedImages) {
+                        if (region.regionDetail) {
                             processRegionHeatmap(region);
                             sapsMap.updateRegionMapColor(region.regionDetail);
                         }
@@ -128,9 +126,9 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
 
             var item = $rootScope.heatMap.colours[index];
 
-            if ((item.minValue == undefined && region.regionDetail.processedImages.length <= item.maxValue) ||
-                (item.maxValue == undefined && region.regionDetail.processedImages.length >= item.minValue) ||
-                (region.regionDetail.processedImages.length >= item.minValue && region.regionDetail.processedImages.length <= item.maxValue)) {
+            if ((item.minValue == undefined && region.regionDetail.processedImages <= item.maxValue) ||
+                (item.maxValue == undefined && region.regionDetail.processedImages >= item.minValue) ||
+                (region.regionDetail.processedImages >= item.minValue && region.regionDetail.processedImages <= item.maxValue)) {
 
                 region.regionDetail.color = [item.r, item.g, item.b, transparency];
                 region.regionDetail.cssColor = "rgb(" + item.r + "," + item.g + "," + item.b + ")";
@@ -324,6 +322,32 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
                 )
             }
         }
+    }
+
+    $scope.sendEmail = function() {
+        var request = {
+            images_id: []
+        };
+        $scope.searchedRegions.forEach(
+            function(data) {
+                if (data.checked === true) {
+                    request.images_id.push(data.taskId);
+                }
+            }
+        );
+        var suc = function(response) {
+            // TODO move message to language content
+            GlobalMsgService.globalSuccessModalMsg("Email sent. Should arrive in a few minutes.");
+        }
+        var err = function(error) {
+            $log.error(JSON.stringify(error));
+            if (error.code == 401) {
+                GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.unauthorizedNewSubmission);
+            } else {
+                GlobalMsgService.globalSuccessModalMsg(error.data.description);
+            }
+        }
+        RegionService.sendEmail(request, suc, err);
     }
 
 });

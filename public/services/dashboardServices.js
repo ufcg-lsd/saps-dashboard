@@ -283,6 +283,7 @@ dashboardServices.service('SubmissionService', function($log, $http,
 dashboardServices.service('RegionService', function($log, $http, AuthenticationService, appConfig) {
     var resourceDetailsUrl = appConfig.urlSapsService + appConfig.regionDetailsPath;
     var resourceSubmitSearch = appConfig.urlSapsService + appConfig.imagesProcessedSearch;
+    var resourceEmail = appConfig.urlSapsService + appConfig.emailPath;
     var regionService = {};
 
     regionService.getRegions = function(successCallback, errorCalback) {
@@ -295,7 +296,7 @@ dashboardServices.service('RegionService', function($log, $http, AuthenticationS
                     myObj.forEach(function(region, index) {
                         region.regionDetail = {
                             regionName: region.regionName,
-                            processedImages: [],
+                            processedImages: 0,
                             totalImgBySatelitte: [
                                 {
                                     name: "L4",
@@ -342,6 +343,16 @@ dashboardServices.service('RegionService', function($log, $http, AuthenticationS
             .post(resourceSubmitSearch, dataInfo)
             .then(successCallback, errorCallback);
     };
+
+    regionService.sendEmail = function(data, successCallback, errorCallback) {
+        var headerCredentials = AuthenticationService.getHeaderCredentials();
+        data.userEmail = headerCredentials.userEmail;
+        data.userPass = headerCredentials.userPass;
+        var dataInfo = $.param(data);
+        $http
+            .post(resourceEmail, dataInfo)
+            .then(successCallback, errorCallback);
+    }
 
     return regionService;
 });

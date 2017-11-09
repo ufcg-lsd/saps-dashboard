@@ -397,7 +397,6 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
     $timeout, AuthenticationService, SubmissionService, GlobalMsgService, appConfig) {
 
     $scope.modalMsgError = undefined;
-    // $scope.satelliteOpts = appConfig.SATELLITE_OPTS;
 
     $scope.newSubmission = {
         lowerLeftCoord: {

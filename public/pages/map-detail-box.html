@@ -1,5 +1,5 @@
 <div id="region-details-box" ng-show="searchedRegions.length">
-	<div class="sb-map-feature-label">
+	<div class="sb-map-feature-label" ng-click="switchVisibility('sb-map-feature-details');">
 		<!-- <img src="/images/menu/contact.png"/> -->
 		<span class="glyphicon glyphicon-play" aria-hidden="true"></span> {{languageContent.mapFeature.regionDetailBox.title}}
 	</div>
@@ -35,7 +35,7 @@
 						<md-checkbox aria-label="Select All" ng-checked="allChecked()" md-indeterminate="someChecked()" ng-click="toggleChecked()"></md-checkbox>
 					</th>
 					<th>
-						Name
+						Date
 					</th>
 					<th>
 						Input Gathering
@@ -57,7 +57,7 @@
 						</a>
 					</td>
 				</tr>
-				<tr ng-hide="group.$hideRows" ng-repeat="image in group.data" ng-repeat-end>
+				<tr ng-hide="group.$hideRows" ng-repeat="image in group.data" ng-repeat-end class="sb-region-detail-row">
 					<td sortable="'region'" data-title="'Region'" groupable="'region'" ng-if="false">
 						{{image.region}}
 					</td>
@@ -65,7 +65,7 @@
 						<md-checkbox aria-label="Check" ng-model="image.checked"></md-checkbox>
 					</td>
 					<td>
-						{{image.collectionTierName}}
+						{{image.imageDate}}
 					</td>
 					<td>
 						{{image.inputGatheringTag}}
