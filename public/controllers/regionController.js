@@ -192,6 +192,11 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
             function(response) {
                 $scope.openCloseModal('loadingModal', false);
                 $scope.searchedRegions = response.data.result;
+                if ($scope.searchedRegions.length == 0) {
+                    // TODO move message to language content
+                    GlobalMsgService.globalSuccessModalMsg("There were no results for this search.");
+                    return;
+                }
                 $scope.searchedRegions.forEach(
                     function(data) {
                         data.checked = false;
@@ -338,6 +343,7 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
         var suc = function(response) {
             // TODO move message to language content
             GlobalMsgService.globalSuccessModalMsg("Email sent. Should arrive in a few minutes.");
+            console.log(response.data);
         }
         var err = function(error) {
             $log.error(JSON.stringify(error));
