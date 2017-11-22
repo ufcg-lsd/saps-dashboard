@@ -189,10 +189,9 @@ function initiateMap(elementId) {
     ];
     var mapView = new ol.View({
         center: [-46000000, -1300000],
-        extent: [-46000000, -1300000, -46000000, -1300000],
         zoom: 6,
         maxZoom: 6,
-        minZoom: 6,
+        minZoom: 4,
         zoomFactor: 2
     })
 

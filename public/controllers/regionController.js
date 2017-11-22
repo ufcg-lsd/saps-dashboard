@@ -82,7 +82,7 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
             var count = parseInt(processingsCount.count);
             var regionName = processingsCount.region;
 
-            regions.forEach(function(region, index) {
+            regions.forEach(function(region) {
                 if (regionName === region.regionName) {
                     region.regionDetail.processedImages = count;
                 }
@@ -112,7 +112,7 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
             },
             function(error) {
                 if (error.status != 200 && error.status != 0) {
-                    console.log('Error while trying to ge regions: ');
+                    console.log('Error while trying to get regions: ');
                     console.log(error);
                 }
             }
