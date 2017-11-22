@@ -95,14 +95,14 @@ div.div-table-row:hover, div.div-table-row:hover .main-column{
 }
 /*Z-INDEX LEVEL 2*/
 .modal{
-	z-index: 9995 !important;
+	z-index: 95 !important;
 }
 .modal-backdrop{
-	z-index: 9990 !important;
+	z-index: 90 !important;
 }
 /*Z-INDEX LEVEL 3*/
 .sb-header,.logo-nav-bar{
-	z-index: 9000;
+	z-index: 10;
 }
 /*Z-INDEX LEVEL 5*/
 .sb-map-features,.sb-map-controls,.sb-heat-map-legends{

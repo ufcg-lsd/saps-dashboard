@@ -61,6 +61,7 @@
                         preProcessingScript: "Pre-processing script",
                         processingScript: "Processing script",
                         satellite: "Satellites",
+                        loadSearch: "Processing search..."
                     },
                     button: {
                         clear: "Clear search",
@@ -83,7 +84,7 @@
                         sapsTag: "Processing script",
                         satellite: "Satellites",
                         requiredField: "Required Field",
-                        loadSubmission: "Processing submission",
+                        loadSubmission: "Processing submission...",
                     },
                     button: {
                         submit: "Process",

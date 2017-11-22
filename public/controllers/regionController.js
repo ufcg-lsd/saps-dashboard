@@ -4,8 +4,6 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
     $log, $filter, $http, $timeout, AuthenticationService, RegionService, EmailService,
     GlobalMsgService, NgTableParams, appConfig) {
 
-    
-
     // Script options
     $scope.inputGatheringOptions = [
         {
@@ -186,8 +184,11 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
         data.inputPreprocessingTag = $scope.searchFilters.inputGathering.name;
         data.inputGatheringTag = $scope.searchFilters.inputPreprocessing.name;
         data.algorithmExecutionTag = $scope.searchFilters.algorithmExecution.name;
+
         $rootScope.switchVisibility('sb-map-feature-options');
+        $rootScope.loadingModalMessage = $rootScope.languageContent.mapFeature.searchBox.label.loadSearch;
         $scope.openCloseModal('loadingModal', true);
+        
         RegionService.postSearch(data,
             function(response) {
                 $scope.openCloseModal('loadingModal', false);

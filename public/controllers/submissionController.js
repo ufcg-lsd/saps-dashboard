@@ -397,27 +397,7 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
     $timeout, AuthenticationService, SubmissionService, GlobalMsgService, appConfig) {
 
     $scope.modalMsgError = undefined;
-
-    $scope.newSubmission = {
-        lowerLeftCoord: {
-            lat: -8.676947,
-            long: -37.095067
-            // lat: 0.0,
-            // long: 0.0
-        },
-        upperRightCoord: {
-            lat: -8.676947,
-            long: -37.095067
-            // lat: 0.0,
-            // long: 0.0
-        },
-        initialDate: undefined,
-        finalDate: undefined,
-        inputGathering: undefined,
-        inputPreprocessing: undefined,
-        algorithimExecution: undefined
-    }
-
+    
     // Script options
     $scope.inputGatheringOptions = [
         {
@@ -425,27 +405,18 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
             value: 'default_script'
         }
     ];
-
     $scope.inputPreprocessingOptions = [
         {
             name: 'Default',
             value: 'default_pre-script'
         }
     ];
-
-    $scope.algorithimExecutionOptions = [
+    $scope.algorithmExecutionOptions = [
         {
             name: 'Default',
             value: 'default_algorithim'
         }
     ];
-
-    $scope.selectedInputGatheringName = $scope.inputGatheringOptions[0].name;
-    $scope.selectedInputGatheringValue = $scope.inputGatheringOptions[0].value;
-    $scope.selectedInputPreprocessingName = $scope.inputPreprocessingOptions[0].name;
-    $scope.selectedInputPreprocessingValue = $scope.inputPreprocessingOptions[0].value;
-    $scope.selectedAlgorithimExecutionName = $scope.algorithimExecutionOptions[0].name;
-    $scope.selectedAlgorithimExecutionValue = $scope.algorithimExecutionOptions[0].value;
 
     $scope.$on(appConfig.MODAL_OPENED, function(event, value) {
         $scope.cleanForm();
@@ -455,7 +426,6 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
     });
 
     function msgRequiredShowHide(fieldId, show) {
-
         requiredMsg = $('#' + fieldId).find('.sb-required')
 
         if (requiredMsg) {
@@ -465,112 +435,107 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
                 requiredMsg.addClass('sb-hidden');
             }
         }
-
-    }
-
-    //Interface controls
-    $scope.changeInputGathering = function(newGatheringOpt) {
-        $scope.selectedInputGatheringName = newGatheringOpt.name;
-        $scope.selectedInputGatheringValue = newGatheringOpt.value;
-    };
-
-    $scope.changeInputPreprocessing = function(newPreprocessingOpt) {
-        $scope.selectedInputPreprocessingName = newPreprocessingOpt.name;
-        $scope.selectedInputPreprocessingValue = newPreprocessingOpt.value;
-    }
-
-    $scope.changeAlgorithimExecution = function(newAlgorithimOpt) {
-        $scope.selectedAlgorithimExecutionName = newAlgorithimOpt.name;
-        $scope.selectedAlgorithimExecutionValue = newAlgorithimOpt.value;
     }
 
     $scope.cleanForm = function() {
-
         $scope.submissionName = undefined;
-        $('#firstYear').val('');
-        $('#lastYear').val('');
-
-        $scope.selectedInputGatheringName = $scope.inputGatheringOptions[0].name;
-        $scope.selectedInputGatheringValue = $scope.inputGatheringOptions[0].value;
-        $scope.selectedInputPreprocessingName = $scope.inputPreprocessingOptions[0].name;
-        $scope.selectedInputPreprocessingValue = $scope.inputPreprocessingOptions[0].value;
-        $scope.selectedAlgorithimExecutionName = $scope.algorithimExecutionOptions[0].name;
-        $scope.selectedAlgorithimExecutionValue = $scope.algorithimExecutionOptions[0].value;
-
+        
+        $scope.newSubmission = {
+            lowerLeftCoord: {
+                lat: -8.676947,
+                long: -37.095067
+                // lat: 0.0,
+                // long: 0.0
+            },
+            upperRightCoord: {
+                lat: -8.676947,
+                long: -37.095067
+                // lat: 0.0,
+                // long: 0.0
+            },
+            initialDate: undefined,
+            finalDate: undefined,
+            inputGathering: $scope.inputGatheringOptions[0],
+            inputPreprocessing: $scope.inputPreprocessingOptions[0],
+            algorithmExecution: $scope.algorithmExecutionOptions[0]
+        }
         //Clean error msgs
         $scope.modalMsgError = undefined;
-        msgRequiredShowHide('firstYearField', false);
-        msgRequiredShowHide('lastYearField', false);
-
     }
 
-
     $scope.processNewSubmission = function() {
+        var data = {};
+
         hasError = false;
         $scope.modalMsgError = undefined;
 
-        if (!$rootScope.validateDate($('#subformFirstYear').val())) {
-            hasError = true
-            msgRequiredShowHide('firstYearField', true);
+        if (
+            $scope.newSubmission.lowerLeftCoord.lat === undefined ||
+            $scope.newSubmission.lowerLeftCoord.long === undefined ||
+            $scope.newSubmission.upperRightCoord.lat === undefined ||
+            $scope.newSubmission.upperRightCoord.long === undefined
+            ) {
+            // TODO move message to language content
+            GlobalMsgService.globalSuccessModalMsg("Coordinates are required");
+            return;
         } else {
-            $scope.newSubmission.initialDate = $rootScope.parseDate($('#subformFirstYear').val())
-            msgRequiredShowHide('firstYearField', false);
+            if (
+                isNaN($scope.newSubmission.lowerLeftCoord.lat) ||
+                isNaN($scope.newSubmission.lowerLeftCoord.long) ||
+                isNaN($scope.newSubmission.upperRightCoord.lat) ||
+                isNaN($scope.newSubmission.upperRightCoord.long)
+            ) {
+                // TODO move message to language content
+                GlobalMsgService.globalSuccessModalMsg("Coordinates are not numbers");
+                return;
+            }
+            data.lowerLeft = [parseFloat($scope.newSubmission.lowerLeftCoord.lat)+0.5, parseFloat($scope.newSubmission.lowerLeftCoord.long)+0.5];
+            data.upperRight = [parseFloat($scope.newSubmission.upperRightCoord.lat)-0.5, parseFloat($scope.newSubmission.upperRightCoord.long)-0.5];
         }
 
-        if (!$rootScope.validateDate($('#subformLastYear').val())) {
-            hasError = true
-            msgRequiredShowHide('lastYearField', true);
+        if ($scope.newSubmission.initialDate === undefined) {
+            // TODO move message to language content
+            GlobalMsgService.globalSuccessModalMsg("Initial date is required");
+            return;
         } else {
-            $scope.newSubmission.finalDate = $rootScope.parseDate($('#subformLastYear').val())
-            msgRequiredShowHide('lastYearField', false);
+            data.initialDate = $scope.newSubmission.initialDate.toISOString().slice(0,11);
         }
-
+        if ($scope.newSubmission.finalDate === undefined) {
+            // TODO move message to language content
+            GlobalMsgService.globalSuccessModalMsg("Final date is required");
+            return;
+        } else {
+            data.finalDate = $scope.newSubmission.finalDate.toISOString().slice(0,11);
+        }
         if ($scope.newSubmission.initialDate > $scope.newSubmission.finalDate) {
-            console.log("Last year date must be greater than first year date")
-            $scope.modalMsgError = "Last year date must be greater than first year date";
-            hasError = true
+            // TODO move message to language content
+            GlobalMsgService.globalSuccessModalMsg("Last year date must be greater than first year date");
+            return;
         }
-
-        if (hasError) {
-            return
-        }
-
-        var data = {
-            'region': $scope.newSubmission.region,
-            'initialDate': $scope.newSubmission.initialDate.toISOString().slice(0,11),
-            'finalDate': $scope.newSubmission.finalDate.toISOString().slice(0,11),
-            'inputGatheringTag': "Default",
-            'inputPreprocessingTag': "Default",
-            'algorithmExecutionTag': "Default",
-            'lowerLeft': [$scope.newSubmission.lowerLeftCoord.lat, $scope.newSubmission.lowerLeftCoord.long],
-            'upperRight': [$scope.newSubmission.upperRightCoord.lat, $scope.newSubmission.upperRightCoord.long]
-        };
+        data.inputPreprocessingTag = $scope.newSubmission.inputGathering.name;
+        data.inputGatheringTag = $scope.newSubmission.inputPreprocessing.name;
+        data.algorithmExecutionTag = $scope.newSubmission.algorithmExecution.name;
 
         console.log("Sending " + JSON.stringify(data));
-
         $scope.openCloseModal('submissionsModal', false);
+        $rootScope.loadingModalMessage = $rootScope.languageContent.mapFeature.submissionBox.label.loadSubmission;
         $scope.openCloseModal('loadingModal', true);
 
         SubmissionService.postSubmission(data,
             function() {
                 // GlobalMsgService.pushMessageSuccess('Your job was submitted. Wait for the processing be completed. ' 
                 //       + 'If you activated the notifications you will get an email when finished.');
-
                 $scope.openCloseModal('loadingModal', false);
-
                 GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.successNewSubmission);
             },
             function(error) {
                 $log.error(JSON.stringify(error));
-
                 $scope.openCloseModal('loadingModal', false);
                 if (error.code == 401) {
                     GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.unauthorizedNewSubmission);
                 } else {
                     GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.failedNewSubmission);
                 }
-                //$scope.cleanForm();
-
             });
     };
 
