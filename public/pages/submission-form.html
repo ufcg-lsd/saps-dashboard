@@ -1,18 +1,18 @@
 <form ng-controller="NewSubmissionsController">
   <div style="font-weight: bold; font-size: 1.2em;  ">{{languageContent.mapFeature.submissionBox.label.region}}</div>
   <br>
-  <div style="font-weight: bold; font-size: 1em;" class="sb-col-lg-9">Lower Left</div>
-  <br>
-  <input type="number" class="saps-input saps-input input-small sb-width-49" ng-model="newSubmission.lowerLeftCoord.lat" required
-    placeholder="Latitude">
-  <input type="number" class="saps-input saps-input input-small sb-width-49" ng-model="newSubmission.lowerLeftCoord.long" required
-    placeholder="Longitude">
   <div style="font-weight: bold; font-size: 1em;" class="sb-col-lg-9">Upper Right</div>
   <br>
   <input type="number" class="saps-input saps-input input-small sb-width-49" ng-model="newSubmission.upperRightCoord.lat" required
     placeholder="Latitude">
   <input type="number" class="saps-input saps-input input-small sb-width-49" ng-model="newSubmission.upperRightCoord.long"
     required placeholder="Longitude">
+  <div style="font-weight: bold; font-size: 1em;" class="sb-col-lg-9">Lower Left</div>
+  <br>
+  <input type="number" class="saps-input saps-input input-small sb-width-49" ng-model="newSubmission.lowerLeftCoord.lat" required
+    placeholder="Latitude">
+  <input type="number" class="saps-input saps-input input-small sb-width-49" ng-model="newSubmission.lowerLeftCoord.long" required
+    placeholder="Longitude">
 
   <div class="sb-required sb-hidden">{{languageContent.mapFeature.submissionBox.label.requiredField}}</div>
   <!--   <span class="glyphicon glyphicon-plus-sign sb-tooltip" aria-hidden="true" style="font-size: 1.5em">

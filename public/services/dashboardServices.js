@@ -271,7 +271,7 @@ dashboardServices.service('SubmissionService', function($log, $http,
         dataForm.userPass = headerCredentials.userPass;
         var dataInfo = $.param(dataForm);
         $http
-            .post(resourceUrl, dataInfo)
+            .post(resourceUrl, dataInfo, {timeout: 86400000})
             .then(submissionSuccessHandler, submissionErrorHandler);
     };
 
