@@ -241,7 +241,7 @@ dashboardServices.service('Session', function() {
     };
 });
 
-dashboardServices.service('SubmissionService', function($log, $http,
+dashboardServices.service('SubmissionService', function($log, $http, 
     AuthenticationService, appConfig) {
 
     var resourceUrl = appConfig.urlSapsService + appConfig.submissionPath;
@@ -261,7 +261,7 @@ dashboardServices.service('SubmissionService', function($log, $http,
 
         var submissionSuccessHandler = function(response) {
             //console.log("Return: "+JSON.stringify(response));
-            successCallback(response)
+            successCallback(response);
         };
         var submissionErrorHandler = function(error) {
             console.log("Error on submission: " + JSON.stringify(error));

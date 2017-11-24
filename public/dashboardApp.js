@@ -169,7 +169,6 @@ app.run(function($rootScope) {
             "b": 38
         }, ]
     }
-
 });
 
 app.config(function($logProvider) {
