@@ -102,11 +102,11 @@ div.div-table-row:hover, div.div-table-row:hover .main-column{
 }
 /*Z-INDEX LEVEL 3*/
 .sb-header,.logo-nav-bar{
-	z-index: 10;
+	z-index: 9999;
 }
 /*Z-INDEX LEVEL 5*/
 .sb-map-features,.sb-map-controls,.sb-heat-map-legends{
-	z-index: 80;
+	z-index: 40;
 }
 .sb-head-panel-bar{
 	padding: 10px 10px 10px 10px;
@@ -189,30 +189,36 @@ div.div-table-row:hover, div.div-table-row:hover .main-column{
 	border: 1px solid rgba(70,95,85,0.2);
 	display: none;
 	position: relative;
+	z-index: 9999 !important;
 }
 
 .sb-dropdown-group{
 	border-style: solid; 
 	border-width: 1px 0px 1px 0px;
 	border-color: rgba(0,10,5,0.3);
+	z-index: 9999 !important;
 }
 .sb-dropdown-group .sb-dropdown-group-title{
 	font-size: 0.9em;
 	color: rgb(80, 80, 80);
 	text-align: right;
+	z-index: 9999 !important;
 }
 .sb-dropdown-menu .sb-dropdown-item{
 	padding: 10px 0px 10px 0px;
 	color: rgb(100, 100, 100);
+	z-index: 9999 !important;
 }
 .sb-dropdown-menu .sb-dropdown-option{
 	cursor: pointer;
 	padding: 10px 0px 10px 0px;
 	color: rgb(100, 100, 100);
+	z-index: 9999 !important;
 }
 .sb-dropdown-menu .sb-dropdown-option:hover {
 	color: rgb(30, 30, 30);
 	background: rgba(110, 155, 125,0.5);
+	z-index: 9999 !important;
 	background: 
 		-webkit-linear-gradient(left,
 			rgba(190, 200, 200,0),

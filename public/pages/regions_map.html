@@ -17,34 +17,51 @@
 		<div align="right">
 			<table>
 				<tr ng-repeat="heatLabel in heatMap.colours">
-					<td ng-show="heatLabel.minValue == undefined" 
-						style="padding-right: 10px" align="right">
-					{{heatLabel.maxValue}}
+					<td ng-show="heatLabel.minValue == undefined" style="padding-right: 10px" align="right">
+						{{heatLabel.maxValue}}
 					</td>
-					<td ng-show="heatLabel.minValue && heatLabel.maxValue"
-						style="padding-right: 10px" align="right">
-					{{heatLabel.minValue}} {{languageContent.heatMap.infoTo}} {{heatLabel.maxValue}}
+					<td ng-show="heatLabel.minValue && heatLabel.maxValue" style="padding-right: 10px" align="right">
+						{{heatLabel.minValue}} {{languageContent.heatMap.infoTo}} {{heatLabel.maxValue}}
 					</td>
-					<td ng-show="heatLabel.maxValue == undefined"
-						style="padding-right: 10px" align="right">
-					{{heatLabel.minValue}}+
+					<td ng-show="heatLabel.maxValue == undefined" style="padding-right: 10px" align="right">
+						{{heatLabel.minValue}}+
 					</td>
 					<td>
-						<span class="glyphicon glyphicon-stop" 
-							style="font-size: 1.5em; color: rgb({{heatLabel.r}},{{heatLabel.g}},{{heatLabel.b}})" aria-hidden="true">
+						<span class="glyphicon glyphicon-stop" style="font-size: 1.5em; color: rgb({{heatLabel.r}},{{heatLabel.g}},{{heatLabel.b}})"
+						 aria-hidden="true">
 						</span>
 					</td>
 				</tr>
 			</table>
 		</div>
-		
+
 	</div>
-	<div id="map-controls" class="sb-map-controls" hidden>
-		<span class="glyphicon glyphicon-plus-sign zoom-control" ng-click="zoomIn()"
-				aria-hidden="true"></span>
-		<br>
-		<span class="glyphicon glyphicon-minus-sign zoom-control" ng-click="zoomOut()"
-				aria-hidden="true"></span>
+	<div id="map-controls" class="sb-map-controls">
+		<table>
+			<tr>
+				<td></td>
+				<td>
+					<span class="glyphicon glyphicon-circle-arrow-up zoom-control" ng-click="moveNorth()" aria-hidden="true"></span>
+				</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>
+					<span class="glyphicon glyphicon-circle-arrow-left zoom-control" ng-click="moveWest()" aria-hidden="true"></span>
+				</td>
+				<td></td>
+				<td>
+					<span class="glyphicon glyphicon-circle-arrow-right zoom-control" ng-click="moveEast()" aria-hidden="true"></span>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>
+					<span class="glyphicon glyphicon-circle-arrow-down zoom-control" ng-click="moveSouth()" aria-hidden="true"></span>
+				</td>
+				<td></td>
+			</tr>
+		</table>
 	</div>
 	<div id="map" class="map regions-map text-center"></div>
 </div>
