@@ -475,7 +475,7 @@ function initiateMap(elementId) {
             this.applySelectionStyle(polygon);
         }
         if (eventHandlers.regionSelect !== undefined) {
-            eventHandlers.regionSelect(polygon.get('latLon'));
+            eventHandlers.regionSelect(polygon.get('lngLat'));
         }
     });
     // a DragBox interaction used to select features by drawing boxes

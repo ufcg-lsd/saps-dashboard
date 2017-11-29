@@ -73,8 +73,8 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
     var sapsMap = initiateMap("map");
 
     //Handle for action of selecting an specific region on map
-    function selectRegionOnMap(regionLatLon) {
-        if (regionLatLon === undefined) {
+    function selectRegionOnMap(regionLngLat) {
+        if (regionLngLat === undefined) {
             $scope.$apply(function() {
                 if (! $('#sb-map-feature-options').hasClass("sb-hidden")) {
                     $('#sb-map-feature-options').addClass("sb-hidden");
@@ -86,10 +86,10 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
                     $('#sb-map-feature-options').removeClass("sb-hidden");
                 }
                 $scope.cleanSearch();
-                $scope.searchFilters.lowerLeftCoord.lat = regionLatLon[3][1];
-                $scope.searchFilters.lowerLeftCoord.long = regionLatLon[3][0];
-                $scope.searchFilters.upperRightCoord.lat = regionLatLon[1][1];
-                $scope.searchFilters.upperRightCoord.long = regionLatLon[1][0];
+                $scope.searchFilters.lowerLeftCoord.lat = regionLngLat[3][1];
+                $scope.searchFilters.lowerLeftCoord.long = regionLngLat[3][0];
+                $scope.searchFilters.upperRightCoord.lat = regionLngLat[1][1];
+                $scope.searchFilters.upperRightCoord.long = regionLngLat[1][0];
             });
         }
     };
