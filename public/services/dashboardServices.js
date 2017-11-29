@@ -286,7 +286,7 @@ dashboardServices.service('RegionService', function($log, $http, AuthenticationS
     var resourceEmail = appConfig.urlSapsService + appConfig.emailPath;
     var regionService = {};
 
-    regionService.getRegions = function(successCallback, errorCalback) {
+    regionService.getRegions = function(north, east, successCallback, errorCalback) {
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function() {
             if (this.status == 200) {
@@ -319,7 +319,7 @@ dashboardServices.service('RegionService', function($log, $http, AuthenticationS
                 errorCalback(this);
             }
         };
-        xmlhttp.open("GET", "regions/regions.json", true);
+        xmlhttp.open("GET", "regions/regions" +  east + north + ".json", true);
         xmlhttp.send();
     };
 

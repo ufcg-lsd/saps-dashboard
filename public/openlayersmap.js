@@ -181,17 +181,13 @@ function initiateMap(elementId) {
         new ol.layer.Tile({
             name: "tile",
             source: osmSource
-        })// ,  
-        // new ol.layer.Vector({
-        //     name: "vector",
-        //     source: vectorSource
-        // })
+        })
     ];
     var mapView = new ol.View({
         center: [-46000000, -1300000],
-        zoom: 6,
-        maxZoom: 6,
-        minZoom: 4,
+        zoom: 5,
+        maxZoom: 5,
+        minZoom: 5,
         zoomFactor: 2
     })
 
@@ -201,7 +197,7 @@ function initiateMap(elementId) {
         controls: [],
         view: mapView,
         interactions: ol.interaction.defaults({
-            dragPan: true
+            dragPan: false
         })
     });
 
@@ -216,12 +212,22 @@ function initiateMap(elementId) {
         if (regions) {
             // console.log("regions: "+JSON.stringify(regions));
             regions.forEach(function(item, index) {
-                var latLon = [
+                var lngLat = [
                     [item.coordinates[0][0], item.coordinates[0][1]],
                     [item.coordinates[1][0], item.coordinates[1][1]],
                     [item.coordinates[2][0], item.coordinates[2][1]],
                     [item.coordinates[3][0], item.coordinates[3][1]]
                 ];
+                if (Math.abs(item.coordinates[2][0] - item.coordinates[3][0]) > 20) {
+                    item.coordinates[3][0] = -360 + item.coordinates[3][0];
+                }
+                if (Math.abs(item.coordinates[0][0] - item.coordinates[1][0]) > 20) {
+                    if (item.coordinates[3][0] > 0) {
+                        item.coordinates[1][0] = 360 - item.coordinates[0][0];
+                    } else {
+                        item.coordinates[0][0] = -360 + item.coordinates[0][0];
+                    }
+                }
                 item.coordinates[0] = ol.proj.fromLonLat(item.coordinates[0]);
                 item.coordinates[1] = ol.proj.fromLonLat(item.coordinates[1]);
                 item.coordinates[2] = ol.proj.fromLonLat(item.coordinates[2]);
@@ -230,7 +236,7 @@ function initiateMap(elementId) {
                 // console.log("Region: "+JSON.stringify(item));
                 var polygonCoords = item.coordinates;
 
-                gridLayers.push(createNewRegion(item.regionName, item.regionId, polygonCoords, latLon));
+                gridLayers.push(createNewRegion(item.regionName, item.regionId, polygonCoords, lngLat));
 
                 var newSquare = SquareSelection(polygonCoords);
                 gridArray.push(newSquare)
@@ -284,7 +290,7 @@ function initiateMap(elementId) {
 
     };
 
-    function createNewRegion(regionName, regionId, polygonCoords, latLon) {
+    function createNewRegion(regionName, regionId, polygonCoords, lngLat) {
         var polygonFeature = new ol.Feature(
             new ol.geom.Polygon([polygonCoords])
         );
@@ -303,17 +309,17 @@ function initiateMap(elementId) {
         polygonFeature.setStyle(style);
         polygonFeature.set("regionName", regionName);
         polygonFeature.set("regionId", regionId);
-        polygonFeature.set("latLon", latLon);
+        polygonFeature.set("lngLat", lngLat);
 
         var newLayerVector = new ol.layer.Vector({
             regionName: regionName,
             regionId: regionId,
-            latLon: latLon,
+            lngLat: lngLat,
             coordinates: polygonCoords,
             source: new ol.source.Vector({
-                features: [polygonFeature]
-            }),
-
+                features: [polygonFeature],
+                wrapX: true
+            })
         })
         // console.log("Adding new region to grid: "+newLayerVector.get("regionName"));
         return newLayerVector;
@@ -554,6 +560,21 @@ function initiateMap(elementId) {
         },
         on: function(eventName, callbackFunction) {
             eventHandlers[eventName] = callbackFunction;
+        },
+        removeLayer: function(layer) {
+            var toRemove = undefined;
+            map.getLayers().forEach(function(item) {
+                if (item.get("name") == "gridLayer") {
+                    toRemove = item;
+                }
+            });
+            if (toRemove !== undefined) {
+                map.removeLayer(toRemove);
+            }
+        },
+        recenterMap: function(north, east, north_offset, east_offset) {
+            var view = map.getView();
+            view.animate({center: ol.proj.fromLonLat([(east - 3) * east_offset, (north - 2) * north_offset])})
         }
     }
 

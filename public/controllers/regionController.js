@@ -4,6 +4,41 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
     $log, $filter, $http, $timeout, AuthenticationService, RegionService, EmailService,
     GlobalMsgService, NgTableParams, appConfig) {
 
+    var north_offset = 15;
+    var east_offset = 45
+    var max_north = 4;
+    var max_east = 6;
+    var cur_grid = [1, 2];
+
+    $scope.moveEast = function() {
+        if (cur_grid[1] == max_east) {
+            cur_grid[1] = 0;
+        } else {
+            cur_grid[1] = cur_grid[1] + 1;
+        }
+        loadRegions();
+    };
+    $scope.moveWest = function() {
+        if (cur_grid[1] == 0) {
+            cur_grid[1] = max_east;
+        } else {
+            cur_grid[1] = cur_grid[1] - 1;
+        }
+        loadRegions();
+    };
+    $scope.moveNorth = function() {
+        if (cur_grid[0] != max_north) {
+            cur_grid[0] = cur_grid[0] + 1;
+            loadRegions();
+        }
+    };
+    $scope.moveSouth = function() {
+        if (cur_grid[0] != 0) {
+            cur_grid[0] = cur_grid[0] - 1;
+            loadRegions();
+        }
+    };
+
     // Script options
     $scope.inputGatheringOptions = [
         {
@@ -90,8 +125,11 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
 
     function loadRegions() {
         RegionService.getRegions(
+            cur_grid[0],
+            cur_grid[1],
             function(regions) {
                 var succeededCallback = function(response) {
+                    sapsMap.removeLayer("gridLayer");
                     var imagesProcessedByRegion = response.data;
                     setProcessedCount(regions, imagesProcessedByRegion);
                     sapsMap.generateGrid(regions);
@@ -102,6 +140,7 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
                         }
                     });
                     loadedregions = regions;
+                    sapsMap.recenterMap(cur_grid[0], cur_grid[1], north_offset, east_offset);
                 }
                 var failedCallback = function(error) {
                     console.log("Failed to load region details " + JSON.stringify(error));
