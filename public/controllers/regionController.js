@@ -380,6 +380,10 @@ dashboardControllers.controller('RegionController', function($scope, $rootScope,
                 }
             }
         );
+        if (request.images_id.length === 0) {
+            GlobalMsgService.globalSuccessModalMsg("No image selected. Select at least one image.");
+            return;
+        }
         var suc = function(response) {
             // TODO move message to language content
             GlobalMsgService.globalSuccessModalMsg("Email sent. Should arrive in a few minutes.");
