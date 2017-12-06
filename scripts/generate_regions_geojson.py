@@ -57,10 +57,18 @@ if __name__ == "__main__":
     for l in csv_lines:
         split_vals = l.split(",")
         # convert values to float
+        path = int(split_vals[0])
+        row = int(split_vals[1])
         center_lat = float(split_vals[2])
         center_lon = float(split_vals[3])
+        ul_lat = float(split_vals[4])
+        ul_lng = float(split_vals[5])
         ur_lat = float(split_vals[6])
+        ur_lng = float(split_vals[7])
         ll_lat = float(split_vals[8])
+        ll_lng = float(split_vals[9])
+        lr_lat = float(split_vals[10])
+        lr_lng = float(split_vals[11][0:-1])
         # removes tiles outside bounding box
         if not (right_limit < center_lat and center_lat < left_limit and top_limit < center_lon and center_lon < bottom_limit):
             continue
@@ -68,17 +76,20 @@ if __name__ == "__main__":
         if ur_lat < ll_lat:
             continue
         properties = {
-            "regionId": (format(int(split_vals[0]), '03') + format(int(split_vals[1]), '03')),
-            "regionName": (format(int(split_vals[0]), '03') + format(int(split_vals[1]), '03'))
+            "regionId": (format(path, '03') + format(row, '03')),
+            "regionName": (format(path, '03') + format(row, '03')),
+            "UR": [ur_lng, ur_lat],
+            "LL": [ll_lng, ll_lat]
         }
         geometry = {
             "type": "Polygon",
             "coordinates": [
                 [
-                    [float(split_vals[5]), float(split_vals[4])],
-                    [float(split_vals[7]), float(split_vals[6])],
-                    [float(split_vals[11][0:-1]), float(split_vals[10])],
-                    [float(split_vals[9]), float(split_vals[8])]
+                    [ul_lng, ul_lat],
+                    [ur_lng, ur_lat],
+                    [lr_lng, lr_lat],
+                    [ll_lng, ll_lat],
+                    [ul_lng, ul_lat]
                 ]
             ]
         }
@@ -93,4 +104,4 @@ if __name__ == "__main__":
         "type": "FeatureCollection",
         "features": features
     }
-    json.dump(geo_obj, geojson, indent=4)
+    json.dump(geo_obj, geojson)

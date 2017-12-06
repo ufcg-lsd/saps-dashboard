@@ -159,7 +159,12 @@ function SquareSelection(coordinates) {
     return squareSelectionApi;
 }
 
-function initiateMap(elementId) {
+function initiateMap(elementId, colors, transparency) {
+
+    var styles = {
+        colors: colors,
+        transparency: transparency
+    }
 
     var eventHandlers = {
         mapMove: undefined,
@@ -222,10 +227,10 @@ function initiateMap(elementId) {
         target: elementId,
         controls: [],
         view: new ol.View({
-            center: [-46000000, -1300000],
-            zoom: 5,
-            maxZoom: 10,
-            minZoom: 2,
+            center: [-4180799.456017701, -768009.2602094514],
+            zoom: 6,
+            maxZoom: 14,
+            minZoom: 4,
             zoomFactor: 2
         }),
         interactions: ol.interaction.defaults({
@@ -236,19 +241,38 @@ function initiateMap(elementId) {
     var gridArray = [];
 
     /** FUNCTIONS FOR GRID GENERATION **/
+    var getTileStyle = function (feature, resolution) {
+        var selectColor = [154, 154, 56, 0.2];
+
+        for (var index = 0; index < styles.colors.length; index++) {
+            var item = styles.colors[index];
+            if ((item.minValue == undefined && feature.get("processedImages") <= item.maxValue) ||
+                (item.maxValue == undefined && feature.get("processedImages") >= item.minValue) ||
+                (feature.get("processedImages") >= item.minValue && feature.get("processedImages") <= item.maxValue)) {
+                selectColor = [item.r, item.g, item.b, styles.transparency];
+                break;
+            }
+        }
+        return new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: selectColor
+            }),
+            stroke: new ol.style.Stroke({
+                width: 1,
+                color: [0, 0, 0, 1]
+            })
+        });
+    }
+
     var generateGridFunc = function (featureCollection) {
         if (featureCollection) {
-            var tileIndex = geojsonvt(featureCollection, {
-                extent: 4096,
-                debug: 1
-            });
+            var tileIndex = geojsonvt(featureCollection, { buffer: 1024 });
             var vectorSource = new ol.source.VectorTile({
                 format: new ol.format.GeoJSON(),
                 tileLoadFunction: function (tile) {
                     var format = tile.getFormat();
                     var tileCoord = tile.getTileCoord();
                     var data = tileIndex.getTile(tileCoord[0], tileCoord[1], -tileCoord[2] - 1);
-                    console.log(data)
 
                     var features = format.readFeatures(
                         JSON.stringify({
@@ -260,11 +284,12 @@ function initiateMap(elementId) {
                         tile.setProjection(tilePixels);
                     });
                 },
-                tileGrid: ol.tilegrid.createXYZ({maxZoom: 12}),
+                tileGrid: ol.tilegrid.createXYZ({ maxZoom: 14 }),
                 url: 'data:' // arbitrary url, we don't use it in the tileLoadFunction
             });
             var vectorLayer = new ol.layer.VectorTile({
-                source: vectorSource
+                source: vectorSource,
+                style: getTileStyle
             });
             map.addLayer(vectorLayer);
         } else {
@@ -272,192 +297,21 @@ function initiateMap(elementId) {
         }
     };
 
-    function createNewRegion(regionName, regionId, polygonCoords, lngLat) {
-        var polygonFeature = new ol.Feature(
-            new ol.geom.Polygon([polygonCoords])
-        );
-
-        var heatMap = new ol.style.Fill({
-            color: [255, 255, 255, 0]
-        });
-        var style = new ol.style.Style({
-            stroke: new ol.style.Stroke({
-                width: 1,
-                color: [0, 0, 0, 1]
-            }),
-            fill: heatMap
-        });
-
-        polygonFeature.setStyle(style);
-        polygonFeature.set("regionName", regionName);
-        polygonFeature.set("regionId", regionId);
-        polygonFeature.set("lngLat", lngLat);
-
-        var newLayerVector = new ol.layer.Vector({
-            regionName: regionName,
-            regionId: regionId,
-            lngLat: lngLat,
-            coordinates: polygonCoords,
-            source: new ol.source.Vector({
-                features: [polygonFeature],
-                wrapX: true
-            })
-        })
-        // console.log("Adding new region to grid: "+newLayerVector.get("regionName"));
-        return newLayerVector;
-    }
-
-    var getVisibleUnloadedRegions = function () {
-        extent = mapView.calculateExtent(map.getSize());
-        var mapSelection = SquareSelection(extent);
-
-        var visibleRegions = []
-        var gridLayerGroup = undefined;
-
-        map.getLayers().forEach(function (item, index) {
-            if (item.get("name") == "gridLayer") {
-                gridLayerGroup = item;
-            }
-
-        });
-
-        if (gridLayerGroup) {
-            gridLayerGroup.getLayers().forEach(function (item, index) {
-                var regionSelection = SquareSelection(item.get("coordinates"));
-                if (regionSelection.isInsideOf(mapSelection) ||
-                    regionSelection.intersects(mapSelection)) {
-                    console.log("Visible region found: " + item.getKeys())
-                    visibleRegions.push(item.get("regionName"))
-                }
-            })
-        }
-        //console.log("Returning "+JSON.stringify(visibleRegions));
-        return visibleRegions;
-    }
-
-    var updateRegionMapColor = function (regionDetail) {
-
-        var heatMap = new ol.style.Fill({
-            color: [255, 255, 255, 0]
-        })
-
-        if (regionDetail.color && regionDetail.color.length == 4) {
-            heatMap = new ol.style.Fill({
-                color: regionDetail.color
-            })
-        }
-
-        var gridLayerGroup;
-
-        map.getLayers().forEach(function (item, index) {
-            if (item.get("name") == "gridLayer") {
-                gridLayerGroup = item;
-            }
-
-        });
-
-        gridLayerGroup.getLayers().forEach(function (item, index) {
-            //ITEM: newLayerVector
-            if (item.get("regionName") == regionDetail.regionName) {
-                //item.set("regionDetail",regionDetail);
-                var source = item.getSource();
-                var features = source.getFeatures();
-                // console.log(JSON.stringify(features))
-                var polygon = features[0];
-                polygon.set("regionName", regionDetail.regionName)
-                polygon.setStyle(new ol.style.Style({
-                    stroke: new ol.style.Stroke({
-                        width: 1,
-                        color: [0, 0, 0, 1]
-                    }),
-                    fill: heatMap
-                }));
-            }
-        })
-
-    }
-
-    var getRegionsByName = function (regionName) {
-
-        var regionsName = [];
-
-        map.getLayers().forEach(function (item, index) {
-
-            if (item.get("name") == "gridLayer") {
-                gridLayerGroup = item;
-            }
-
-        });
-
-        if (gridLayerGroup) {
-            gridLayerGroup.getLayers().forEach(function (item, index) {
-                var regionSelection = SquareSelection(item.get("coordinates"));
-                if (regionsDetails.length < 11) {
-                    var source = item.getSource();
-                    var features = source.getFeatures();
-                    var polygon = features[0];
-                    if (polygon.get('regionName') != undefined) {
-                        regionsName.push(polygon.get('regionName'))
-                    }
-                }
-                // if(regionName == item.get("regionName")){
-                //   var source = item.getSource();
-                //   var features = source.getFeatures();
-                //   var polygon = features[0];
-                //   regionsDetails.push(polygon.get("regionDetail"))
-                // }
-            })
-        }
-        return regionsName;
-    }
-
     /// ********* INTERACTIONS **********************
 
     // a normal select interaction to handle click
     var select = new ol.interaction.Select();
-    select.cleanSelectionStyle = function (polygon) {
-        if (polygon != undefined) {
-            var style = polygon.getStyle();
-            if (style) {
-                style.setStroke(new ol.style.Stroke({
-                    width: 1,
-                    color: [0, 0, 0, 1]
-                }));
-                var fill = style.getFill();
-                var color = fill.getColor();
-                color[3] = 0.25;
-                fill.setColor(color);
-            }
-        }
-    };
-    select.applySelectionStyle = function (polygon) {
-        if (polygon != undefined) {
-            var style = polygon.getStyle();
-            if (style) {
-                style.setStroke(new ol.style.Stroke({
-                    width: 4,
-                    color: [0, 125, 111, 1]
-                }));
-                var fill = style.getFill();
-                var color = fill.getColor();
-                color[3] = 0.5;
-                fill.setColor(color);
-            }
-        }
-    };
     select.on('select', function (event) {
-        // This cancel multiple select by holding shift key
         event.deselected.forEach(function (polygon) {
-            this.cleanSelectionStyle(polygon);
-        }, this);
-
+            polygon.set("selected", false);
+        });
         console.log("Selecionado: " + event.selected.length)
         if (event.selected.length > 0) {
             var polygon = event.selected[0];
-            this.applySelectionStyle(polygon);
+            polygon.set("selected", true);
         }
         if (eventHandlers.regionSelect !== undefined) {
-            eventHandlers.regionSelect(polygon.get('lngLat'));
+            eventHandlers.regionSelect(polygon.get('UR'), polygon.get('LL'));
         }
     });
     // a DragBox interaction used to select features by drawing boxes
@@ -525,9 +379,6 @@ function initiateMap(elementId) {
     //API
     var sapsMapAPI = {
         generateGrid: generateGridFunc,
-        getVisibleUnloadedRegions: getVisibleUnloadedRegions,
-        updateRegionMapColor: updateRegionMapColor,
-        getRegionsByName: getRegionsByName,
         zoomIn: function () {
             //console.log("Applying zoom in");
             var view = map.getView();

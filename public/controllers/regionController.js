@@ -4,41 +4,6 @@ dashboardControllers.controller('RegionController', function ($scope, $rootScope
     $log, $filter, $http, $timeout, AuthenticationService, RegionService, EmailService,
     GlobalMsgService, NgTableParams, appConfig) {
 
-    var north_offset = 15;
-    var east_offset = 45
-    var max_north = 4;
-    var max_east = 6;
-    var cur_grid = [1, 2];
-
-    $scope.moveEast = function () {
-        if (cur_grid[1] == max_east) {
-            cur_grid[1] = 0;
-        } else {
-            cur_grid[1] = cur_grid[1] + 1;
-        }
-        loadRegions();
-    };
-    $scope.moveWest = function () {
-        if (cur_grid[1] == 0) {
-            cur_grid[1] = max_east;
-        } else {
-            cur_grid[1] = cur_grid[1] - 1;
-        }
-        loadRegions();
-    };
-    $scope.moveNorth = function () {
-        if (cur_grid[0] != max_north) {
-            cur_grid[0] = cur_grid[0] + 1;
-            loadRegions();
-        }
-    };
-    $scope.moveSouth = function () {
-        if (cur_grid[0] != 0) {
-            cur_grid[0] = cur_grid[0] - 1;
-            loadRegions();
-        }
-    };
-
     // Script options
     $scope.inputGatheringOptions = [
         {
@@ -70,11 +35,11 @@ dashboardControllers.controller('RegionController', function ($scope, $rootScope
     //-------- BEGIN- Methods for action on MAP --------//
 
     //Initializing saps map
-    var sapsMap = initiateMap("map");
+    var sapsMap = initiateMap("map", $rootScope.heatMap.colours, $rootScope.heatMap.transparency);
 
     //Handle for action of selecting an specific region on map
-    function selectRegionOnMap(regionLngLat) {
-        if (regionLngLat === undefined) {
+    function selectRegionOnMap(UR, LL) {
+        if (UR === undefined || LL === undefined) {
             $scope.$apply(function () {
                 if (!$('#sb-map-feature-options').hasClass("sb-hidden")) {
                     $('#sb-map-feature-options').addClass("sb-hidden");
@@ -86,10 +51,10 @@ dashboardControllers.controller('RegionController', function ($scope, $rootScope
                     $('#sb-map-feature-options').removeClass("sb-hidden");
                 }
                 $scope.cleanSearch();
-                $scope.searchFilters.lowerLeftCoord.lat = regionLngLat[3][1];
-                $scope.searchFilters.lowerLeftCoord.long = regionLngLat[3][0];
-                $scope.searchFilters.upperRightCoord.lat = regionLngLat[1][1];
-                $scope.searchFilters.upperRightCoord.long = regionLngLat[1][0];
+                $scope.searchFilters.lowerLeftCoord.lat = LL[1];
+                $scope.searchFilters.lowerLeftCoord.long = LL[0];
+                $scope.searchFilters.upperRightCoord.lat = UR[1];
+                $scope.searchFilters.upperRightCoord.long = UR[0];
             });
         }
     };
@@ -112,22 +77,20 @@ dashboardControllers.controller('RegionController', function ($scope, $rootScope
 
     function setProcessedCount(regions, imagesProcessedByRegion) {
         regions.forEach(function (region) {
-            var count = imagesProcessedByRegion.get(region.regionName);
+            var count = imagesProcessedByRegion.get(region.properties.regionName);
             if (count !== undefined) {
-                region.properties.regionDetail.processedImages = count;
+                region.properties.processedImages = count;
             }
         });
     }
 
     function processedImagesToMap(images) {
         var res = new Map();
-
         images.forEach(
             function (processed) {
                 res.set(processed.region, parseInt(processed.count))
             }
         );
-
         return res;
     }
 
@@ -136,16 +99,8 @@ dashboardControllers.controller('RegionController', function ($scope, $rootScope
             function (featureCollection) {
                 var succeededCallback = function (response) {
                     var processedImagesMap = processedImagesToMap(response.data);
-
                     setProcessedCount(featureCollection.features, processedImagesMap);
                     sapsMap.generateGrid(featureCollection);
-                    // regions.forEach(function (region, index) {
-                    //     if (region.regionDetail) {
-                    //         processRegionHeatmap(region);
-                    //         sapsMap.updateRegionMapColor(region.regionDetail);
-                    //     }
-                    // });
-                    // loadedregions = regions;
                 }
                 var failedCallback = function (error) {
                     console.log("Failed to load region details " + JSON.stringify(error));

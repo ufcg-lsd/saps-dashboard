@@ -99,15 +99,6 @@ dashboardServices.service('AuthenticationService', function ($log, $http,
         $http
             .post(resourceAuthUrl, loginInfo)
             .then(loginSuccessHandler, loginErrorHandler);
-
-        // $.ajax({
-        //   type: 'GET',
-        //   url: 'http://dashboard.sebal.lsd.ufcg.edu.br:9193/images',
-        //   headers: {'userEmail': userLogin, 'userPass': password},
-        //   success: loginSuccessHandler,
-        //   error:loginErrorHandler
-        // });
-
     }
 
     authService.tokenSessionLogin = function (userLogin, password, callbackSuccess, callbackError) {
@@ -279,7 +270,6 @@ dashboardServices.service('SubmissionService', function ($log, $http,
 
 });
 
-
 dashboardServices.service('RegionService', function ($log, $http, AuthenticationService, appConfig) {
     var resourceDetailsUrl = appConfig.urlSapsService + appConfig.regionDetailsPath;
     var resourceSubmitSearch = appConfig.urlSapsService + appConfig.imagesProcessedSearch;
@@ -287,17 +277,16 @@ dashboardServices.service('RegionService', function ($log, $http, Authentication
     var regionService = {};
 
     regionService.getRegions = function (successCallback, errorCalback) {
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function () {
-            if (this.status == 200) {
-                if (this.readyState == 4) {
-                    var myObj = JSON.parse(this.responseText);
-                    console.log(myObj);
-
-                    myObj.features.forEach(function (region, index) {
-                        region.properties.regionName = region.regionName;
-                        region.properties.processedImages = 0;
-                        region.properties.totalImgBySatelitte = [
+        fetch("/regions/regions.geojson").then(
+            function (response) {
+                return response.json();
+            }
+        ).then(
+            function (json) {
+                json.features.forEach(
+                    function (poly) {
+                        poly.properties.processedImages = 0;
+                        poly.properties.totalImgBySatelitte = [
                             {
                                 name: "L4",
                                 total: 0
@@ -311,15 +300,12 @@ dashboardServices.service('RegionService', function ($log, $http, Authentication
                                 total: 0
                             }
                         ]
-                    });
-                    successCallback(myObj);
-                }
-            } else {
-                errorCalback(this);
+                        poly.properties.selected = false;
+                    }
+                )
+                successCallback(json);
             }
-        };
-        xmlhttp.open("GET", "/regions/regions.geojson", true);
-        xmlhttp.send();
+        );
     };
 
     regionService.getRegionsDetails = function (successCallback, errorCallback) {
