@@ -1,4 +1,5 @@
 import argparse
+import json
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process some integers.')
@@ -47,13 +48,12 @@ if __name__ == "__main__":
     bottom_limit = args.bottom_right_lon
 
     csv = open(args.input, "r")
-    json = open(args.output, "w")
+    geojson = open(args.output, "w")
 
     csv_lines = csv.readlines()
     header = csv_lines.pop(0).split(",")
 
-    json.write("[\n")
-    first = True
+    features = []
     for l in csv_lines:
         split_vals = l.split(",")
         # convert values to float
@@ -67,19 +67,30 @@ if __name__ == "__main__":
         # removes descending tiles
         if ur_lat < ll_lat:
             continue
-        if first:
-            first = False
-        else:
-            json.write("    },\n")
-        json.write("    {\n")
-        json.write("        \"regionId\": \"" + format(int(split_vals[0]), '03') + format(int(split_vals[1]), '03') + "\",\n")
-        json.write("        \"regionName\": \"" + format(int(split_vals[0]), '03') + format(int(split_vals[1]), '03') + "\",\n")
-        json.write("        \"coordinates\": [\n")
-        json.write("            ["+split_vals[5]+","+split_vals[4]+"],\n")
-        json.write("            ["+split_vals[7]+","+split_vals[6]+"],\n")
-        json.write("            ["+split_vals[11][0:-1]+","+split_vals[10]+"],\n")
-        json.write("            ["+split_vals[9]+","+split_vals[8]+"]\n")
-        json.write("        ]\n")
-    if not first:
-        json.write("    }\n")
-    json.write("]\n")
+        properties = {
+            "regionId": (format(int(split_vals[0]), '03') + format(int(split_vals[1]), '03')),
+            "regionName": (format(int(split_vals[0]), '03') + format(int(split_vals[1]), '03'))
+        }
+        geometry = {
+            "type": "Polygon",
+            "coordinates": [
+                [
+                    [float(split_vals[5]), float(split_vals[4])],
+                    [float(split_vals[7]), float(split_vals[6])],
+                    [float(split_vals[11][0:-1]), float(split_vals[10])],
+                    [float(split_vals[9]), float(split_vals[8])]
+                ]
+            ]
+        }
+        feature = {
+            "type": "Feature",
+            "id": properties["regionId"],
+            "geometry": geometry,
+            "properties": properties
+        }
+        features.append(feature)
+    geo_obj = {
+        "type": "FeatureCollection",
+        "features": features
+    }
+    json.dump(geo_obj, geojson, indent=4)

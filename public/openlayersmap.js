@@ -5,7 +5,7 @@ function SquareSelection(coordinates) {
 
     var lowerX, lowerY, higherX, higherY, xDimension, yDimension;
 
-    var proccessCoordinates = function(item, index) {
+    var proccessCoordinates = function (item, index) {
         if (Array.isArray(item) && index < 4) {
             if (!lowerX || item[0] < lowerX) {
                 lowerX = item[0];
@@ -111,7 +111,7 @@ function SquareSelection(coordinates) {
     }
 
     var squareSelectionApi = {
-        getCoordinates: function() {
+        getCoordinates: function () {
             return [
                 [lowerX, higherY],
                 [lowerX, lowerY],
@@ -119,37 +119,37 @@ function SquareSelection(coordinates) {
                 [higherX, higherY]
             ];
         },
-        getExtensions: function() {
+        getExtensions: function () {
             return [lowerX, lowerY, higherX, higherY]
         },
-        getLowerX: function() {
+        getLowerX: function () {
             return lowerX
         },
-        getLowerY: function() {
+        getLowerY: function () {
             return lowerY
         },
-        getHigherX: function() {
+        getHigherX: function () {
             return higherX
         },
-        getHigherY: function() {
+        getHigherY: function () {
             return higherY
         },
-        getXDimension: function() {
+        getXDimension: function () {
             return xDimension
         },
-        getYDimension: function() {
+        getYDimension: function () {
             return yDimension
         },
-        getUpperLeftPoint: function() {
+        getUpperLeftPoint: function () {
             return [lowerX, higherY]
         },
-        getUpperRightPoint: function() {
+        getUpperRightPoint: function () {
             return [higherX, higherY]
         },
-        getBottomLeftPoint: function() {
+        getBottomLeftPoint: function () {
             return [lowerX, lowerY]
         },
-        getBottomRightPoint: function() {
+        getBottomRightPoint: function () {
             return [higherX, lowerY]
         },
         intersects: itIntersects,
@@ -168,126 +168,108 @@ function initiateMap(elementId) {
         regionSearch: undefined
     }
 
-    /** MAP INITIALIZATION **/
-    // Layer containing polygon for all countries
-    // var vectorSource = new ol.source.Vector({
-    //     url: 'https://openlayers.org/en/v3.20.1/examples/data/geojson/countries.geojson',
-    //     format: new ol.format.GeoJSON()
-    // });
+    var replacer = function (key, value) {
+        if (value.geometry) {
+            var type;
+            var rawType = value.type;
+            var geometry = value.geometry;
 
-    var osmSource = new ol.source.OSM();
+            if (rawType === 1) {
+                type = 'MultiPoint';
+                if (geometry.length == 1) {
+                    type = 'Point';
+                    geometry = geometry[0];
+                }
+            } else if (rawType === 2) {
+                type = 'MultiLineString';
+                if (geometry.length == 1) {
+                    type = 'LineString';
+                    geometry = geometry[0];
+                }
+            } else if (rawType === 3) {
+                type = 'Polygon';
+                if (geometry.length > 1) {
+                    type = 'MultiPolygon';
+                    geometry = [geometry];
+                }
+            }
 
-    var mapLayers = [
-        new ol.layer.Tile({
-            name: "tile",
-            source: osmSource
-        })
-    ];
-    var mapView = new ol.View({
-        center: [-46000000, -1300000],
-        zoom: 5,
-        maxZoom: 5,
-        minZoom: 5,
-        zoomFactor: 2
-    })
+            return {
+                'type': 'Feature',
+                'geometry': {
+                    'type': type,
+                    'coordinates': geometry
+                },
+                'properties': value.tags
+            };
+        } else {
+            return value;
+        }
+    };
+
+    var tilePixels = new ol.proj.Projection({
+        code: 'TILE_PIXELS',
+        units: 'tile-pixels'
+    });
 
     var map = new ol.Map({
-        layers: mapLayers,
+        layers: [
+            new ol.layer.Tile({
+                name: "tile",
+                source: new ol.source.OSM()
+            })
+        ],
         target: elementId,
         controls: [],
-        view: mapView,
+        view: new ol.View({
+            center: [-46000000, -1300000],
+            zoom: 5,
+            maxZoom: 10,
+            minZoom: 2,
+            zoomFactor: 2
+        }),
         interactions: ol.interaction.defaults({
-            dragPan: false
+            dragPan: true
         })
     });
 
     var gridArray = [];
 
-
     /** FUNCTIONS FOR GRID GENERATION **/
-    var generateGridFunc = function(regions) {
-
-        var gridLayers = [];
-
-        if (regions) {
-            // console.log("regions: "+JSON.stringify(regions));
-            regions.forEach(function(item, index) {
-                var lngLat = [
-                    [item.coordinates[0][0], item.coordinates[0][1]],
-                    [item.coordinates[1][0], item.coordinates[1][1]],
-                    [item.coordinates[2][0], item.coordinates[2][1]],
-                    [item.coordinates[3][0], item.coordinates[3][1]]
-                ];
-                if (Math.abs(item.coordinates[2][0] - item.coordinates[3][0]) > 20) {
-                    item.coordinates[3][0] = -360 + item.coordinates[3][0];
-                }
-                if (Math.abs(item.coordinates[0][0] - item.coordinates[1][0]) > 20) {
-                    if (item.coordinates[3][0] > 0) {
-                        item.coordinates[1][0] = 360 - item.coordinates[0][0];
-                    } else {
-                        item.coordinates[0][0] = -360 + item.coordinates[0][0];
-                    }
-                }
-                item.coordinates[0] = ol.proj.fromLonLat(item.coordinates[0]);
-                item.coordinates[1] = ol.proj.fromLonLat(item.coordinates[1]);
-                item.coordinates[2] = ol.proj.fromLonLat(item.coordinates[2]);
-                item.coordinates[3] = ol.proj.fromLonLat(item.coordinates[3]);
-                // console.log(item.coordinates);
-                // console.log("Region: "+JSON.stringify(item));
-                var polygonCoords = item.coordinates;
-
-                gridLayers.push(createNewRegion(item.regionName, item.regionId, polygonCoords, lngLat));
-
-                var newSquare = SquareSelection(polygonCoords);
-                gridArray.push(newSquare)
-            })
-
-        } else {
-
-            extent = mapView.calculateExtent(map.getSize());
-            var mapSelection = SquareSelection(extent);
-
-            var xFactor = (mapSelection.getXDimension() / columnsNumber);
-            var yFactor = (mapSelection.getYDimension() / rowsNumber);
-
-            map.getLayers().forEach(function(layer, i) {
-                if (layer instanceof ol.layer.Group) {
-                    //console.log('Removing Group Layer');
-                    map.removeLayer(layer);
-                }
+    var generateGridFunc = function (featureCollection) {
+        if (featureCollection) {
+            var tileIndex = geojsonvt(featureCollection, {
+                extent: 4096,
+                debug: 1
             });
+            var vectorSource = new ol.source.VectorTile({
+                format: new ol.format.GeoJSON(),
+                tileLoadFunction: function (tile) {
+                    var format = tile.getFormat();
+                    var tileCoord = tile.getTileCoord();
+                    var data = tileIndex.getTile(tileCoord[0], tileCoord[1], -tileCoord[2] - 1);
+                    console.log(data)
 
-            var actualLX, actualLY, actualHX, actualHY;
-
-
-            for (var latCount = 1; latCount <= rowsNumber; latCount++) {
-                for (var longCount = 1; longCount <= columnsNumber; longCount++) {
-                    actualLX = mapSelection.getLowerX() + (xFactor * (longCount - 1));
-                    actualHX = mapSelection.getLowerX() + (xFactor * longCount);
-                    actualLY = mapSelection.getHigherY() - (yFactor * latCount);
-                    actualHY = mapSelection.getHigherY() - (yFactor * (latCount - 1));
-                    var polygonCoords = [
-                        [actualLX, actualHY],
-                        [actualLX, actualLY],
-                        [actualHX, actualLY],
-                        [actualHX, actualHY]
-                    ];
-
-                    gridLayers.push(createNewRegion(polygonCoords));
-
-                    var newSquare = SquareSelection(polygonCoords);
-                    gridArray.push(newSquare)
-                }
-            }
+                    var features = format.readFeatures(
+                        JSON.stringify({
+                            type: 'FeatureCollection',
+                            features: data ? data.features : []
+                        }, replacer));
+                    tile.setLoader(function () {
+                        tile.setFeatures(features);
+                        tile.setProjection(tilePixels);
+                    });
+                },
+                tileGrid: ol.tilegrid.createXYZ({maxZoom: 12}),
+                url: 'data:' // arbitrary url, we don't use it in the tileLoadFunction
+            });
+            var vectorLayer = new ol.layer.VectorTile({
+                source: vectorSource
+            });
+            map.addLayer(vectorLayer);
+        } else {
+            console.log("Tried to generate grid without features.");
         }
-
-        var gridGroupLayers = new ol.layer.Group({
-            name: "gridLayer",
-            layers: gridLayers
-        });
-
-        map.addLayer(gridGroupLayers);
-
     };
 
     function createNewRegion(regionName, regionId, polygonCoords, lngLat) {
@@ -325,14 +307,14 @@ function initiateMap(elementId) {
         return newLayerVector;
     }
 
-    var getVisibleUnloadedRegions = function() {
+    var getVisibleUnloadedRegions = function () {
         extent = mapView.calculateExtent(map.getSize());
         var mapSelection = SquareSelection(extent);
 
         var visibleRegions = []
         var gridLayerGroup = undefined;
 
-        map.getLayers().forEach(function(item, index) {
+        map.getLayers().forEach(function (item, index) {
             if (item.get("name") == "gridLayer") {
                 gridLayerGroup = item;
             }
@@ -340,7 +322,7 @@ function initiateMap(elementId) {
         });
 
         if (gridLayerGroup) {
-            gridLayerGroup.getLayers().forEach(function(item, index) {
+            gridLayerGroup.getLayers().forEach(function (item, index) {
                 var regionSelection = SquareSelection(item.get("coordinates"));
                 if (regionSelection.isInsideOf(mapSelection) ||
                     regionSelection.intersects(mapSelection)) {
@@ -353,7 +335,7 @@ function initiateMap(elementId) {
         return visibleRegions;
     }
 
-    var updateRegionMapColor = function(regionDetail) {
+    var updateRegionMapColor = function (regionDetail) {
 
         var heatMap = new ol.style.Fill({
             color: [255, 255, 255, 0]
@@ -367,14 +349,14 @@ function initiateMap(elementId) {
 
         var gridLayerGroup;
 
-        map.getLayers().forEach(function(item, index) {
+        map.getLayers().forEach(function (item, index) {
             if (item.get("name") == "gridLayer") {
                 gridLayerGroup = item;
             }
 
         });
 
-        gridLayerGroup.getLayers().forEach(function(item, index) {
+        gridLayerGroup.getLayers().forEach(function (item, index) {
             //ITEM: newLayerVector
             if (item.get("regionName") == regionDetail.regionName) {
                 //item.set("regionDetail",regionDetail);
@@ -395,11 +377,11 @@ function initiateMap(elementId) {
 
     }
 
-    var getRegionsByName = function(regionName) {
+    var getRegionsByName = function (regionName) {
 
         var regionsName = [];
 
-        map.getLayers().forEach(function(item, index) {
+        map.getLayers().forEach(function (item, index) {
 
             if (item.get("name") == "gridLayer") {
                 gridLayerGroup = item;
@@ -408,7 +390,7 @@ function initiateMap(elementId) {
         });
 
         if (gridLayerGroup) {
-            gridLayerGroup.getLayers().forEach(function(item, index) {
+            gridLayerGroup.getLayers().forEach(function (item, index) {
                 var regionSelection = SquareSelection(item.get("coordinates"));
                 if (regionsDetails.length < 11) {
                     var source = item.getSource();
@@ -433,7 +415,7 @@ function initiateMap(elementId) {
 
     // a normal select interaction to handle click
     var select = new ol.interaction.Select();
-    select.cleanSelectionStyle = function(polygon) {
+    select.cleanSelectionStyle = function (polygon) {
         if (polygon != undefined) {
             var style = polygon.getStyle();
             if (style) {
@@ -448,7 +430,7 @@ function initiateMap(elementId) {
             }
         }
     };
-    select.applySelectionStyle = function(polygon) {
+    select.applySelectionStyle = function (polygon) {
         if (polygon != undefined) {
             var style = polygon.getStyle();
             if (style) {
@@ -463,9 +445,9 @@ function initiateMap(elementId) {
             }
         }
     };
-    select.on('select', function(event) {
+    select.on('select', function (event) {
         // This cancel multiple select by holding shift key
-        event.deselected.forEach(function(polygon) {
+        event.deselected.forEach(function (polygon) {
             this.cleanSelectionStyle(polygon);
         }, this);
 
@@ -482,7 +464,7 @@ function initiateMap(elementId) {
     var dragBox = new ol.interaction.DragBox({
         condition: ol.events.condition.platformModifierKeyOnly
     });
-    dragBox.on('boxend', function() {
+    dragBox.on('boxend', function () {
         // features that intersect the box are added to the collection of
         // selected features, and their names are displayed in the "info"
         // div
@@ -508,14 +490,14 @@ function initiateMap(elementId) {
 
     });
     // clear selection when drawing a new box and when clicking on the map
-    dragBox.on('boxstart', function() {
+    dragBox.on('boxstart', function () {
         // selectedFeatures.clear();
         //Do anything else after this?
     });
 
     map.addInteraction(select);
     map.addInteraction(dragBox);
-    map.on('click', function(event) {
+    map.on('click', function (event) {
         // var feature = map.forEachFeatureAtPixel(evt.pixel,
         //   function(feature) {
         //   return feature;
@@ -523,7 +505,7 @@ function initiateMap(elementId) {
 
         //Do anything else after this?
     });
-    map.on('moveend', function() {
+    map.on('moveend', function () {
         //console.log("moveend: ")
 
         if (eventHandlers.mapMove !== undefined) {
@@ -531,7 +513,7 @@ function initiateMap(elementId) {
         }
 
     });
-    map.on('movestart', function() {
+    map.on('movestart', function () {
         //console.log("movestart")
 
         if (eventHandlers.mapMove !== undefined) {
@@ -546,35 +528,20 @@ function initiateMap(elementId) {
         getVisibleUnloadedRegions: getVisibleUnloadedRegions,
         updateRegionMapColor: updateRegionMapColor,
         getRegionsByName: getRegionsByName,
-        zoomIn: function() {
+        zoomIn: function () {
             //console.log("Applying zoom in");
             var view = map.getView();
             var zoom = view.getZoom();
             view.setZoom(zoom + 1);
         },
-        zoomOut: function() {
+        zoomOut: function () {
             //console.log("Applying zoom out");
             var view = map.getView();
             var zoom = view.getZoom();
             view.setZoom(zoom - 1);
         },
-        on: function(eventName, callbackFunction) {
+        on: function (eventName, callbackFunction) {
             eventHandlers[eventName] = callbackFunction;
-        },
-        removeLayer: function(layer) {
-            var toRemove = undefined;
-            map.getLayers().forEach(function(item) {
-                if (item.get("name") == "gridLayer") {
-                    toRemove = item;
-                }
-            });
-            if (toRemove !== undefined) {
-                map.removeLayer(toRemove);
-            }
-        },
-        recenterMap: function(north, east, north_offset, east_offset) {
-            var view = map.getView();
-            view.animate({center: ol.proj.fromLonLat([(east - 3) * east_offset, (north - 2) * north_offset])})
         }
     }
 
