@@ -266,7 +266,7 @@ function initiateMap(elementId, colors, transparency) {
 
     var generateGridFunc = function (featureCollection) {
         if (featureCollection) {
-            var tileIndex = geojsonvt(featureCollection, { buffer: 1024 });
+            var tileIndex = geojsonvt(featureCollection, { buffer: 2048 });
             var vectorSource = new ol.source.VectorTile({
                 format: new ol.format.GeoJSON(),
                 tileLoadFunction: function (tile) {
