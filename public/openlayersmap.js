@@ -229,8 +229,8 @@ function initiateMap(elementId, colors, transparency) {
         view: new ol.View({
             center: [-4180799.456017701, -768009.2602094514],
             zoom: 6,
-            maxZoom: 14,
-            minZoom: 4,
+            maxZoom: 7,
+            minZoom: 3,
             zoomFactor: 2
         }),
         interactions: ol.interaction.defaults({
