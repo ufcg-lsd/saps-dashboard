@@ -6,17 +6,38 @@ var app = angular.module('schedulerDashboard', [
     //'ui.bootstrap'
 ]);
 
+app.constant("appConfig", {
+    "urlSapsService": "http://localhost:8091/",
+    "authPath": "users?auth",
+    "authCreatePath":"users?register",
+    "submissionPath": "processings",
+    "regionDetailsPath": "regions/details",
+    "imagesProcessedSearch":"regions/search",
+    "emailPath": "email",
+    "LOGIN_SUCCEED": "login.succeed",
+    "LOGIN_FAILED": "login.failed",
+    "LOGOUT_SUCCEED": "logout.succed",
+    "DEFAULT_SB_VERSION": "version-001",
+    "DEFAULT_SB_TAG": "tag-001",
+    "SATELLITE_OPTS": [{
+        "label": "Landsat 4",
+        "value": "l4"
+    }, {
+        "label": "Landsat 5",
+        "value": "l5"
+    }, {
+        "label": "Landsat 7",
+        "value": "l7"
+    }],
+    "MODAL_OPENED": "modalOpened",
+    "MODAL_CLOSED": "modalClosed"
+});
+
 //Initializing controllers module.
-angular.module('dashboardControllers', []);
+angular.module('dashboardControllers', ['ngTable', 'ngMessages', 'ngMaterial']);
 
 //Global Functions available on pages
 app.run(function($rootScope) {
-
-    $(function() {
-        $('.saps-datepicker').datetimepicker({
-            format: 'DD/MM/YYYY'
-        });
-    });
 
     $rootScope.switchVisibility = function() {
         for (var index = 0; index < arguments.length; index++) {
@@ -34,6 +55,7 @@ app.run(function($rootScope) {
         }
     };
     $rootScope.showHide = function() {
+        console.log("CALL: showHide");
         for (var index = 0; index < arguments.length; index++) {
             var elementId = arguments[index];
             if ("string" === typeof elementId) {
@@ -147,41 +169,12 @@ app.run(function($rootScope) {
             "b": 38
         }, ]
     }
-
 });
-
-app.constant("appConfig", {
-    "urlSapsService": "http://localhost:8080/",
-    "authPath": "auth",
-    "authCreatePath": "auth/create",
-    "submissionPath": "images",
-    "regionPath": "regions",
-    "regionDetailsPath": "regions/details",
-    "emailPath": "email",
-    "LOGIN_SUCCEED": "login.succeed",
-    "LOGIN_FAILED": "login.faild",
-    "LOGOUT_SUCCEED": "logout.succed",
-    "DEFAULT_SB_VERSION": "version-001",
-    "DEFAULT_SB_TAG": "tag-001",
-    "SATELLITE_OPTS": [{
-        "label": "Landsat 4",
-        "value": "l4"
-    }, {
-        "label": "Landsat 5",
-        "value": "l5"
-    }, {
-        "label": "Landsat 7",
-        "value": "l7"
-    }],
-    "MODAL_OPENED": "modalOpened",
-    "MODAL_CLOSED": "modalClosed"
-});
-
 
 app.config(function($logProvider) {
     $logProvider.debugEnabled(true);
 });
-app.config(function($routeProvider) {
+app.config(function($routeProvider, $locationProvider) {
 
     var checkUser = function($location, AuthenticationService) {
         if (!AuthenticationService.getCheckUser()) {
@@ -224,7 +217,19 @@ app.config(function($routeProvider) {
         .otherwise({
             redirectTo: '/'
         });
+    $locationProvider.html5Mode(false);
 });
+app.config(
+    function($mdDateLocaleProvider) {
+        $mdDateLocaleProvider.formatDate = function(date) {
+            if (date === undefined) {
+                return '';
+            } else {
+                return moment(date).format('YYYY-MM-DD');
+            }
+        };
+    }
+);
 
 app.filter('offset', function() {
     return function(input, start) {

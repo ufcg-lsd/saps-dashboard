@@ -1,73 +1,83 @@
 <div id="region-details-box" ng-show="searchedRegions.length">
-	<div id="region-details-box">
-		<div class="sb-map-feature-label"
-		ng-click="selectRegionOnMap()">
-			<!-- <img src="/images/menu/contact.png"/> -->
-			<span class="glyphicon glyphicon-play" aria-hidden="true"></span> {{languageContent.mapFeature.regionDetailBox.title}}
+	<div class="sb-map-feature-label" ng-click="switchVisibility('sb-map-feature-details');">
+		<!-- <img src="/images/menu/contact.png"/> -->
+		<span class="glyphicon glyphicon-play" aria-hidden="true"></span> {{languageContent.mapFeature.regionDetailBox.title}}
+	</div>
+	<div id="sb-map-feature-details" class="sb-map-feature-details">
+		<div class="sb-region-detail-line" ng-click="switchVisibility('detail-email-info')">
+			<div align="center" class="col-lg-1 col-md-1 col-sm-1 sb-detail-label">
+				<div class="sb-span-round-button sb-rb-small sb-rb-white">
+					<span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+				</div>
+			</div>
+			<div class="col-lg-11 col-md-11 col-sm-11 sb-detail-label">
+				<strong>Send selected to email</strong>
+			</div>
 		</div>
-		<div id="sb-map-feature-details" class="sb-map-feature-details">
-			<div class="sb-region-detail-line">
-				<div class="col-lg-9 col-md-9 col-sm-9 sb-detail-label">
-		 			<input class="sb-checkbox-map" type="checkbox" ng-model="allDetailsChecked" ng-click="handleCheckUncheckAllDetails()">
-				</div>
-				<div align="center" class="col-lg-3 col-md-3 col-sm-3 sb-detail-label">
-					<div class="sb-span-round-button sb-rb-small sb-rb-white">
-						<span class="glyphicon glyphicon-send" aria-hidden="true"
-							ng-click="switchVisibility('detail-email-info')">
-					</div>
-				</div>
+		<div id="detail-email-info" class="email-info sb-hidden" align="center">
+			<div ng-bind-html="languageContent.mapFeature.regionDetailBox.emailInfo"></div>
+			<div ng-click="sendEmail()" class="sb-button sb-main sb-width-xs sb-height-sm" align="center">
+				{{languageContent.mapFeature.regionDetailBox.button.sendMail}}
 			</div>
-			<div id="detail-email-info" class="email-info sb-hidden" align="center">
-				<div ng-bind-html="languageContent.mapFeature.regionDetailBox.emailInfo"></div>
-				<div ng-click="sendEmail()" class="sb-button sb-main sb-width-xs sb-height-sm" align="center">
-					  {{languageContent.mapFeature.regionDetailBox.button.sendMail}}
-				</div>
-			</div>
-			<div ng-repeat="regionDetail in searchedRegions">
-				<div id="{{regionDetail.regionName}}-details" class="sb-region-detail-line" >
-					<div class="col-lg-1 col-md-1 col-sm-1 sb-detail-label">
-						<input class="sb-checkbox-map" type="checkbox" ng-model="regionDetail.checked" ng-change="checkUncheckRegionDetail({{regionDetail}})">
-					</div>
-					<div class="col-lg-8 col-md-8 col-sm-8 sb-detail-label" ng-click="switchVisibility(regionDetail.regionName+'-images')">
-						<span class="glyphicon glyphicon-stop" 
-							style="font-size: 1.5em; color: {{regionDetail.cssColor}}" aria-hidden="true">
-						</span>
-						{{regionDetail.regionName}} ({{regionDetail.processedImages.length}})
-					</div>
-				</div>
-				<div id="{{regionDetail.regionName}}-images" class="sb-image-detail sb-hidden" >
-					<div class="sb-image-detail-line">
-						<div class="col-lg-1 col-md-1 col-sm-12">
-							<input class="sb-checkbox-map" type="checkbox" ng-model="regionDetail.allImgChecked" ng-click="handleCheckUncheckAllImages(regionDetail.regionName)">
-						</div>
-					</div>
-					<div class="sb-image-detail-line"
-						ng-repeat="image in regionDetail.processedImages">
-						<div class="col-lg-1 col-md-1 col-sm-1">
-							<input class="sb-checkbox-map" type="checkbox" ng-model="image.checked" ng-change="checkUncheckImage(regionDetail.regionName)">
-						</div>
-						<div class="col-lg-4 col-md-4 col-sm-4">
-							{{image.date}} ({{image.outputs.length}})
-						</div>
-						<div >
-							<div class="col-lg-6 col-md-6 col-sm-6" 
-								align="right">
-								<div ng-repeat="sat in image.totalImgBySatelitte" style="display: inline-block;">
-									<strong>
-										{{sat.name}}
-										<span ng-show="sat.total" class="glyphicon glyphicon-ok-sign" aria-hidden="true"/>
-										</span>
-										<span ng-hide="sat.total" class="glyphicon glyphicon-ban-circle" aria-hidden="true">
-										</span>
-									</strong>
-									&nbsp;
-								</div>
-								
-							</div>
-						</div>
-						</div>
-					</div>
-				</div>
-			</div>
+		</div>
+		<!-- Table of contents -->
+		<div class="sb-region-detail-table">
+			<table ng-table="tableSearchedRegions" class="table table-condensed table-bordered">
+				<colgroup>
+					<col width="5%">
+					<col width="25%">
+					<col width="20%">
+					<col width="20%">
+					<col width="20%">
+				</colgroup>
+				<thead>
+					<th>
+						<md-checkbox aria-label="Select All" ng-checked="allChecked()" md-indeterminate="someChecked()" ng-click="toggleChecked()"></md-checkbox>
+					</th>
+					<th>
+						Date
+					</th>
+					<th>
+						Input Gathering
+					</th>
+					<th>
+						Input Preprocessing
+					</th>
+					<th>
+						Algorithm Execution
+					</th>
+				</thead>
+				<tr class="ng-table-group sb-region-table-group" ng-repeat-start="group in $groups">
+					<td colspan="5">
+						<md-checkbox aria-label="Select all from region" ng-checked="allChecked('{{group.value}}')" md-indeterminate="someChecked('{{group.value}}')"
+						 ng-click="toggleChecked(group.value)"></md-checkbox>
+						<a href="" ng-click="group.$hideRows = !group.$hideRows">
+							<span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': group.$hideRows, 'glyphicon-chevron-down': !group.$hideRows }"></span>
+							<strong>Region {{ group.value }} ({{group.data.length}})</strong>
+						</a>
+					</td>
+				</tr>
+				<tr ng-hide="group.$hideRows" ng-repeat="image in group.data" ng-repeat-end class="sb-region-detail-row">
+					<td sortable="'region'" data-title="'Region'" groupable="'region'" ng-if="false">
+						{{image.region}}
+					</td>
+					<td>
+						<md-checkbox aria-label="Check" ng-model="image.checked"></md-checkbox>
+					</td>
+					<td>
+						{{image.imageDate}}
+					</td>
+					<td>
+						{{image.inputGatheringTag}}
+					</td>
+					<td>
+						{{image.inputPreprocessingTag}}
+					</td>
+					<td>
+						{{image.algorithmExecutionTag}}
+					</td>
+				</tr>
+			</table>
 		</div>
 	</div>
+</div>
