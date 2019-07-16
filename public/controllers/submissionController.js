@@ -403,6 +403,10 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
         {
             name: 'Default',
             value: 'default_script'
+        },
+        {
+            name: 'Googleapis',
+            value: 'default_script'
         }
     ];
     $scope.inputPreprocessingOptions = [
@@ -512,8 +516,8 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
             GlobalMsgService.globalSuccessModalMsg("Last year date must be greater than first year date");
             return;
         }
-        data.inputPreprocessingTag = $scope.newSubmission.inputGathering.name;
-        data.inputGatheringTag = $scope.newSubmission.inputPreprocessing.name;
+        data.inputGatheringTag = $scope.newSubmission.inputGathering.name;
+        data.inputPreprocessingTag = $scope.newSubmission.inputPreprocessing.name;
         data.algorithmExecutionTag = $scope.newSubmission.algorithmExecution.name;
 
         console.log("Sending " + JSON.stringify(data));
