@@ -14,7 +14,14 @@
                 sendEmailSuccess: "Sent successfully,<br>check your email box.",
                 successNewSubmission: 'Successfully submitted.',
                 failedNewSubmission: 'Failed to submit.',
-                unauthorizedNewSubmission: 'Unauthorized submission.'
+                unauthorizedNewSubmission: 'Unauthorized submission.',
+                failCoordinatesRequired: "Coordinates are required",
+                failCoordinatesNotNumber: "Coordinates are not numbers",
+                failInitialDateRequired: "Initial date is required",
+                failFinalDateRequired: "Final date is required",
+                failDateInvalid: "Last year date must be greater than first year date",
+                failPriorityRange: "Priority value must be between 1 and 100",
+                noResultSearch: "There were no results for this search."
             },
             login: {
                 placeholdName: "NAME/EMAIL",
@@ -145,12 +152,16 @@
                     },
                 },
                 table: {
+                    titleOngoing: "Ongoing",
+                    titleCompleted: "Completed",
                     landsatTile: "Landsat tile",
                     date: "Date",
-                    inputGathering: "Input gathering",
-                    inputPreprocessing: "Input preprocessing",
-                    algorithmExecution: "Algorithm execution",
-                    state: "State"
+                    dataset: "Dataset",
+                    inputGathering: "Inputdownloading phase",
+                    inputPreprocessing: "Preprocessing phase",
+                    algorithmExecution: "Processing phase",
+                    state: "State",
+                    priority: "Priority"
                 },
             },
         },
@@ -166,7 +177,14 @@
                 sendEmailSuccess: "Enviado com sucesso,<br>verifique sua caixa de email.",
                 successNewSubmission: 'Submetido com sucesso.',
                 failedNewSubmission: 'Falha ao submeter.',
-                unauthorizedNewSubmission: 'Submissão não autorizada.'
+                unauthorizedNewSubmission: 'Submissão não autorizada.',
+                failCoordinatesRequired: "As coordenadas são necessárias",
+                failCoordinatesNotNumber: "As coordenadas não são números",
+                failInitialDateRequired: "Data inicial é necessária",
+                failFinalDateRequired: "Data final é necessária",
+                failDateInvalid: "A data final deve ser após a data inicial",
+                failPriorityRange: "O valor da prioridade deve ser entre 1 e 100",
+                noResultSearch: "Não foram encontrados resultados para esta pesquisa."
             },
             login: {
                 placeholdName: "NOME/EMAIL",
@@ -264,7 +282,7 @@
             },
             submissionsList: {
                 steps: {
-                    title: "Passos ate odownload ser completo",
+                    title: "Passos ate o download ser completo",
                     downloading: "Baixando",
                     downloaded: "Baixado",
                     queued: "Enfileirado",
@@ -296,12 +314,16 @@
                     },
                 },
                 table: {
+                    titleOngoing: "Em andamento",
+                    titleCompleted: "Concluídos",
                     landsatTile: "Região",
                     date: "Data",
-                    inputGathering: "Gathering da entrada",
-                    inputPreprocessing: "Preprocessamento da entrada",
-                    algorithmExecution: "Execução do algoritmo",
-                    state: "Estado"
+                    dataset: "Dataset",
+                    inputGathering: "Fase de download",
+                    inputPreprocessing: "Fase de preprocessamento",
+                    algorithmExecution: "Fase de processamento",
+                    state: "Estado",
+                    priority: "Prioridade"
                 }
             }
         },
