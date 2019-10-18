@@ -457,7 +457,8 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
             finalDate: undefined,
             inputGathering: $scope.inputGatheringOptions[0],
             inputPreprocessing: $scope.inputPreprocessingOptions[0],
-            algorithmExecution: $scope.algorithmExecutionOptions[0]
+            algorithmExecution: $scope.algorithmExecutionOptions[0],
+            priority: 1
         }
         //Clean error msgs
         $scope.modalMsgError = undefined;
@@ -475,8 +476,7 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
             $scope.newSubmission.upperRightCoord.lat === undefined ||
             $scope.newSubmission.upperRightCoord.long === undefined
             ) {
-            // TODO move message to language content
-            GlobalMsgService.globalSuccessModalMsg("Coordinates are required");
+            GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.failCoordinatesRequired);
             return;
         } else {
             if (
@@ -485,8 +485,7 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
                 isNaN($scope.newSubmission.upperRightCoord.lat) ||
                 isNaN($scope.newSubmission.upperRightCoord.long)
             ) {
-                // TODO move message to language content
-                GlobalMsgService.globalSuccessModalMsg("Coordinates are not numbers");
+                GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.failCoordinatesNotNumber);
                 return;
             }
             data.lowerLeft = [parseFloat($scope.newSubmission.lowerLeftCoord.lat)+0.5, parseFloat($scope.newSubmission.lowerLeftCoord.long)+0.5];
@@ -494,27 +493,31 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
         }
 
         if ($scope.newSubmission.initialDate === undefined) {
-            // TODO move message to language content
-            GlobalMsgService.globalSuccessModalMsg("Initial date is required");
+            GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.failInitialDateRequired);
             return;
         } else {
             data.initialDate = $scope.newSubmission.initialDate.toISOString().slice(0,11);
         }
         if ($scope.newSubmission.finalDate === undefined) {
-            // TODO move message to language content
-            GlobalMsgService.globalSuccessModalMsg("Final date is required");
+            GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.failFinalDateRequired);
             return;
         } else {
             data.finalDate = $scope.newSubmission.finalDate.toISOString().slice(0,11);
         }
         if ($scope.newSubmission.initialDate > $scope.newSubmission.finalDate) {
-            // TODO move message to language content
-            GlobalMsgService.globalSuccessModalMsg("Last year date must be greater than first year date");
+            GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.failDateInvalid);
             return;
+        }
+        if ($scope.newSubmission.priority < 1 || $scope.newSubmission.priority > 100) {
+            GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.failPriorityRange);
+            return;
+        }else{
+            data.priority = $scope.newSubmission.priority;
         }
         data.inputPreprocessingTag = $scope.newSubmission.inputGathering.name;
         data.inputGatheringTag = $scope.newSubmission.inputPreprocessing.name;
         data.algorithmExecutionTag = $scope.newSubmission.algorithmExecution.name;
+        data.email = AuthenticationService.getUserName();
 
         console.log("Sending " + JSON.stringify(data));
         $scope.openCloseModal('submissionsModal', false);

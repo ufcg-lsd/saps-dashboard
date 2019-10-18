@@ -144,8 +144,7 @@ dashboardControllers.controller('RegionController', function ($scope, $rootScope
             $scope.searchFilters.upperRightCoord.lat === undefined ||
             $scope.searchFilters.upperRightCoord.long === undefined
         ) {
-            // TODO move message to language content
-            GlobalMsgService.globalSuccessModalMsg("Coordinates are required");
+            GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.failCoordinatesRequired);
             return;
         } else {
             if (
@@ -154,30 +153,26 @@ dashboardControllers.controller('RegionController', function ($scope, $rootScope
                 isNaN($scope.searchFilters.upperRightCoord.lat) ||
                 isNaN($scope.searchFilters.upperRightCoord.long)
             ) {
-                // TODO move message to language content
-                GlobalMsgService.globalSuccessModalMsg("Coordinates are not numbers");
+                GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.failCoordinatesNotNumber);
                 return;
             }
             data.lowerLeft = [parseFloat($scope.searchFilters.lowerLeftCoord.lat) + 0.5, parseFloat($scope.searchFilters.lowerLeftCoord.long) + 0.5];
             data.upperRight = [parseFloat($scope.searchFilters.upperRightCoord.lat) - 0.5, parseFloat($scope.searchFilters.upperRightCoord.long) - 0.5];
         }
         if ($scope.searchFilters.initialDate === undefined) {
-            // TODO move message to language content
-            GlobalMsgService.globalSuccessModalMsg("Initial date is required");
+            GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.failInitialDateRequired);
             return;
         } else {
             data.initialDate = $scope.searchFilters.initialDate.toISOString().slice(0, 11);
         }
         if ($scope.searchFilters.finalDate === undefined) {
-            // TODO move message to language content
-            GlobalMsgService.globalSuccessModalMsg("Final date is required");
+            GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.failFinalDateRequired);
             return;
         } else {
             data.finalDate = $scope.searchFilters.finalDate.toISOString().slice(0, 11);
         }
         if ($scope.searchFilters.initialDate > $scope.searchFilters.finalDate) {
-            // TODO move message to language content
-            GlobalMsgService.globalSuccessModalMsg("Last year date must be greater than first year date");
+            GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.failDateInvalid);
             return;
         }
         data.inputPreprocessingTag = $scope.searchFilters.inputGathering.name;
@@ -194,7 +189,7 @@ dashboardControllers.controller('RegionController', function ($scope, $rootScope
                 $scope.searchedRegions = response.data.result;
                 if ($scope.searchedRegions.length == 0) {
                     // TODO move message to language content
-                    GlobalMsgService.globalSuccessModalMsg("There were no results for this search.");
+                    GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.noResultSearch);
                     return;
                 }
                 $scope.searchedRegions.forEach(
@@ -341,6 +336,7 @@ dashboardControllers.controller('RegionController', function ($scope, $rootScope
             }
         );
         if (request.images_id.length === 0) {
+            // TODO move message to language content
             GlobalMsgService.globalSuccessModalMsg("No image selected. Select at least one image.");
             return;
         }
