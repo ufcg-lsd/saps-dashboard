@@ -9,6 +9,10 @@ dashboardControllers.controller('RegionController', function ($scope, $rootScope
         {
             name: 'Default',
             value: 'default_script'
+        },
+        {
+            name: 'Googleapis',
+            value: 'default_script'
         }
     ];
     $scope.inputPreprocessingOptions = [
@@ -175,8 +179,8 @@ dashboardControllers.controller('RegionController', function ($scope, $rootScope
             GlobalMsgService.globalSuccessModalMsg($rootScope.languageContent.messages.failDateInvalid);
             return;
         }
-        data.inputPreprocessingTag = $scope.searchFilters.inputGathering.name;
-        data.inputGatheringTag = $scope.searchFilters.inputPreprocessing.name;
+        data.inputPreprocessingTag = $scope.searchFilters.inputPreprocessing.name;
+        data.inputGatheringTag = $scope.searchFilters.inputGathering.name;
         data.algorithmExecutionTag = $scope.searchFilters.algorithmExecution.name;
 
         $rootScope.switchVisibility('sb-map-feature-options');
