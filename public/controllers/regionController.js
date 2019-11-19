@@ -1,32 +1,14 @@
 var dashboardControllers = angular.module('dashboardControllers');
+var scriptsTags = require('../../resources/execution_script_tags')
 
 dashboardControllers.controller('RegionController', function ($scope, $rootScope,
     $log, $filter, $http, $timeout, AuthenticationService, RegionService, EmailService,
     GlobalMsgService, NgTableParams, appConfig) {
 
     // Script options
-    $scope.inputGatheringOptions = [
-        {
-            name: 'Default',
-            value: 'default_script'
-        },
-        {
-            name: 'Googleapis',
-            value: 'default_script'
-        }
-    ];
-    $scope.inputPreprocessingOptions = [
-        {
-            name: 'Default',
-            value: 'default_pre-script'
-        }
-    ];
-    $scope.algorithmExecutionOptions = [
-        {
-            name: 'Default',
-            value: 'default_algorithim'
-        }
-    ];
+    $scope.inputGatheringOptions = scriptsTags.inputdownloading;
+    $scope.inputPreprocessingOptions = scriptsTags.preprocessing;
+    $scope.algorithmExecutionOptions = scriptsTags.processing;
 
     // Filters for region search
     $scope.searchFilters = undefined;

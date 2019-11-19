@@ -1,4 +1,5 @@
 var dashboardControllers = angular.module('dashboardControllers');
+var scriptsTags = require('../../resources/execution_script_tags')
 
 dashboardControllers.controller('ListSubmissionsController', function($scope, $rootScope, $log, $filter, $timeout, $filter,
     SubmissionService, AuthenticationService, GlobalMsgService, EmailService, appConfig, NgTableParams) {
@@ -48,7 +49,7 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
             value: 'default_pre-script'
         }
     ]
-    console.log("procScriptOpts: " + JSON.stringify($scope.processingScripts));
+    
     // Filters
     $scope.searchFilters = {
         name: '',
@@ -399,28 +400,9 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
     $scope.modalMsgError = undefined;
     
     // Script options
-    $scope.inputGatheringOptions = [
-        {
-            name: 'Default',
-            value: 'default_script'
-        },
-        {
-            name: 'Googleapis',
-            value: 'default_script'
-        }
-    ];
-    $scope.inputPreprocessingOptions = [
-        {
-            name: 'Default',
-            value: 'default_pre-script'
-        }
-    ];
-    $scope.algorithmExecutionOptions = [
-        {
-            name: 'Default',
-            value: 'default_algorithim'
-        }
-    ];
+    $scope.inputGatheringOptions = scriptsTags.inputdownloading;
+    $scope.inputPreprocessingOptions = scriptsTags.preprocessing;
+    $scope.algorithmExecutionOptions = scriptsTags.processing;
 
     $scope.$on(appConfig.MODAL_OPENED, function(event, value) {
         $scope.cleanForm();
