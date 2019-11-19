@@ -153,7 +153,7 @@
           <div class="panel-heading">
             <div align="left" class="sb-col-lg-11 sb-col-md-11 sb-col-sm-11 sb-col-xs-20">
               <h4 ng-click="switchVisibility('panel-body-ongoing')" style="cursor:pointer">
-                Ongoing ({{ls.ongoingTasksCount}})
+                {{languageContent.submissionsList.table.titleOngoing}} ({{ls.ongoingTasksCount}})
               </h4>
             </div>
           </div>
@@ -166,25 +166,25 @@
                     <!-- <td>
                       <input type="checkbox" class="checkbox-submission-list" ng-model="i.checked" />
                     </td> -->
-                    <td title="'Date'" sortable="'imageDate'">
+                    <td title="languageContent.submissionsList.table.date" sortable="'imageDate'">
                       {{i.imageDate}}
                     </td>
-                    <td title="'Satellite'" sortable="'dataset'">
+                    <td title="languageContent.submissionsList.table.dataset" sortable="'dataset'">
                       {{i.dataset}}
                     </td>
-                    <td title="'Landsat Tile'" sortable="'region'">
+                    <td title="languageContent.submissionsList.table.landsatTile" sortable="'region'">
                       {{i.region}}
                     </td>
-                    <td title="'Input Gathering'" sortable="'inputGatheringTag'">
+                    <td title="languageContent.submissionsList.table.inputGathering" sortable="'inputGatheringTag'">
                       {{i.inputGatheringTag}}
                     </td>
-                    <td title="'Input Preprocessing'" sortable="'inputPreprocessingTag'">
+                    <td title="languageContent.submissionsList.table.inputPreprocessing" sortable="'inputPreprocessingTag'">
                       {{i.inputPreprocessingTag}}
                     </td>
-                    <td title="'Algorithm Execution'" sortable="'algorithmExecutionTag'">
+                    <td title="languageContent.submissionsList.table.algorithmExecution" sortable="'algorithmExecutionTag'">
                       {{i.algorithmExecutionTag}}
                     </td>
-                    <td title="'State'" sortable="'state'">
+                    <td title="languageContent.submissionsList.table.state" sortable="'state'">
                       {{i.state}}
                       <span ng-show="i.state == 'error'" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                     </td>
@@ -198,7 +198,7 @@
           <div class="panel-heading">
             <div align="left" class="sb-col-lg-11 sb-col-md-11 sb-col-sm-11 sb-col-xs-20">
               <h4 ng-click="switchVisibility('panel-body-completed')" style="cursor:pointer">
-                Completed ({{ls.completedTasksCount}})
+                {{languageContent.submissionsList.table.titleCompleted}} ({{ls.completedTasksCount}})
               </h4>
             </div>
           </div>
@@ -211,25 +211,25 @@
                     <!-- <td>
                       <input type="checkbox" class="checkbox-submission-list" ng-model="i.checked" />
                     </td> -->
-                    <td title="'Date'" sortable="'imageDate'">
+                    <td title="languageContent.submissionsList.table.date" sortable="'imageDate'">
                       {{i.imageDate}}
                     </td>
-                    <td title="'Satellite'" sortable="'dataset'">
+                    <td title="languageContent.submissionsList.table.dataset" sortable="'dataset'">
                       {{i.dataset}}
                     </td>
-                    <td title="'Landsat Tile'" sortable="'taskId'">
+                    <td title="languageContent.submissionsList.table.landsatTile" sortable="'taskId'">
                       {{i.region}}
                     </td>
-                    <td title="'Input Gathering'" sortable="'inputGatheringTag'">
+                    <td title="languageContent.submissionsList.table.inputGathering" sortable="'inputGatheringTag'">
                       {{i.inputGatheringTag}}
                     </td>
-                    <td title="'Input Preprocessing'" sortable="'inputPreprocessingTag'">
+                    <td title="languageContent.submissionsList.table.inputPreprocessing" sortable="'inputPreprocessingTag'">
                       {{i.inputPreprocessingTag}}
                     </td>
-                    <td title="'Algorithm Execution'" sortable="'algorithmExecutionTag'">
+                    <td title="languageContent.submissionsList.table.algorithmExecution" sortable="'algorithmExecutionTag'">
                       {{i.algorithmExecutionTag}}
                     </td>
-                    <td title="'State'" sortable="'state'">
+                    <td title="languageContent.submissionsList.table.state" sortable="'state'">
                       {{i.state}}
                       <span ng-show="i.state == 'error'" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                     </td>
