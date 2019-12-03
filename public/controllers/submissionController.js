@@ -48,7 +48,7 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
             value: 'default_pre-script'
         }
     ]
-    console.log("procScriptOpts: " + JSON.stringify($scope.processingScripts));
+    
     // Filters
     $scope.searchFilters = {
         name: '',
@@ -399,28 +399,9 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
     $scope.modalMsgError = undefined;
     
     // Script options
-    $scope.inputGatheringOptions = [
-        {
-            name: 'Default',
-            value: 'default_script'
-        },
-        {
-            name: 'Googleapis',
-            value: 'default_script'
-        }
-    ];
-    $scope.inputPreprocessingOptions = [
-        {
-            name: 'Default',
-            value: 'default_pre-script'
-        }
-    ];
-    $scope.algorithmExecutionOptions = [
-        {
-            name: 'Default',
-            value: 'default_algorithim'
-        }
-    ];
+    $scope.inputGatheringOptions = appConfig.scriptsTags.inputdownloading;
+    $scope.inputPreprocessingOptions = appConfig.scriptsTags.preprocessing;
+    $scope.algorithmExecutionOptions = appConfig.scriptsTags.processing;
 
     $scope.$on(appConfig.MODAL_OPENED, function(event, value) {
         $scope.cleanForm();

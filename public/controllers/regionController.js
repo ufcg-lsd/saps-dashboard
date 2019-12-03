@@ -5,28 +5,9 @@ dashboardControllers.controller('RegionController', function ($scope, $rootScope
     GlobalMsgService, NgTableParams, appConfig) {
 
     // Script options
-    $scope.inputGatheringOptions = [
-        {
-            name: 'Default',
-            value: 'default_script'
-        },
-        {
-            name: 'Googleapis',
-            value: 'default_script'
-        }
-    ];
-    $scope.inputPreprocessingOptions = [
-        {
-            name: 'Default',
-            value: 'default_pre-script'
-        }
-    ];
-    $scope.algorithmExecutionOptions = [
-        {
-            name: 'Default',
-            value: 'default_algorithim'
-        }
-    ];
+    $scope.inputGatheringOptions = appConfig.scriptsTags.inputdownloading;
+    $scope.inputPreprocessingOptions = appConfig.scriptsTags.preprocessing;
+    $scope.algorithmExecutionOptions = appConfig.scriptsTags.processing;
 
     // Filters for region search
     $scope.searchFilters = undefined;
