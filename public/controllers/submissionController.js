@@ -1,5 +1,4 @@
 var dashboardControllers = angular.module('dashboardControllers');
-var scriptsTags = require('../../resources/execution_script_tags')
 
 dashboardControllers.controller('ListSubmissionsController', function($scope, $rootScope, $log, $filter, $timeout, $filter,
     SubmissionService, AuthenticationService, GlobalMsgService, EmailService, appConfig, NgTableParams) {
@@ -400,9 +399,9 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
     $scope.modalMsgError = undefined;
     
     // Script options
-    $scope.inputGatheringOptions = scriptsTags.inputdownloading;
-    $scope.inputPreprocessingOptions = scriptsTags.preprocessing;
-    $scope.algorithmExecutionOptions = scriptsTags.processing;
+    $scope.inputGatheringOptions = appConfig.scriptsTags.inputdownloading;
+    $scope.inputPreprocessingOptions = appConfig.scriptsTags.preprocessing;
+    $scope.algorithmExecutionOptions = appConfig.scriptsTags.processing;
 
     $scope.$on(appConfig.MODAL_OPENED, function(event, value) {
         $scope.cleanForm();
