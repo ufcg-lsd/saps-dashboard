@@ -1,9 +1,9 @@
 # Install and Configure Dashboard
 
-The SAPS Dashboard component is responsible for interacting with SAPS users through a graphical interface in brownser providing some services. Here are some of them:
-- Submit new tasks
-- Download successful tasks (seamless processing)
-- View task progress
+The SAPS Dashboard component is a graphical web interface which allow SAPS users to:
+- submit new tasks;
+- track the progress of submittted tasks;
+- download successful tasks.
   
 ## Dependencies
 
@@ -27,8 +27,9 @@ npm install
 
 ## Configure
 
-Edit the files:
-- [Backend configuration file](/backend.config) allow its communication with the SAPS catalog and the graphical interface of the SAPS Dashboard component. Change in ```$dashboard_access_port``` to the port you want to use to access the dashboard graphical interface and in ```$catalog_ip_address``` for the SAPS Catalog access ip
+Edit the following files:
+- [Backend configuration file](/backend.config) allows the communication with the SAPS catalog. Change the ```$dashboard_access_port``` to assign the port you want to use to access the dashboard graphical interface and change the ```$catalog_ip_address``` to assign the SAPS Catalog ip address.
+
 ```json
 {
   	"logLevel": "DEBUG",
@@ -47,7 +48,7 @@ Edit the files:
 }
 ```
 
-- [SAPS Scripts](/public/dashboardApp.js) to make available new versions of the algorithms, for the three steps of the SAPS workflow (input downloading, preprocessing and processing). Any new algorithm should be packed as a docker image. See below example on how to specify the algorithms:
+- [SAPS Scripts](/public/dashboardApp.js) to make available new versions of the algorithms, for the three steps of the SAPS workflow (input downloading, preprocessing and processing). Any new algorithm should be packed as a docker image. See below an example on how to specify the algorithms:
     
 ```javascript
 let scriptsTags =
@@ -82,7 +83,9 @@ let scriptsTags =
 ```
 **Note: The SAPS scripts configured here must be the same as the Dispatcher component and Scheduler component**
 
-- [SAPS Dispatcher Service URL](/public/dashboardApp.js) allows its communication with the SAPS dispatcher backend. Change in ```urlSapsService``` to ```http://$dispatcher_access_ip:$dispatcher_access_port/```. Note: The ```$dispatcher_access_port``` must be the same as the ```submission_rest_server_port``` property in the [Dispatcher component configuration file](https://github.com/ufcg-lsd/saps-engine/blob/develop/config/dispatcher.conf)
+- [SAPS Dispatcher Service URL](/public/dashboardApp.js) allows the communication with the SAPS dispatcher. Assing the dispatcher address (```http://$dispatcher_access_ip:$dispatcher_access_port/```) into the ```urlSapsService``` property.
+
+**Note: The ```$dispatcher_access_port``` must be the same as the ```submission_rest_server_port``` property in the [Dispatcher component configuration file](https://github.com/ufcg-lsd/saps-engine/blob/develop/config/dispatcher.conf)**
 
 ## Run
 
