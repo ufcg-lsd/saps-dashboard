@@ -1,6 +1,8 @@
 #!/bin/bash
 
 readonly DASHBOARD_REPO=wesleymonte/saps-dashboard
+readonly DASHBOARD_CONTAINER=saps-dashboard
+readonly DASHBOARD_PORT=8081
 
 build() {
   local DOCKERFILE_DIR=docker/dockerfile
@@ -11,11 +13,9 @@ build() {
 
 run() {
   local TAG="${1-latest}"
-  local PORT="${2-80}"
-  local CONTAINER_NAME="saps-dashboard"
   docker run -dit \
-    --name "${CONTAINER_NAME}" \
-    -p ${PORT}:80 \
+    --name "${DASHBOARD_CONTAINER}" \
+    -p ${DASHBOARD_PORT}:80 \
     -v "$(pwd)"/public/dashboardApp.js:/dashboard/public/dashboardApp.js \
     -v "$(pwd)"/backend.config:/dashboard/backend.config  \
     "${DASHBOARD_REPO}":"${TAG}"
