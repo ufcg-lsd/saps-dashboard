@@ -43,6 +43,9 @@ define_params() {
     push) shift
       push "$@"
       ;;
+    publish) shift
+      build "$@"
+      push "$@"
   esac
 }
 
