@@ -27,6 +27,11 @@ run() {
     "${REPOSITORY}":"${TAG}"
 }
 
+push() {
+  local TAG="${1-latest}"
+  docker push "${REPOSITORY}":"${TAG}"
+}
+
 define_params() {
   case $1 in
     build) shift
@@ -34,6 +39,9 @@ define_params() {
       ;;
     run) shift
       run "$@"
+      ;;
+    push) shift
+      push "$@"
       ;;
   esac
 }
