@@ -1,14 +1,20 @@
 #!/bin/bash
 
-readonly DASHBOARD_REPO=wesleymonte/saps-dashboard
+readonly REPOSITORY=ufcgsaps/dashboard
+readonly MY_PATH=$(cd "$(dirname "${0}")" || { echo "For some reason, the path is not accessible"; exit 1; }; pwd )
+readonly WORKING_DIRECTORY="$(dirname "${MY_PATH}")"
+readonly DOCKER_FILE_PATH="${MY_PATH}/Dockerfile"
+
+readonly CONFIG_FILE_PATH="${WORKING_DIRECTORY}/backend.config"
+readonly EXECUTION_TAGS_FILE_PATH="${WORKING_DIRECTORY}/execution_script_tags.json"
+
 readonly DASHBOARD_CONTAINER=saps-dashboard
 readonly DASHBOARD_PORT=8081
 
 build() {
-  local DOCKERFILE_DIR=docker/dockerfile
   local TAG="${1-latest}"
-  docker build --tag "${DASHBOARD_REPO}":"${TAG}" \
-          --file "${DOCKERFILE_DIR}" .
+  docker build --tag "${REPOSITORY}":"${TAG}" \
+          --file "${DOCKER_FILE_PATH}" "${WORKING_DIRECTORY}"
 }
 
 run() {
@@ -16,9 +22,14 @@ run() {
   docker run -dit \
     --name "${DASHBOARD_CONTAINER}" \
     -p ${DASHBOARD_PORT}:80 \
-    -v "$(pwd)"/public/dashboardApp.js:/dashboard/public/dashboardApp.js \
-    -v "$(pwd)"/backend.config:/dashboard/backend.config  \
-    "${DASHBOARD_REPO}":"${TAG}"
+    -v "${CONFIG_FILE_PATH}":/dashboard/backend.config \
+    -v "${EXECUTION_TAGS_FILE_PATH}":/etc/saps/execution_script_tags.json  \
+    "${REPOSITORY}":"${TAG}"
+}
+
+push() {
+  local TAG="${1-latest}"
+  docker push "${REPOSITORY}":"${TAG}"
 }
 
 define_params() {
@@ -29,6 +40,12 @@ define_params() {
     run) shift
       run "$@"
       ;;
+    push) shift
+      push "$@"
+      ;;
+    publish) shift
+      build "$@"
+      push "$@"
   esac
 }
 
