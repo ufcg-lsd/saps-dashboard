@@ -7,7 +7,7 @@ readonly PORT=8081
 PID=$(lsof -ti:${PORT})
 
 if [ -z $PID ]; then
-  echo "Not found PID"
+  echo "PID ${PID} not found"
 else
   echo "Killing process ${PID}"
   kill -9 $PID
