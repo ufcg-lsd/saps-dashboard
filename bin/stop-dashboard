@@ -2,7 +2,7 @@
 
 readonly PORT=8081
 
-echo "Run as root!"
+# Run as root!
 
 PID=$(lsof -ti:${PORT})
 
