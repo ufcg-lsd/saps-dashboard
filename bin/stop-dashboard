@@ -1,3 +1,14 @@
 #!/bin/bash
 
-ps xau | grep app.js | awk ‘{print $2}’ | xargs sudo kill
+readonly PORT=8081
+
+# Run as root!
+
+PID=$(lsof -ti:${PORT})
+
+if [ -z $PID ]; then
+  echo "PID ${PID} not found"
+else
+  echo "Killing process ${PID}"
+  kill -9 $PID
+fi
