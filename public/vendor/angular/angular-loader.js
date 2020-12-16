@@ -4,8 +4,11 @@
  * License: MIT
  */
 
-(function() {'use strict';
-    function isFunction(value) {return typeof value === 'function';};
+(function() {
+'use strict';
+function isFunction(value) {
+  return typeof value === 'function';
+};
 
 /**
  * @description
@@ -33,7 +36,8 @@
  *
  * @param {string} module The namespace to use for the new minErr instance.
  * @param {function} ErrorConstructor Custom error constructor to be instantiated when returning
- *   error from returned function, for cases when a particular type of error is useful.
+ *   error from returned function, for cases when a particular type of error is
+ * useful.
  * @returns {function(code:string, template:string, ...templateArgs): Error} minErr instance
  */
 
@@ -42,15 +46,12 @@ function minErr(module, ErrorConstructor) {
   return function() {
     var SKIP_INDEXES = 2;
 
-    var templateArgs = arguments,
-      code = templateArgs[0],
-      message = '[' + (module ? module + ':' : '') + code + '] ',
-      template = templateArgs[1],
-      paramPrefix, i;
+    var templateArgs = arguments, code = templateArgs[0],
+        message = '[' + (module ? module + ':' : '') + code + '] ',
+        template = templateArgs[1], paramPrefix, i;
 
     message += template.replace(/\{\d+\}/g, function(match) {
-      var index = +match.slice(1, -1),
-        shiftedIndex = index + SKIP_INDEXES;
+      var index = +match.slice(1, -1), shiftedIndex = index + SKIP_INDEXES;
 
       if (shiftedIndex < templateArgs.length) {
         return toDebugString(templateArgs[shiftedIndex]);
@@ -60,11 +61,12 @@ function minErr(module, ErrorConstructor) {
     });
 
     message += '\nhttp://errors.angularjs.org/1.4.7/' +
-      (module ? module + '/' : '') + code;
+        (module ? module + '/' : '') + code;
 
-    for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
+    for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length;
+         i++, paramPrefix = '&') {
       message += paramPrefix + 'p' + (i - SKIP_INDEXES) + '=' +
-        encodeURIComponent(toDebugString(templateArgs[i]));
+          encodeURIComponent(toDebugString(templateArgs[i]));
     }
 
     return new ErrorConstructor(message);
@@ -81,7 +83,6 @@ function minErr(module, ErrorConstructor) {
  */
 
 function setupModuleLoader(window) {
-
   var $injectorMinErr = minErr('$injector');
   var ngMinErr = minErr('ng');
 
@@ -91,7 +92,8 @@ function setupModuleLoader(window) {
 
   var angular = ensure(window, 'angular', Object);
 
-  // We need to expose `angular.$$minErr` to modules such as `ngResource` that reference it during bootstrap
+  // We need to expose `angular.$$minErr` to modules such as `ngResource` that
+  // reference it during bootstrap
   angular.$$minErr = angular.$$minErr || minErr;
 
   return ensure(angular, 'module', function() {
@@ -104,19 +106,21 @@ function setupModuleLoader(window) {
      * @module ng
      * @description
      *
-     * The `angular.module` is a global place for creating, registering and retrieving Angular
-     * modules.
-     * All modules (angular core or 3rd party) that should be available to an application must be
-     * registered using this mechanism.
+     * The `angular.module` is a global place for creating, registering and
+     * retrieving Angular modules. All modules (angular core or 3rd party) that
+     * should be available to an application must be registered using this
+     * mechanism.
      *
      * Passing one argument retrieves an existing {@link angular.Module},
-     * whereas passing more than one argument creates a new {@link angular.Module}
+     * whereas passing more than one argument creates a new {@link
+     * angular.Module}
      *
      *
      * # Module
      *
-     * A module is a collection of services, directives, controllers, filters, and configuration information.
-     * `angular.module` is used to configure the {@link auto.$injector $injector}.
+     * A module is a collection of services, directives, controllers, filters,
+     * and configuration information. `angular.module` is used to configure the
+     * {@link auto.$injector $injector}.
      *
      * ```js
      * // Create a new module
@@ -144,7 +148,8 @@ function setupModuleLoader(window) {
      *
      * @param {!string} name The name of the module to create or retrieve.
      * @param {!Array.<string>=} requires If specified then new module is being created. If
-     *        unspecified then the module is being retrieved for further configuration.
+     *        unspecified then the module is being retrieved for further
+     * configuration.
      * @param {Function=} configFn Optional configuration function for the module. Same as
      *        {@link angular.Module#config Module#config()}.
      * @returns {module} new module with the {@link angular.Module} api.
@@ -152,7 +157,8 @@ function setupModuleLoader(window) {
     return function module(name, requires, configFn) {
       var assertNotHasOwnProperty = function(name, context) {
         if (name === 'hasOwnProperty') {
-          throw ngMinErr('badname', 'hasOwnProperty is not a valid {0} name', context);
+          throw ngMinErr(
+              'badname', 'hasOwnProperty is not a valid {0} name', context);
         }
       };
 
@@ -162,9 +168,12 @@ function setupModuleLoader(window) {
       }
       return ensure(modules, name, function() {
         if (!requires) {
-          throw $injectorMinErr('nomod', "Module '{0}' is not available! You either misspelled " +
-             "the module name or forgot to load it. If registering a module ensure that you " +
-             "specify the dependencies as the second argument.", name);
+          throw $injectorMinErr(
+              'nomod',
+              'Module \'{0}\' is not available! You either misspelled ' +
+                  'the module name or forgot to load it. If registering a module ensure that you ' +
+                  'specify the dependencies as the second argument.',
+              name);
         }
 
         /** @type {!Array.<Array.<*>>} */
@@ -191,8 +200,8 @@ function setupModuleLoader(window) {
            * @module ng
            *
            * @description
-           * Holds the list of modules which the injector will load before the current module is
-           * loaded.
+           * Holds the list of modules which the injector will load before the
+           * current module is loaded.
            */
           requires: requires,
 
@@ -259,18 +268,20 @@ function setupModuleLoader(window) {
            * @param {string} name constant name
            * @param {*} object Constant value.
            * @description
-           * Because the constant are fixed, they get applied before other provide methods.
-           * See {@link auto.$provide#constant $provide.constant()}.
+           * Because the constant are fixed, they get applied before other
+           * provide methods. See {@link auto.$provide#constant
+           * $provide.constant()}.
            */
           constant: invokeLater('$provide', 'constant', 'unshift'),
 
-           /**
+          /**
            * @ngdoc method
            * @name angular.Module#decorator
            * @module ng
            * @param {string} The name of the service to decorate.
            * @param {Function} This function will be invoked when the service needs to be
-           *                                    instantiated and should return the decorated service instance.
+           *                                    instantiated and should return
+           * the decorated service instance.
            * @description
            * See {@link auto.$provide#decorator $provide.decorator()}.
            */
@@ -285,11 +296,13 @@ function setupModuleLoader(window) {
            *                                    animation.
            * @description
            *
-           * **NOTE**: animations take effect only if the **ngAnimate** module is loaded.
+           * **NOTE**: animations take effect only if the **ngAnimate** module
+           * is loaded.
            *
            *
            * Defines an animation hook that can be later used with
-           * {@link $animate $animate} service and directives that use this service.
+           * {@link $animate $animate} service and directives that use this
+           * service.
            *
            * ```js
            * module.animation('.animation-name', function($inject1, $inject2) {
@@ -305,10 +318,12 @@ function setupModuleLoader(window) {
            * })
            * ```
            *
-           * See {@link ng.$animateProvider#register $animateProvider.register()} and
+           * See {@link ng.$animateProvider#register
+           * $animateProvider.register()} and
            * {@link ngAnimate ngAnimate module} for more information.
            */
-          animation: invokeLaterAndSetModuleName('$animateProvider', 'register'),
+          animation:
+              invokeLaterAndSetModuleName('$animateProvider', 'register'),
 
           /**
            * @ngdoc method
@@ -320,9 +335,11 @@ function setupModuleLoader(window) {
            * See {@link ng.$filterProvider#register $filterProvider.register()}.
            *
            * <div class="alert alert-warning">
-           * **Note:** Filter names must be valid angular {@link expression} identifiers, such as `uppercase` or `orderBy`.
-           * Names with special characters, such as hyphens and dots, are not allowed. If you wish to namespace
-           * your filters, then you can use capitalization (`myappSubsectionFilterx`) or underscores
+           * **Note:** Filter names must be valid angular {@link expression}
+           * identifiers, such as `uppercase` or `orderBy`. Names with special
+           * characters, such as hyphens and dots, are not allowed. If you wish
+           * to namespace your filters, then you can use capitalization
+           * (`myappSubsectionFilterx`) or underscores
            * (`myapp_subsection_filterx`).
            * </div>
            */
@@ -336,9 +353,11 @@ function setupModuleLoader(window) {
            *    keys are the names and the values are the constructors.
            * @param {Function} constructor Controller constructor function.
            * @description
-           * See {@link ng.$controllerProvider#register $controllerProvider.register()}.
+           * See {@link ng.$controllerProvider#register
+           * $controllerProvider.register()}.
            */
-          controller: invokeLaterAndSetModuleName('$controllerProvider', 'register'),
+          controller:
+              invokeLaterAndSetModuleName('$controllerProvider', 'register'),
 
           /**
            * @ngdoc method
@@ -349,9 +368,11 @@ function setupModuleLoader(window) {
            * @param {Function} directiveFactory Factory function for creating new instance of
            * directives.
            * @description
-           * See {@link ng.$compileProvider#directive $compileProvider.directive()}.
+           * See {@link ng.$compileProvider#directive
+           * $compileProvider.directive()}.
            */
-          directive: invokeLaterAndSetModuleName('$compileProvider', 'directive'),
+          directive:
+              invokeLaterAndSetModuleName('$compileProvider', 'directive'),
 
           /**
            * @ngdoc method
@@ -360,8 +381,8 @@ function setupModuleLoader(window) {
            * @param {Function} configFn Execute this function on module load. Useful for service
            *    configuration.
            * @description
-           * Use this method to register work which needs to be performed on module loading.
-           * For more about how to configure services, see
+           * Use this method to register work which needs to be performed on
+           * module loading. For more about how to configure services, see
            * {@link providers#provider-recipe Provider Recipe}.
            */
           config: config,
@@ -373,8 +394,8 @@ function setupModuleLoader(window) {
            * @param {Function} initializationFn Execute this function after injector creation.
            *    Useful for application initialization.
            * @description
-           * Use this method to register work which should be performed when the injector is done
-           * loading all modules.
+           * Use this method to register work which should be performed when the
+           * injector is done loading all modules.
            */
           run: function(block) {
             runBlocks.push(block);
@@ -409,7 +430,8 @@ function setupModuleLoader(window) {
          */
         function invokeLaterAndSetModuleName(provider, method) {
           return function(recipeName, factoryFunction) {
-            if (factoryFunction && isFunction(factoryFunction)) factoryFunction.$$moduleName = name;
+            if (factoryFunction && isFunction(factoryFunction))
+              factoryFunction.$$moduleName = name;
             invokeQueue.push([provider, method, arguments]);
             return moduleInstance;
           };
@@ -417,7 +439,6 @@ function setupModuleLoader(window) {
       });
     };
   });
-
 }
 
 setupModuleLoader(window);
@@ -440,4 +461,3 @@ setupModuleLoader(window);
  * } }
  */
 angular.Module;
-

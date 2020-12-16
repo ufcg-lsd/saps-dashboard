@@ -10,7 +10,7 @@
  * @author      SpryMedia Ltd (www.sprymedia.co.uk)
  * @contact     www.sprymedia.co.uk/contact
  * @copyright   Copyright 2014 SpryMedia Ltd.
- * 
+ *
  * License      MIT - http://datatables.net/license/mit
  *
  * This feature plug-in for DataTables will highlight search terms in the
@@ -33,35 +33,34 @@
  *     http://datatables.net/blog/2014-10-22
  */
 
-(function(window, document, $){
+(function(window, document, $) {
 
 
 // Listen for DataTables initialisations
-$(document).on( 'init.dt.dth', function (e, settings, json) {
-	var table = new $.fn.dataTable.Api( settings );
-	var body = $( table.table().body() );
+$(document).on('init.dt.dth', function(e, settings, json) {
+  var table = new $.fn.dataTable.Api(settings);
+  var body = $(table.table().body());
 
-	if (
-		$( table.table().node() ).hasClass( 'searchHighlight' ) || // table has class
-		settings.oInit.searchHighlight                          || // option specified
-		$.fn.dataTable.defaults.searchHighlight                    // default set
-	) {
-		table
-			.on( 'draw.dt.dth column-visibility.dt.dth', function () {
-				// On each draw highlight search results, removing the old ones
-				body.unhighlight();
+  if (
+      $(table.table().node()).hasClass('searchHighlight') ||  // table has class
+      settings.oInit.searchHighlight ||        // option specified
+      $.fn.dataTable.defaults.searchHighlight  // default set
+  ) {
+    table
+        .on('draw.dt.dth column-visibility.dt.dth',
+            function() {
+              // On each draw highlight search results, removing the old ones
+              body.unhighlight();
 
-				// Don't highlight the "not found" row
-				if ( table.rows( { filter: 'applied' } ).data().length ) {
-					body.highlight( table.search().split(' ') );
-				}
-			} )
-			.on( 'destroy', function () {
-				// Remove event handler
-				table.off( 'draw.dt.dth column-visibility.dt.dth' );
-			} );
-	}
-} );
-
-
+              // Don't highlight the "not found" row
+              if (table.rows({filter: 'applied'}).data().length) {
+                body.highlight(table.search().split(' '));
+              }
+            })
+        .on('destroy', function() {
+          // Remove event handler
+          table.off('draw.dt.dth column-visibility.dt.dth');
+        });
+  }
+});
 })(window, document, jQuery);

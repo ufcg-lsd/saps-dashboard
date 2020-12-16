@@ -1,4 +1,4 @@
-jvm.VMLShapeElement = function(name, config){
+jvm.VMLShapeElement = function(name, config) {
   jvm.VMLShapeElement.parentClass.call(this, name, config);
 
   this.fillElement = new jvm.VMLElement('fill');
@@ -13,13 +13,13 @@ jvm.VMLShapeElement = function(name, config){
 jvm.inherits(jvm.VMLShapeElement, jvm.VMLElement);
 jvm.mixin(jvm.VMLShapeElement, jvm.AbstractShapeElement);
 
-jvm.VMLShapeElement.prototype.applyAttr = function(attr, value){
+jvm.VMLShapeElement.prototype.applyAttr = function(attr, value) {
   switch (attr) {
     case 'fill':
       this.node.fillcolor = value;
       break;
     case 'fill-opacity':
-      this.fillElement.node.opacity = Math.round(value*100)+'%';
+      this.fillElement.node.opacity = Math.round(value * 100) + '%';
       break;
     case 'stroke':
       if (value === 'none') {
@@ -30,7 +30,7 @@ jvm.VMLShapeElement.prototype.applyAttr = function(attr, value){
       this.node.strokecolor = value;
       break;
     case 'stroke-opacity':
-      this.strokeElement.node.opacity = Math.round(value*100)+'%';
+      this.strokeElement.node.opacity = Math.round(value * 100) + '%';
       break;
     case 'stroke-width':
       if (parseInt(value, 10) === 0) {
@@ -44,6 +44,7 @@ jvm.VMLShapeElement.prototype.applyAttr = function(attr, value){
       this.node.path = jvm.VMLPathElement.pathSvgToVml(value);
       break;
     default:
-      jvm.VMLShapeElement.parentClass.prototype.applyAttr.apply(this, arguments);
+      jvm.VMLShapeElement.parentClass.prototype.applyAttr.apply(
+          this, arguments);
   }
 };

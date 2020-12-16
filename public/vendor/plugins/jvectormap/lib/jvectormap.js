@@ -21,7 +21,7 @@ var jvm = {
    * @param {Function} target
    * @param {Function} source
    */
-  mixin: function(target, source){
+  mixin: function(target, source) {
     var prop;
 
     for (prop in source.prototype) {
@@ -31,9 +31,8 @@ var jvm = {
     }
   },
 
-  min: function(values){
-    var min = Number.MAX_VALUE,
-        i;
+  min: function(values) {
+    var min = Number.MAX_VALUE, i;
 
     if (values instanceof Array) {
       for (i = 0; i < values.length; i++) {
@@ -51,9 +50,8 @@ var jvm = {
     return min;
   },
 
-  max: function(values){
-    var max = Number.MIN_VALUE,
-        i;
+  max: function(values) {
+    var max = Number.MIN_VALUE, i;
 
     if (values instanceof Array) {
       for (i = 0; i < values.length; i++) {
@@ -71,9 +69,8 @@ var jvm = {
     return max;
   },
 
-  keys: function(object){
-    var keys = [],
-        key;
+  keys: function(object) {
+    var keys = [], key;
 
     for (key in object) {
       keys.push(key);
@@ -81,10 +78,8 @@ var jvm = {
     return keys;
   },
 
-  values: function(object){
-    var values = [],
-        key,
-        i;
+  values: function(object) {
+    var values = [], key, i;
 
     for (i = 0; i < arguments.length; i++) {
       object = arguments[i];

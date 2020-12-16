@@ -12,25 +12,24 @@
  *  @example
  *    $(document).ready(function() {
  *        var table = $('#example').dataTable();
- *         
+ *
  *        // Sort in the order that was originally in the HTML
  *        table.fnSortNeutral();
  *    } );
  */
 
-jQuery.fn.dataTableExt.oApi.fnSortNeutral = function ( oSettings )
-{
-	/* Remove any current sorting */
-	oSettings.aaSorting = [];
+jQuery.fn.dataTableExt.oApi.fnSortNeutral = function(oSettings) {
+  /* Remove any current sorting */
+  oSettings.aaSorting = [];
 
-	/* Sort display arrays so we get them in numerical order */
-	oSettings.aiDisplay.sort( function (x,y) {
-		return x-y;
-	} );
-	oSettings.aiDisplayMaster.sort( function (x,y) {
-		return x-y;
-	} );
+  /* Sort display arrays so we get them in numerical order */
+  oSettings.aiDisplay.sort(function(x, y) {
+    return x - y;
+  });
+  oSettings.aiDisplayMaster.sort(function(x, y) {
+    return x - y;
+  });
 
-	/* Redraw */
-	oSettings.oApi._fnReDraw( oSettings );
+  /* Redraw */
+  oSettings.oApi._fnReDraw(oSettings);
 };

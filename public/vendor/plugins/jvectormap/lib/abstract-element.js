@@ -4,7 +4,7 @@
  * @param {String} name Tag name of the element
  * @param {Object} config Set of parameters to initialize element with
  */
-jvm.AbstractElement = function(name, config){
+jvm.AbstractElement = function(name, config) {
   /**
    * Underlying DOM element
    * @type {DOMElement}
@@ -36,7 +36,7 @@ jvm.AbstractElement = function(name, config){
  * @param {String} name Name of attribute
  * @param {Number|String} config Set of parameters to initialize element with
  */
-jvm.AbstractElement.prototype.set = function(property, value){
+jvm.AbstractElement.prototype.set = function(property, value) {
   var key;
 
   if (typeof property === 'object') {
@@ -54,7 +54,7 @@ jvm.AbstractElement.prototype.set = function(property, value){
  * Returns value of attribute.
  * @param {String} name Name of attribute
  */
-jvm.AbstractElement.prototype.get = function(property){
+jvm.AbstractElement.prototype.get = function(property) {
   return this.properties[property];
 };
 
@@ -64,10 +64,10 @@ jvm.AbstractElement.prototype.get = function(property){
  * @param {Number|String} config Value of attribute to apply
  * @private
  */
-jvm.AbstractElement.prototype.applyAttr = function(property, value){
+jvm.AbstractElement.prototype.applyAttr = function(property, value) {
   this.node.setAttribute(property, value);
 };
 
-jvm.AbstractElement.prototype.remove = function(){
+jvm.AbstractElement.prototype.remove = function() {
   jvm.$(this.node).remove();
 };

@@ -1,8 +1,9 @@
-jvm.ColorScale = function(colors, normalizeFunction, minValue, maxValue) {
+jvm.ColorScale =
+    function(colors, normalizeFunction, minValue, maxValue) {
   jvm.ColorScale.parentClass.apply(this, arguments);
 }
 
-jvm.inherits(jvm.ColorScale, jvm.NumericScale);
+    jvm.inherits(jvm.ColorScale, jvm.NumericScale);
 
 jvm.ColorScale.prototype.setScale = function(scale) {
   var i;
@@ -13,17 +14,16 @@ jvm.ColorScale.prototype.setScale = function(scale) {
 };
 
 jvm.ColorScale.prototype.getValue = function(value) {
-  return jvm.ColorScale.numToRgb(jvm.ColorScale.parentClass.prototype.getValue.call(this, value));
+  return jvm.ColorScale.numToRgb(
+      jvm.ColorScale.parentClass.prototype.getValue.call(this, value));
 };
 
 jvm.ColorScale.arrayToRgb = function(ar) {
-  var rgb = '#',
-      d,
-      i;
+  var rgb = '#', d, i;
 
   for (i = 0; i < ar.length; i++) {
     d = ar[i].toString(16);
-    rgb += d.length == 1 ? '0'+d : d;
+    rgb += d.length == 1 ? '0' + d : d;
   }
   return rgb;
 };
@@ -35,10 +35,13 @@ jvm.ColorScale.numToRgb = function(num) {
     num = '0' + num;
   }
 
-  return '#'+num;
+  return '#' + num;
 };
 
 jvm.ColorScale.rgbToArray = function(rgb) {
   rgb = rgb.substr(1);
-  return [parseInt(rgb.substr(0, 2), 16), parseInt(rgb.substr(2, 2), 16), parseInt(rgb.substr(4, 2), 16)];
+  return [
+    parseInt(rgb.substr(0, 2), 16), parseInt(rgb.substr(2, 2), 16),
+    parseInt(rgb.substr(4, 2), 16)
+  ];
 };

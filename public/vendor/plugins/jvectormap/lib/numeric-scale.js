@@ -51,23 +51,20 @@ jvm.NumericScale.prototype = {
   },
 
   getValue: function(value) {
-    var lengthes = [],
-        fullLength = 0,
-        l,
-        i = 0,
-        c;
+    var lengthes = [], fullLength = 0, l, i = 0, c;
 
     if (typeof this.normalize === 'function') {
       value = this.normalize(value);
     }
-    for (i = 0; i < this.scale.length-1; i++) {
-      l = this.vectorLength(this.vectorSubtract(this.scale[i+1], this.scale[i]));
+    for (i = 0; i < this.scale.length - 1; i++) {
+      l = this.vectorLength(
+          this.vectorSubtract(this.scale[i + 1], this.scale[i]));
       lengthes.push(l);
       fullLength += l;
     }
 
     c = (this.maxValue - this.minValue) / fullLength;
-    for (i=0; i<lengthes.length; i++) {
+    for (i = 0; i < lengthes.length; i++) {
       lengthes[i] *= c;
     }
 
@@ -81,34 +78,27 @@ jvm.NumericScale.prototype = {
     if (i == this.scale.length - 1) {
       value = this.vectorToNum(this.scale[i])
     } else {
-      value = (
-        this.vectorToNum(
-          this.vectorAdd(this.scale[i],
-            this.vectorMult(
-              this.vectorSubtract(this.scale[i+1], this.scale[i]),
-              (value) / (lengthes[i])
-            )
-          )
-        )
-      );
+      value = (this.vectorToNum(this.vectorAdd(
+          this.scale[i],
+          this.vectorMult(
+              this.vectorSubtract(this.scale[i + 1], this.scale[i]),
+              (value) / (lengthes[i])))));
     }
 
     return value;
   },
 
   vectorToNum: function(vector) {
-    var num = 0,
-        i;
+    var num = 0, i;
 
     for (i = 0; i < vector.length; i++) {
-      num += Math.round(vector[i])*Math.pow(256, vector.length-i-1);
+      num += Math.round(vector[i]) * Math.pow(256, vector.length - i - 1);
     }
     return num;
   },
 
   vectorSubtract: function(vector1, vector2) {
-    var vector = [],
-        i;
+    var vector = [], i;
 
     for (i = 0; i < vector1.length; i++) {
       vector[i] = vector1[i] - vector2[i];
@@ -117,8 +107,7 @@ jvm.NumericScale.prototype = {
   },
 
   vectorAdd: function(vector1, vector2) {
-    var vector = [],
-        i;
+    var vector = [], i;
 
     for (i = 0; i < vector1.length; i++) {
       vector[i] = vector1[i] + vector2[i];
@@ -127,8 +116,7 @@ jvm.NumericScale.prototype = {
   },
 
   vectorMult: function(vector, num) {
-    var result = [],
-        i;
+    var result = [], i;
 
     for (i = 0; i < vector.length; i++) {
       result[i] = vector[i] * num;
@@ -137,8 +125,7 @@ jvm.NumericScale.prototype = {
   },
 
   vectorLength: function(vector) {
-    var result = 0,
-        i;
+    var result = 0, i;
     for (i = 0; i < vector.length; i++) {
       result += vector[i] * vector[i];
     }

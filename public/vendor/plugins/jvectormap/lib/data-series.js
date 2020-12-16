@@ -23,8 +23,12 @@ jvm.DataSeries = function(params, elements) {
   }
 
   if (jvm.$.isArray(params.scale)) {
-    scaleConstructor = (params.attribute === 'fill' || params.attribute === 'stroke') ? jvm.ColorScale : jvm.NumericScale;
-    this.scale = new scaleConstructor(params.scale, params.normalizeFunction, params.min, params.max);
+    scaleConstructor =
+        (params.attribute === 'fill' || params.attribute === 'stroke') ?
+        jvm.ColorScale :
+        jvm.NumericScale;
+    this.scale = new scaleConstructor(
+        params.scale, params.normalizeFunction, params.min, params.max);
   } else if (params.scale) {
     this.scale = new jvm.OrdinalScale(params.scale);
   } else {
@@ -36,9 +40,8 @@ jvm.DataSeries = function(params, elements) {
 };
 
 jvm.DataSeries.prototype = {
-  setAttributes: function(key, attr){
-    var attrs = key,
-        code;
+  setAttributes: function(key, attr) {
+    var attrs = key, code;
 
     if (typeof key == 'string') {
       if (this.elements[key]) {
@@ -47,7 +50,8 @@ jvm.DataSeries.prototype = {
     } else {
       for (code in attrs) {
         if (this.elements[code]) {
-          this.elements[code].element.setStyle(this.params.attribute, attrs[code]);
+          this.elements[code].element.setStyle(
+              this.params.attribute, attrs[code]);
         }
       }
     }
@@ -58,13 +62,10 @@ jvm.DataSeries.prototype = {
    * @param {Object} values Object which maps codes of regions or markers to values.
    */
   setValues: function(values) {
-    var max = Number.MIN_VALUE,
-        min = Number.MAX_VALUE,
-        val,
-        cc,
-        attrs = {};
+    var max = Number.MIN_VALUE, min = Number.MAX_VALUE, val, cc, attrs = {};
 
-    if (!(this.scale instanceof jvm.OrdinalScale) && !(this.scale instanceof jvm.SimpleScale)) {
+    if (!(this.scale instanceof jvm.OrdinalScale) &&
+        !(this.scale instanceof jvm.SimpleScale)) {
       if (!this.params.min || !this.params.max) {
         for (cc in values) {
           val = parseFloat(values[cc]);
@@ -85,7 +86,8 @@ jvm.DataSeries.prototype = {
         if (!isNaN(val)) {
           attrs[cc] = this.scale.getValue(val);
         } else {
-          attrs[cc] = this.elements[cc].element.style.initial[this.params.attribute];
+          attrs[cc] =
+              this.elements[cc].element.style.initial[this.params.attribute];
         }
       }
     } else {
@@ -93,7 +95,8 @@ jvm.DataSeries.prototype = {
         if (values[cc]) {
           attrs[cc] = this.scale.getValue(values[cc]);
         } else {
-          attrs[cc] = this.elements[cc].element.style.initial[this.params.attribute];
+          attrs[cc] =
+              this.elements[cc].element.style.initial[this.params.attribute];
         }
       }
     }
@@ -102,13 +105,13 @@ jvm.DataSeries.prototype = {
     jvm.$.extend(this.values, values);
   },
 
-  clear: function(){
-    var key,
-        attrs = {};
+  clear: function() {
+    var key, attrs = {};
 
     for (key in this.values) {
       if (this.elements[key]) {
-        attrs[key] = this.elements[key].element.style.initial[this.params.attribute];
+        attrs[key] =
+            this.elements[key].element.style.initial[this.params.attribute];
       }
     }
     this.setAttributes(attrs);
