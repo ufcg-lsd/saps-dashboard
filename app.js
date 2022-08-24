@@ -89,16 +89,7 @@ var startApp = function() {
         extended: false
     }));
 
-    app.use(express.static(path.join(__dirname, '/public'))); //Point to Angular frontend content
-
-
-    app.listen(appConfig.port, function(err, res) {
-        if (err) {
-            logger.error("Error while starting server");
-        } else {
-            logger.info("Running at " + appConfig.port);
-        }
-    });
+    app.use('/', express.static(path.join(__dirname, '/public'))); //Point to Angular frontend content
 
     /**** API TO RETURN DATA TO FRONTEND ****/
     /*  
@@ -174,9 +165,17 @@ var startApp = function() {
         res.sendFile(path.join(__dirname, '/public/assets/pdf', 'SAPS_privacy_policy.pdf'))
     });  
 
-    // app.get('*', function (req, res) {
-    //     res.redirect('/');
-    // });
+    app.get('*', function (req, res) {
+        res.redirect(308, '/');
+    });
+
+    app.listen(appConfig.port, function(err, res) {
+        if (err) {
+            logger.error("Error while starting server");
+        } else {
+            logger.info("Running at " + appConfig.port);
+        }
+    });
 
     //**** CALLBACK FUNCTIONS TO HANDLE SEBAL API RESPONSES ****//
     function registerCallBack(callBackfunction, httpReq, httpRes) {

@@ -222,15 +222,23 @@ app.config(function($routeProvider, $locationProvider) {
     var checkUser = function($location, AuthenticationService) {
         if (!AuthenticationService.getCheckUser()) {
             $location.path("/");
+        } else {
+            $location.path("/submissions-list");
         }
     }
 
     $routeProvider
         // route for the home page
         .when('/', {
+            resolve: {
+                "check": checkUser
+            },
             templateUrl: '/pages/login.html',
         })
         .when('/new-user', {
+            resolve: {
+                "check": checkUser
+            },
             templateUrl: '/pages/create_user.html',
         })
         .when('/regions-map', {
@@ -260,7 +268,7 @@ app.config(function($routeProvider, $locationProvider) {
         .otherwise({
             redirectTo: '/'
         });
-    $locationProvider.html5Mode(false);
+    $locationProvider.html5Mode(true);
 });
 app.config(
     function($mdDateLocaleProvider) {
