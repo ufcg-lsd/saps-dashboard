@@ -172,7 +172,7 @@ dashboardControllers.controller('LoginController', function($scope, $rootScope, 
             function(response) { //Success call back
                 //$rootScope.$broadcast(appConfig.CREATE_USER_SUCCEED, "Create user succeed");
                 console.log("User Created");
-                $scope.msg = "Thank you =)\n within 3 days you'll receive\nan email with some info about your registration"
+                $scope.msg = "Thank you =)\nWithin 3 days you'll receive\nan email with some info about your registration"
                 //$location.path('/monitor');
                 $scope.create = false;
             },
