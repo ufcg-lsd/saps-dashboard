@@ -23,6 +23,13 @@
                 failPriorityRange: "Priority value must be between 1 and 100",
                 noResultSearch: "There were no results for this search."
             },
+            loginEGICheckIn:{
+                buttonLogin: "Login with EGI Check-in",
+                accessDenied : "User denied access",
+                issuerNotValid : "Issuer not valid",
+                tokenExpired : "Token expired",
+                sapsVO : "User not in SAPS VO"
+            },
             login: {
                 placeholdName: "NAME/EMAIL",
                 placeholdEmail: "PASSWORD",

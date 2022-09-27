@@ -16,19 +16,20 @@
   "author": "Gustavo Guimaraes",
   "license": "ISC",
   "dependencies": {
-    "jquery": "latest",
-    "express": "^4.15.2",
-    "body-parser": "~1.16.0",
-    "debug": "~2.6.0",
     "angular": "latest",
-    "angular-sanitize": "latest",
-    "angular-resource": "latest",
-    "angular-route": "latest",
     "angular-animate": "latest",
     "angular-aria": "latest",
-    "angular-messages": "latest",
     "angular-material": "latest",
+    "angular-messages": "latest",
+    "angular-resource": "latest",
+    "angular-route": "latest",
+    "angular-sanitize": "latest",
+    "body-parser": "~1.16.0",
+    "debug": "~2.6.0",
+    "express": "^4.15.2",
+    "jquery": "latest",
+    "moment": "latest",
     "ng-table": "latest",
-    "moment": "latest"
+    "openid-client": "^5.1.6"
   }
 }

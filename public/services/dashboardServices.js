@@ -75,6 +75,18 @@ dashboardServices.service('AuthenticationService', function ($log, $http,
         }
     };
 
+    authService.startEGICheckInSessionLogin = function () {
+        window.location.href = '<BASE_URL>/auth-egi'
+    }
+
+    authService.confirmEGICheckInSessionLogin = function (userName) {
+        Session.createBasicSession(userName, userName, "")
+    }
+
+    authService.destroyEGICheckInSessionLogin = function () {
+        Session.destroy()
+    }
+
     authService.basicSessionLogin = function (userLogin, password, callbackSuccess, callbackError) {
 
         var userName = userLogin; //For now user name is the login.

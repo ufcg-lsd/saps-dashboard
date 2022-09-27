@@ -136,7 +136,7 @@ dashboardControllers.controller('MainController', function($scope, $rootScope, $
 });
 
 dashboardControllers.controller('LoginController', function($scope, $rootScope, $log, $filter, $timeout,
-    $location, appConfig, AuthenticationService, GlobalMsgService) {
+    $window, $location, appConfig, AuthenticationService, GlobalMsgService) {
 
     $scope.username;
     $scope.password;
@@ -144,6 +144,18 @@ dashboardControllers.controller('LoginController', function($scope, $rootScope, 
     $scope.errorMsg = undefined;
     $scope.create = true;
     $scope.msg = "Teste";
+
+    let response = $location.search() // Get query params from URL
+    $location.search({}) // Remove query params from URL bar browser
+    if(response.error) {
+        console.log("Login error: " + $scope.languageContent.loginEGICheckIn[response.error]);
+        $scope.errorMsg = $scope.languageContent.loginEGICheckIn[response.error]
+    }
+
+    $scope.doEGICheckInLogin = function() {
+        $scope.errorMsg = undefined;
+        AuthenticationService.startEGICheckInSessionLogin()
+    }
 
     $scope.doLogin = function() {
         $scope.errorMsg = undefined;
@@ -187,6 +199,34 @@ dashboardControllers.controller('LoginController', function($scope, $rootScope, 
 
     $scope.clearLoginMsg = function() {
         $scope.errorMsg = undefined;
+    }
+
+});
+
+dashboardControllers.controller('EGICheckInLoginController', function($scope, $rootScope, $log, $filter, $timeout,
+    $window, $location, appConfig, AuthenticationService, GlobalMsgService) {
+
+    console.log($scope.languageContent)
+    let response = $location.search()
+    console.log(response)
+
+    if(response.username) {
+        console.log("OK!")
+        AuthenticationService.confirmEGICheckInSessionLogin(response.username)
+
+        $rootScope.$broadcast(appConfig.LOGIN_SUCCEED, "Login succeed");
+        $location.path('/submissions-list');
+    }
+    else if(response.error) {
+        console.log("Error: "+response.error)
+        AuthenticationService.destroyEGICheckInSessionLogin()
+
+        $location.path('/').search({error: response.error});
+    }
+    else{
+        AuthenticationService.destroyEGICheckInSessionLogin()
+
+        $location.path('/');
     }
 
 });

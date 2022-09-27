@@ -3,6 +3,7 @@ var path = require('path');
 var fs = require("fs");
 var bodyParser = require('body-parser');
 var exec = require('child_process').exec;
+const openid = require('openid-client')
 var sebalApi;
 
 var app = express();
@@ -73,6 +74,27 @@ var loadAppConfig = function() {
 }
 
 
+const issuerEGI = new openid.Issuer({
+    issuer: "<ISSUER>",
+    authorization_endpoint: "<AUTHORIZATION_ENDPOINT>",
+    token_endpoint: "<TOKEN_ENDPOINT>",
+    userinfo_endpoint: "<USER_INFO_ENDPOINT>",
+    jwks_uri: "<JWKS>"
+})
+
+
+const clientEGI = new issuerEGI.Client({
+    client_id: "<CLIENT_ID>",
+    client_secret: "<CLIENT_SECRET>",
+    redirect_uris: ["<BASE_URL>/auth-egi-callback"],
+    response_types: ["code"],
+});
+
+let code_verifier;
+let code_challenge;
+
+
+
 var startApp = function() {
     logger.debug("Start app")
     //Starting configurations
@@ -100,8 +122,98 @@ var startApp = function() {
         }
     });
 
+
+    app.get("/auth-egi",function(req, res) {
+
+        //console.log("---  ISSUER  ---")
+        //console.log(issuerEGI)
+
+        //console.log("---  CLIENT  ---")
+        //console.log(clientEGI)
+
+        code_verifier = openid.generators.codeVerifier();
+        code_challenge = openid.generators.codeChallenge(code_verifier);
+
+        //console.log("---  CODE VERIFIER  ---")
+        //console.log(code_verifier)
+
+        //console.log("---  CODE CHALLENGE  ---")
+        //console.log(code_challenge)
+
+        const authorizationUrl = clientEGI.authorizationUrl({
+            scope: 'openid profile email eduperson_entitlement',
+            code_challenge,
+            code_challenge_method: 'S256',
+        });
+
+        //console.log("---  AUTH URL  ---")
+        //console.log(authorizationUrl)
+
+        res.redirect(authorizationUrl)
+
+    })
+
+
+    app.get("/auth-egi-callback", async function(req, res) {
+
+        const params = clientEGI.callbackParams(req);
+
+        //console.log("--- PARAMS ---")
+        //console.log(params)
+
+        if (params.error){
+
+            //console.log("--- ERROR ---")
+            //console.log(params)
+
+            res.redirect('/#!/verifyEGICheckInLogin?error=accessDenied')
+        }
+        else{
+
+            //console.log("---  AUTH CODE  ---")
+            //console.log(params.code)
+
+            const tokenSet = await clientEGI.callback(clientEGI.redirect_uris[0], params, {code_verifier});
+
+            //console.log("---  TOKEN SET  ---")
+            //console.log(tokenSet)
+
+            let tokenSetClaims = tokenSet.claims()
+
+            //console.log("---  TOKEN SET CLAIMS  ---")
+            //console.log(tokenSetClaims)
+
+            const userinfo = await clientEGI.userinfo(tokenSet.access_token);
+
+            //console.log("---  USER INFO  ---")
+            //console.log(userinfo);
+
+            let username = userinfo.preferred_username
+            let eduperson_entitlement = userinfo.eduperson_entitlement
+            let issuer = tokenSetClaims.iss
+            let expiration = tokenSetClaims.exp
+
+            if(issuer !== issuerEGI.issuer) {
+                res.redirect('/#!/verifyEGICheckInLogin?error=issuerNotValid')
+            }
+            else if(expiration < Math.floor((new Date()).getTime()/1000)) {
+                res.redirect('/#!/verifyEGICheckInLogin?error=tokenExpired')
+            }
+            //Works only in the production environment
+            else if (eduperson_entitlement && !eduperson_entitlement.some(element => element.startsWith("urn:mace:egi.eu:group:saps-vo.i3m.upv.es"))){
+                res.redirect('/#!/verifyEGICheckInLogin?error=sapsVO')
+            }
+            else {
+                res.redirect('/#!/verifyEGICheckInLogin?username=' + username)
+            }
+
+        }
+
+    })
+
+
     /**** API TO RETURN DATA TO FRONTEND ****/
-    /*  
+    /*
         - images
         - regions
     */
