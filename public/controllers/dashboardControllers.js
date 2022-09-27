@@ -136,7 +136,7 @@ dashboardControllers.controller('MainController', function($scope, $rootScope, $
 });
 
 dashboardControllers.controller('LoginController', function($scope, $rootScope, $log, $filter, $timeout,
-    $location, appConfig, AuthenticationService, GlobalMsgService) {
+    $window, $location, appConfig, AuthenticationService, GlobalMsgService) {
 
     $scope.username;
     $scope.password;
@@ -144,6 +144,18 @@ dashboardControllers.controller('LoginController', function($scope, $rootScope, 
     $scope.errorMsg = undefined;
     $scope.create = true;
     $scope.msg = "Teste";
+
+    let response = $location.search() // Get query params from URL
+    $location.search({}) // Remove query params from URL bar browser
+    if(response.error) {
+        console.log("Login error: " + $scope.languageContent.loginEGICheckIn[response.error]);
+        $scope.errorMsg = $scope.languageContent.loginEGICheckIn[response.error]
+    }
+
+    $scope.doEGICheckInLogin = function() {
+        $scope.errorMsg = undefined;
+        AuthenticationService.startEGICheckInSessionLogin()
+    }
 
     $scope.doLogin = function() {
         $scope.errorMsg = undefined;
@@ -172,7 +184,7 @@ dashboardControllers.controller('LoginController', function($scope, $rootScope, 
             function(response) { //Success call back
                 //$rootScope.$broadcast(appConfig.CREATE_USER_SUCCEED, "Create user succeed");
                 console.log("User Created");
-                $scope.msg = "Thank you =)\n within 3 days you'll receive\nan email with some info about your registration"
+                $scope.msg = "Thank you =)\nWithin 3 days you'll receive\nan email with some info about your registration"
                 //$location.path('/monitor');
                 $scope.create = false;
             },
@@ -189,4 +201,30 @@ dashboardControllers.controller('LoginController', function($scope, $rootScope, 
         $scope.errorMsg = undefined;
     }
 
+});
+
+dashboardControllers.controller('EGICheckInLoginController', function($scope, $rootScope, $log, $filter, $timeout,
+    $window, $location, appConfig, AuthenticationService, GlobalMsgService) {
+    
+    let response = $location.search();
+    let userEGI = decodeURIComponent(response.user);
+
+    if(userEGI) {
+        AuthenticationService.confirmEGICheckInSessionLogin(userEGI);
+
+        $rootScope.$broadcast(appConfig.LOGIN_SUCCEED, "Login succeed");
+        $location.search({});
+        $location.path('/submissions-list');
+    }
+    else if(response.error) {
+        console.log("Error: "+response.error);
+        AuthenticationService.destroyEGICheckInSessionLogin();
+
+        $location.path('/').search({error: response.error});
+    }
+    else{
+        AuthenticationService.destroyEGICheckInSessionLogin();
+
+        $location.path('/');
+    }
 });

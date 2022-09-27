@@ -3,6 +3,7 @@ var path = require('path');
 var fs = require("fs");
 var bodyParser = require('body-parser');
 var exec = require('child_process').exec;
+const openid = require('openid-client')
 var sebalApi;
 
 var app = express();
@@ -69,9 +70,26 @@ var loadAppConfig = function() {
 
         startApp();
     });
-
 }
 
+const issuerEGI = new openid.Issuer({
+    issuer: "<ISSUER>",
+    authorization_endpoint: "<AUTHORIZATION_ENDPOINT>",
+    token_endpoint: "<TOKEN_ENDPOINT>",
+    userinfo_endpoint: "<USER_INFO_ENDPOINT>",
+    jwks_uri: "<JWKS>"
+})
+
+
+const clientEGI = new issuerEGI.Client({
+    client_id: "<CLIENT_ID>",
+    client_secret: "<CLIENT_SECRET>",
+    redirect_uris: ["<BASE_URL>/auth-egi-callback"],
+    response_types: ["code"],
+});
+
+let code_verifier;
+let code_challenge;
 
 var startApp = function() {
     logger.debug("Start app")
@@ -100,8 +118,56 @@ var startApp = function() {
         }
     });
 
+
+    app.get("/auth-egi",function(req, res) {
+        code_verifier = openid.generators.codeVerifier();
+        code_challenge = openid.generators.codeChallenge(code_verifier);
+
+        const authorizationUrl = clientEGI.authorizationUrl({
+            scope: 'openid profile email eduperson_entitlement',
+            code_challenge,
+            code_challenge_method: 'S256',
+        });
+
+        res.redirect(authorizationUrl)
+    })
+
+
+    app.get("/auth-egi-callback", async function(req, res) {
+
+        const params = clientEGI.callbackParams(req);
+        if (params.error){
+            res.redirect('/#!/verifyEGICheckInLogin?error=accessDenied')
+        }
+        else{
+            const tokenSet = await clientEGI.callback(clientEGI.redirect_uris[0], params, {code_verifier});
+            let tokenSetClaims = tokenSet.claims()
+
+            const userinfo = await clientEGI.userinfo(tokenSet.access_token);
+            let userEmail = userinfo.email
+            let eduperson_entitlement = userinfo.eduperson_entitlement
+            let issuer = tokenSetClaims.iss
+            let expiration = tokenSetClaims.exp
+
+            if(issuer !== issuerEGI.issuer) {
+                res.redirect('/#!/verifyEGICheckInLogin?error=issuerNotValid')
+            }
+            else if(expiration < Math.floor((new Date()).getTime()/1000)) {
+                res.redirect('/#!/verifyEGICheckInLogin?error=tokenExpired')
+            }
+            //Works only in the production environment
+            else if (eduperson_entitlement && !eduperson_entitlement.some(element => element.startsWith("urn:mace:egi.eu:group:saps-vo.i3m.upv.es"))){
+              res.redirect('/#!/verifyEGICheckInLogin?error=sapsVO')
+            }
+            else {
+              userEGI = encodeURIComponent(userEmail)
+              res.redirect('/#!/verifyEGICheckInLogin?user=' + userEGI)
+            }
+        }
+    })
+
     /**** API TO RETURN DATA TO FRONTEND ****/
-    /*  
+    /*
         - images
         - regions
     */
@@ -165,6 +231,15 @@ var startApp = function() {
         sebalApi.sendEmail(reqUserInfo, data, callbackFunction);
 
     });
+
+    app.get('*/SAPS_terms_of_usage.pdf', function (req, res) {
+        res.sendFile(path.join(__dirname, '/public/assets/pdf', 'SAPS_terms_of_usage.pdf'))
+    });
+
+    app.get('*/SAPS_privacy_policy.pdf', function (req, res) {
+        res.sendFile(path.join(__dirname, '/public/assets/pdf', 'SAPS_privacy_policy.pdf'))
+    });  
+
 
     //**** CALLBACK FUNCTIONS TO HANDLE SEBAL API RESPONSES ****//
     function registerCallBack(callBackfunction, httpReq, httpRes) {
@@ -323,8 +398,6 @@ var startApp = function() {
         } else {
             next();
         }
-
-
     }
 }
 

@@ -70,15 +70,28 @@ dashboardServices.service('AuthenticationService', function ($log, $http,
             return {
                 'Access-Control-Allow-Origin': '*',
                 'userEmail': Session.getUser().login,
-                'userPass': Session.getUser().pass
+                'userPass': Session.getUser().pass,
+                'userEGI': Session.getUser().userEGI
             }
         }
     };
 
+    authService.startEGICheckInSessionLogin = function () {
+        window.location.href = '<BASE_URL>/auth-egi'
+    }
+
+    authService.confirmEGICheckInSessionLogin = function (userName) {
+        Session.createBasicSession("", "", "", userName)
+    }
+
+    authService.destroyEGICheckInSessionLogin = function () {
+        Session.destroy()
+    }
+
     authService.basicSessionLogin = function (userLogin, password, callbackSuccess, callbackError) {
 
         var userName = userLogin; //For now user name is the login.
-        Session.createBasicSession(userName, userLogin, password);
+        Session.createBasicSession(userName, userLogin, password, "");
         var headerCredentials = getCredentials();
 
         var loginSuccessHandler = function (response) {
@@ -143,7 +156,7 @@ dashboardServices.service('AuthenticationService', function ($log, $http,
 
     authService.createNewUser = function (name, email, password, passwordConfirm, callbackSuccess, callbackError) {
 
-        //Session.createBasicSession(userName, email, password);
+        //Session.createBasicSession(userName, email, password, "");
         var newUser = $.param({
             'userEmail': email,
             'userName': name,
@@ -209,12 +222,13 @@ dashboardServices.service('Session', function () {
         };
         window.sessionStorage.user = JSON.stringify(this.user);
     };
-    this.createBasicSession = function (userName, login, pass) {
+    this.createBasicSession = function (userName, login, pass, userEGI) {
         console.log('Creating Basic Session ')
         this.user = {
             name: userName,
             login: login,
-            pass: pass
+            pass: pass,
+            userEGI: userEGI
         };
         window.sessionStorage.user = JSON.stringify(this.user);
     };
@@ -223,6 +237,7 @@ dashboardServices.service('Session', function () {
             name: undefined,
             login: undefined,
             pass: undefined,
+            userEGI: undefined,
             token: undefined
         };
         window.sessionStorage.user = JSON.stringify(this.user);

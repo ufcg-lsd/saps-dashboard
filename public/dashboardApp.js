@@ -229,6 +229,10 @@ app.config(function($routeProvider, $locationProvider) {
         // route for the home page
         .when('/', {
             templateUrl: '/pages/login.html',
+            reloadOnSearch: false // Prevent reload when query params from URL is changed
+        })
+        .when('/verifyEGICheckInLogin', {
+            templateUrl: '/pages/verifyEGICheckInLogin.html',
         })
         .when('/new-user', {
             templateUrl: '/pages/create_user.html',
