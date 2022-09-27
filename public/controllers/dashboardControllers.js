@@ -207,12 +207,13 @@ dashboardControllers.controller('EGICheckInLoginController', function($scope, $r
     $window, $location, appConfig, AuthenticationService, GlobalMsgService) {
     
     let response = $location.search();
-    let userEGI = decodeURIComponent(response.userEGI);
+    let userEGI = decodeURIComponent(response.user);
 
     if(userEGI) {
         AuthenticationService.confirmEGICheckInSessionLogin(userEGI);
 
         $rootScope.$broadcast(appConfig.LOGIN_SUCCEED, "Login succeed");
+        $location.search({});
         $location.path('/submissions-list');
     }
     else if(response.error) {

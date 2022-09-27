@@ -70,9 +70,7 @@ var loadAppConfig = function() {
 
         startApp();
     });
-
 }
-
 
 const issuerEGI = new openid.Issuer({
     issuer: "<ISSUER>",
@@ -92,8 +90,6 @@ const clientEGI = new issuerEGI.Client({
 
 let code_verifier;
 let code_challenge;
-
-
 
 var startApp = function() {
     logger.debug("Start app")
@@ -152,9 +148,6 @@ var startApp = function() {
             let eduperson_entitlement = userinfo.eduperson_entitlement
             let issuer = tokenSetClaims.iss
             let expiration = tokenSetClaims.exp
-
-            console.log(console.log(u))
-
 
             if(issuer !== issuerEGI.issuer) {
                 res.redirect('/#!/verifyEGICheckInLogin?error=issuerNotValid')
