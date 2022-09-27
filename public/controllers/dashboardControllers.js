@@ -176,7 +176,7 @@ dashboardControllers.controller('LoginController', function($scope, $rootScope, 
     $scope.createNewUser = function() {
 
         if ($scope.password != $scope.passwordConfirm) {
-            $scope.errorMsg = "Senhas não conferem."
+            $scope.errorMsg = "Passwords doesn't match."
             return
         }
 
@@ -184,7 +184,7 @@ dashboardControllers.controller('LoginController', function($scope, $rootScope, 
             function(response) { //Success call back
                 //$rootScope.$broadcast(appConfig.CREATE_USER_SUCCEED, "Create user succeed");
                 console.log("User Created");
-                $scope.msg = "Obrigado =)\nNo prazo de até 3 dias você receberá\num email com a resolução de seu cadastro"
+                $scope.msg = "Thank you =)\nWithin 3 days you'll receive\nan email with some info about your registration"
                 //$location.path('/monitor');
                 $scope.create = false;
             },
