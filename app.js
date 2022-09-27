@@ -166,6 +166,15 @@ var startApp = function() {
 
     });
 
+    app.get('*/SAPS_terms_of_usage.pdf', function (req, res) {
+      res.sendFile(path.join(__dirname, '/public/assets/pdf', 'SAPS_terms_of_usage.pdf'))
+    });
+
+    app.get('*/SAPS_privacy_policy.pdf', function (req, res) {
+        res.sendFile(path.join(__dirname, '/public/assets/pdf', 'SAPS_privacy_policy.pdf'))
+    });  
+
+
     //**** CALLBACK FUNCTIONS TO HANDLE SEBAL API RESPONSES ****//
     function registerCallBack(callBackfunction, httpReq, httpRes) {
         return function(response) {
