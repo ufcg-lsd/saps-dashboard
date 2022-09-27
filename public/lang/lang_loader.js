@@ -31,7 +31,7 @@
                 sapsVO : "User not in SAPS VO"
             },
             login: {
-                placeholdName: "NAME/EMAIL",
+                placeholdName: "EMAIL",
                 placeholdEmail: "PASSWORD",
                 buttonEnter: "Enter",
                 forgotPassword: "Forgot your password?",
