@@ -205,28 +205,25 @@ dashboardControllers.controller('LoginController', function($scope, $rootScope, 
 
 dashboardControllers.controller('EGICheckInLoginController', function($scope, $rootScope, $log, $filter, $timeout,
     $window, $location, appConfig, AuthenticationService, GlobalMsgService) {
+    
+    let response = $location.search();
+    let userEGI = decodeURIComponent(response.userEGI);
 
-    console.log($scope.languageContent)
-    let response = $location.search()
-    console.log(response)
-
-    if(response.username) {
-        console.log("OK!")
-        AuthenticationService.confirmEGICheckInSessionLogin(response.username)
+    if(userEGI) {
+        AuthenticationService.confirmEGICheckInSessionLogin(userEGI);
 
         $rootScope.$broadcast(appConfig.LOGIN_SUCCEED, "Login succeed");
         $location.path('/submissions-list');
     }
     else if(response.error) {
-        console.log("Error: "+response.error)
-        AuthenticationService.destroyEGICheckInSessionLogin()
+        console.log("Error: "+response.error);
+        AuthenticationService.destroyEGICheckInSessionLogin();
 
         $location.path('/').search({error: response.error});
     }
     else{
-        AuthenticationService.destroyEGICheckInSessionLogin()
+        AuthenticationService.destroyEGICheckInSessionLogin();
 
         $location.path('/');
     }
-
 });
