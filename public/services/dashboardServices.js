@@ -81,7 +81,7 @@ dashboardServices.service('AuthenticationService', function ($log, $http,
     }
 
     authService.confirmEGICheckInSessionLogin = function (userName) {
-        Session.createBasicSession("", "", "", userName)
+        Session.createBasicSession(userName, "", "", userName)
     }
 
     authService.destroyEGICheckInSessionLogin = function () {
@@ -275,6 +275,7 @@ dashboardServices.service('SubmissionService', function ($log, $http,
         };
         dataForm.userEmail = headerCredentials.userEmail;
         dataForm.userPass = headerCredentials.userPass;
+        dataForm.userEGI = headerCredentials.userEGI;
         var dataInfo = $.param(dataForm);
         $http
             .post(resourceUrl, dataInfo, { timeout: 86400000 })

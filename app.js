@@ -155,10 +155,10 @@ var startApp = function() {
             else if(expiration < Math.floor((new Date()).getTime()/1000)) {
                 res.redirect('/#!/verifyEGICheckInLogin?error=tokenExpired')
             }
-            //Works only in the production environment
-            else if (eduperson_entitlement && !eduperson_entitlement.some(element => element.startsWith("urn:mace:egi.eu:group:saps-vo.i3m.upv.es"))){
-              res.redirect('/#!/verifyEGICheckInLogin?error=sapsVO')
-            }
+            //Uncomment in the production environment
+            //else if (eduperson_entitlement && !eduperson_entitlement.some(element => element.startsWith("urn:mace:egi.eu:group:saps-vo.i3m.upv.es"))){
+            //  res.redirect('/#!/verifyEGICheckInLogin?error=sapsVO')
+            //}
             else {
               userEGI = encodeURIComponent(userEmail)
               res.redirect('/#!/verifyEGICheckInLogin?user=' + userEGI)
