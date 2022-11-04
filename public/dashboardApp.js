@@ -50,6 +50,7 @@ let scriptsTags =
 
 app.constant("appConfig", {
     "urlSapsService": "http://localhost:8091/",
+    "EGISecretKey": "<user_egi_secret_key>",
     "authPath": "users?auth",
     "authCreatePath":"users?register",
     "submissionPath": "processings",

@@ -1,6 +1,6 @@
 var dashboardControllers = angular.module('dashboardControllers');
 
-dashboardControllers.controller('MainController', function($scope, $rootScope, $log, $filter, $timeout,
+dashboardControllers.controller('MainController', function ($scope, $rootScope, $log, $filter, $timeout,
     $location, AuthenticationService, GlobalMsgService, appConfig) {
 
     $scope.user = {
@@ -34,7 +34,7 @@ dashboardControllers.controller('MainController', function($scope, $rootScope, $
         return unescape(cookies.substring(begin + prefix.length, end));
     }
 
-    $scope.loadLanguagebyName = function(langOpt) {
+    $scope.loadLanguagebyName = function (langOpt) {
 
         var lang = langLoader.getLangByName(langOpt.langName);
         if (lang !== undefined) {
@@ -46,7 +46,7 @@ dashboardControllers.controller('MainController', function($scope, $rootScope, $
 
     };
 
-    $scope.loadLanguagebyShortName = function(langOpt) {
+    $scope.loadLanguagebyShortName = function (langOpt) {
 
         var lang = langLoader.getLangByShortName(langOpt.langShortName);
         if (lang !== undefined) {
@@ -59,7 +59,7 @@ dashboardControllers.controller('MainController', function($scope, $rootScope, $
 
     };
 
-    $scope.activateButton = function(idButton) {
+    $scope.activateButton = function (idButton) {
 
         $scope.previousButton = $scope.actual;
         $scope.actual = idButton;
@@ -73,7 +73,7 @@ dashboardControllers.controller('MainController', function($scope, $rootScope, $
             $("#" + $scope.previousButton).removeClass('span-button-selected');
         }
     }
-    $scope.reverseActivateButton = function(idButton) {
+    $scope.reverseActivateButton = function (idButton) {
         //console.log("Reversing "+idButton);
         $scope.actual = $scope.previousButton;
         $scope.previousButton = idButton;
@@ -86,12 +86,12 @@ dashboardControllers.controller('MainController', function($scope, $rootScope, $
         }
     }
 
-    $rootScope.showModalSuccess = function(msg) {
+    $rootScope.showModalSuccess = function (msg) {
         $scope.modalMsgSuccess = msg;
         $scope.openCloseModal('global-sucess-modal', true);
     }
 
-    $scope.openCloseModal = function(modalId, show) {
+    $scope.openCloseModal = function (modalId, show) {
         if (show) {
             console.log('Opening modal')
             $rootScope.$broadcast(appConfig.MODAL_OPENED);
@@ -105,13 +105,13 @@ dashboardControllers.controller('MainController', function($scope, $rootScope, $
 
     }
 
-    $scope.doLogout = function() {
+    $scope.doLogout = function () {
         console.log("Logout success");
         AuthenticationService.doLogout();
         $location.path('/');
     }
 
-    $scope.clearGlobalMsg = function() {
+    $scope.clearGlobalMsg = function () {
         GlobalMsgService.cleanMsg();
     }
 
@@ -119,7 +119,7 @@ dashboardControllers.controller('MainController', function($scope, $rootScope, $
         $scope.user.name = AuthenticationService.getUserName();
     }
 
-    $scope.$on(appConfig.LOGIN_SUCCEED, function(event, value) {
+    $scope.$on(appConfig.LOGIN_SUCCEED, function (event, value) {
         //console.log(value);
         //GlobalMsgService.pushMessageSuccess(value);
         getUserName();
@@ -135,7 +135,7 @@ dashboardControllers.controller('MainController', function($scope, $rootScope, $
 
 });
 
-dashboardControllers.controller('LoginController', function($scope, $rootScope, $log, $filter, $timeout,
+dashboardControllers.controller('LoginController', function ($scope, $rootScope, $log, $filter, $timeout,
     $window, $location, appConfig, AuthenticationService, GlobalMsgService) {
 
     $scope.username;
@@ -147,33 +147,33 @@ dashboardControllers.controller('LoginController', function($scope, $rootScope, 
 
     let response = $location.search() // Get query params from URL
     $location.search({}) // Remove query params from URL bar browser
-    if(response.error) {
+    if (response.error) {
         console.log("Login error: " + $scope.languageContent.loginEGICheckIn[response.error]);
         $scope.errorMsg = $scope.languageContent.loginEGICheckIn[response.error]
     }
 
-    $scope.doEGICheckInLogin = function() {
+    $scope.doEGICheckInLogin = function () {
         $scope.errorMsg = undefined;
         AuthenticationService.startEGICheckInSessionLogin()
     }
 
-    $scope.doLogin = function() {
+    $scope.doLogin = function () {
         $scope.errorMsg = undefined;
         AuthenticationService.basicSessionLogin($scope.username, $scope.password,
-            function() { //Success call back
+            function () { //Success call back
                 $rootScope.$broadcast(appConfig.LOGIN_SUCCEED, "Login succeed");
                 $location.path('/submissions-list');
             },
-            function(response) { //Erro call back
+            function (response) { //Erro call back
                 console.log("Login error: " + JSON.stringify(response));
                 $scope.errorMsg = "Login failed.";
             }
         );
     }
-    $scope.loadCreateNewUser = function() {
+    $scope.loadCreateNewUser = function () {
         $location.path('/new-user');
     }
-    $scope.createNewUser = function() {
+    $scope.createNewUser = function () {
 
         if ($scope.password != $scope.passwordConfirm) {
             $scope.errorMsg = "Passwords doesn't match."
@@ -181,14 +181,14 @@ dashboardControllers.controller('LoginController', function($scope, $rootScope, 
         }
 
         AuthenticationService.createNewUser($scope.username, $scope.email, $scope.password, $scope.passwordConfirm,
-            function(response) { //Success call back
+            function (response) { //Success call back
                 //$rootScope.$broadcast(appConfig.CREATE_USER_SUCCEED, "Create user succeed");
                 console.log("User Created");
                 $scope.msg = "Thank you =)\nWithin 3 days you'll receive\nan email with some info about your registration"
                 //$location.path('/monitor');
                 $scope.create = false;
             },
-            function(response) { //Erro call back
+            function (response) { //Erro call back
                 //$rootScope.$broadcast(appConfig.CREATE_USER_FAIL, "Create user failed");
                 console.log("Create user error: " + JSON.stringify(response));
                 $scope.errorMsg = response;
@@ -197,32 +197,45 @@ dashboardControllers.controller('LoginController', function($scope, $rootScope, 
         );
     }
 
-    $scope.clearLoginMsg = function() {
+    $scope.clearLoginMsg = function () {
         $scope.errorMsg = undefined;
     }
 
 });
 
-dashboardControllers.controller('EGICheckInLoginController', function($scope, $rootScope, $log, $filter, $timeout,
+dashboardControllers.controller('EGICheckInLoginController', function ($scope, $rootScope, $log, $filter, $timeout,
     $window, $location, appConfig, AuthenticationService, GlobalMsgService) {
-    
+
     let response = $location.search();
-    let userEGI = decodeURIComponent(response.user);
+    let userEGIEmail = decodeURIComponent(response.userEmail);
+    let userEGIName = decodeURIComponent(response.userName);
+    var userEGIPass = appConfig.EGISecretKey;
 
-    if(userEGI) {
-        AuthenticationService.confirmEGICheckInSessionLogin(userEGI);
+    AuthenticationService.createEGIUser(userEGIName, userEGIEmail, userEGIPass,
+        function (response) { //Success call back
+            //$rootScope.$broadcast(appConfig.CREATE_USER_SUCCEED, "Create user succeed");
+            console.log("User Created");
+        },
+        function (response) { //Erro call back
+            //$rootScope.$broadcast(appConfig.CREATE_USER_FAIL, "Create user failed");
+            console.log("Create user error: " + JSON.stringify(response));
+        }
+    );
 
-        $rootScope.$broadcast(appConfig.LOGIN_SUCCEED, "Login succeed");
+    if (userEGIPass && userEGIEmail) {
+        AuthenticationService.confirmEGICheckInSessionLogin(userEGIEmail, userEGIPass);
+
+        $rootScope.$broadcast(appConfig.LOGIN_SUCCEED, "Login succeed")
         $location.search({});
         $location.path('/submissions-list');
     }
-    else if(response.error) {
-        console.log("Error: "+response.error);
+    else if (response.error) {
+        console.log("Error: " + response.error);
         AuthenticationService.destroyEGICheckInSessionLogin();
 
-        $location.path('/').search({error: response.error});
+        $location.path('/').search({ error: response.error });
     }
-    else{
+    else {
         AuthenticationService.destroyEGICheckInSessionLogin();
 
         $location.path('/');

@@ -145,6 +145,7 @@ var startApp = function() {
 
             const userinfo = await clientEGI.userinfo(tokenSet.access_token);
             let userEmail = userinfo.email
+            let userName = userinfo.preferred_username
             let eduperson_entitlement = userinfo.eduperson_entitlement
             let issuer = tokenSetClaims.iss
             let expiration = tokenSetClaims.exp
@@ -160,8 +161,9 @@ var startApp = function() {
             //  res.redirect('/#!/verifyEGICheckInLogin?error=sapsVO')
             //}
             else {
-              userEGI = encodeURIComponent(userEmail)
-              res.redirect('/#!/verifyEGICheckInLogin?user=' + userEGI)
+              let userEGIEmail = encodeURIComponent(userEmail);
+              let userEGIName = encodeURIComponent(userName);
+              res.redirect('/#!/verifyEGICheckInLogin?userEmail=' + userEGIEmail + '&userName=' + userEGIName);
             }
         }
     })

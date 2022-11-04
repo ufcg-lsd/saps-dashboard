@@ -66,7 +66,7 @@ dashboardServices.service('AuthenticationService', function ($log, $http,
                 'auth-token': Session.getUser().token
             }
         } else {
-            //console.log("Returning: "+JSON.stringify({'userEmail': Session.getUser().login, 'userPass': Session.getUser().pass}));
+            // console.log("Returning: "+JSON.stringify({'userEmail': Session.getUser().login, 'userPass': Session.getUser().pass}));
             return {
                 'Access-Control-Allow-Origin': '*',
                 'userEmail': Session.getUser().login,
@@ -80,8 +80,8 @@ dashboardServices.service('AuthenticationService', function ($log, $http,
         window.location.href = '<BASE_URL>/auth-egi'
     }
 
-    authService.confirmEGICheckInSessionLogin = function (userName) {
-        Session.createBasicSession(userName, "", "", userName)
+    authService.confirmEGICheckInSessionLogin = function (userEmail, userEGIPass) {
+        Session.createBasicSession(userEmail, userEmail, userEGIPass, userEmail)
     }
 
     authService.destroyEGICheckInSessionLogin = function () {
@@ -126,15 +126,15 @@ dashboardServices.service('AuthenticationService', function ($log, $http,
             }
         })
             .then(
-            function (response) {
-                //console.log("Return: "+JSON.stringify(response));
-                var authToken = "TOKEN-SEBAL" // fix this hardcode to get token from HEADERS
-                callbackSuccess(response)
-            },
-            function (error) {
-                Session.destroy();
-                callbackError(error);
-            }
+                function (response) {
+                    //console.log("Return: "+JSON.stringify(response));
+                    var authToken = "TOKEN-SEBAL" // fix this hardcode to get token from HEADERS
+                    callbackSuccess(response)
+                },
+                function (error) {
+                    Session.destroy();
+                    callbackError(error);
+                }
             );
     };
 
@@ -155,7 +155,6 @@ dashboardServices.service('AuthenticationService', function ($log, $http,
     };
 
     authService.createNewUser = function (name, email, password, passwordConfirm, callbackSuccess, callbackError) {
-
         //Session.createBasicSession(userName, email, password, "");
         var newUser = $.param({
             'userEmail': email,
@@ -166,8 +165,21 @@ dashboardServices.service('AuthenticationService', function ($log, $http,
         });
         $http.post(resourceCreateUrl, newUser)
             .then(callbackSuccess, callbackError);
+    };
 
-    }
+    authService.createEGIUser = function (name, email, password, callbackSuccess, callbackError) {
+        var newUser = $.param({
+            'userEmail': email,
+            'userName': name,
+            'userPass': password,
+            'userPassConfirm': password,
+            'userNotify': 'no'
+        });
+        $http.post(resourceCreateUrl, newUser)
+            .then(callbackSuccess, callbackError);
+
+    };
+
 
     authService.getUserName = function () {
         return Session.getUser().name;
@@ -339,6 +351,7 @@ dashboardServices.service('RegionService', function ($log, $http, Authentication
         var headerCredentials = AuthenticationService.getHeaderCredentials();
         data.userEmail = headerCredentials.userEmail;
         data.userPass = headerCredentials.userPass;
+        data.userEGI = headerCredentials.userEGI;
         var dataInfo = $.param(data);
         $http
             .post(resourceSubmitSearch, dataInfo)
@@ -349,6 +362,7 @@ dashboardServices.service('RegionService', function ($log, $http, Authentication
         var headerCredentials = AuthenticationService.getHeaderCredentials();
         data.userEmail = headerCredentials.userEmail;
         data.userPass = headerCredentials.userPass;
+        data.userEGI = headerCredentials.userEGI;
         var dataInfo = $.param(data);
         $http
             .post(resourceEmail, dataInfo)
