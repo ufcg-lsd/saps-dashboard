@@ -5,7 +5,7 @@
 <br>
 <br>
 
-<div id="sb-content" class="sb-content" ng-controller="ListSubmissionsController as ls">
+<div id="sb-content" class="sb-content" ng-controller="ListSubmissionsController as ls" ng-controller-init="init()">
   <div id="steps-panel">
     <div>
       <div class="row panel-default" style="margin-bottom: 10px">
@@ -160,38 +160,33 @@
           <div id="panel-body-ongoing" class="panel-body sb-hidden">
             <div id="table-div-ongoing">
               <!-- message listings table -->
-              <table id="image-table-ongoing" class="saps-table table container-fluid" ng-table="ls.ongoingTasks">
-                <tbody>
-                  <tr ng-repeat="i in $data">
-                    <!-- <td>
-                      <input type="checkbox" class="checkbox-submission-list" ng-model="i.checked" />
-                    </td> -->
-                    <td title="languageContent.submissionsList.table.date" sortable="'imageDate'">
-                      {{i.imageDate}}
-                    </td>
-                    <td title="languageContent.submissionsList.table.dataset" sortable="'dataset'">
-                      {{i.dataset}}
-                    </td>
-                    <td title="languageContent.submissionsList.table.landsatTile" sortable="'region'">
-                      {{i.region}}
-                    </td>
-                    <td title="languageContent.submissionsList.table.inputGathering" sortable="'inputGatheringTag'">
-                      {{i.inputGatheringTag}}
-                    </td>
-                    <td title="languageContent.submissionsList.table.inputPreprocessing" sortable="'inputPreprocessingTag'">
-                      {{i.inputPreprocessingTag}}
-                    </td>
-                    <td title="languageContent.submissionsList.table.algorithmExecution" sortable="'algorithmExecutionTag'">
-                      {{i.algorithmExecutionTag}}
-                    </td>
-                    <td title="languageContent.submissionsList.table.state" sortable="'state'">
-                      {{i.state}}
-                      <span ng-show="i.state == 'error'" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-                    </td>
-                  </tr>
-                </tbody>
+              <table id="image-table-ongoing" class="saps-table table" ng-table="ls.tableOngoing">
+                <tr ng-repeat="i in $data">
+                  <td title="languageContent.submissionsList.table.date" sortable="'imageDate'">
+                    {{i.imageDate}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.dataset" sortable="'dataset'">
+                    {{i.dataset}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.landsatTile" sortable="'taskId'">
+                    {{i.region}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.inputGathering" sortable="'inputGatheringTag'">
+                    {{i.inputGatheringTag}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.inputPreprocessing" sortable="'inputPreprocessingTag'">
+                    {{i.inputPreprocessingTag}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.algorithmExecution" sortable="'algorithmExecutionTag'">
+                    {{i.algorithmExecutionTag}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.state" sortable="'state'">
+                    {{i.state}}
+                    <span ng-show="i.state == 'error'" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                  </td>
+                </tr>
               </table>
-            </div>
+	           </div>
           </div>
 
           <!-- Completed Table -->
@@ -205,38 +200,33 @@
           <div id="panel-body-completed" class="panel-body sb-hidden">
             <div id="table-div-completed">
               <!-- message listings table -->
-              <table id="image-table-completed" class="saps-table table" ng-table="ls.completedTasks">
-                <tbody>
-                  <tr ng-repeat="i in $data">
-                    <!-- <td>
-                      <input type="checkbox" class="checkbox-submission-list" ng-model="i.checked" />
-                    </td> -->
-                    <td title="languageContent.submissionsList.table.date" sortable="'imageDate'">
-                      {{i.imageDate}}
-                    </td>
-                    <td title="languageContent.submissionsList.table.dataset" sortable="'dataset'">
-                      {{i.dataset}}
-                    </td>
-                    <td title="languageContent.submissionsList.table.landsatTile" sortable="'taskId'">
-                      {{i.region}}
-                    </td>
-                    <td title="languageContent.submissionsList.table.inputGathering" sortable="'inputGatheringTag'">
-                      {{i.inputGatheringTag}}
-                    </td>
-                    <td title="languageContent.submissionsList.table.inputPreprocessing" sortable="'inputPreprocessingTag'">
-                      {{i.inputPreprocessingTag}}
-                    </td>
-                    <td title="languageContent.submissionsList.table.algorithmExecution" sortable="'algorithmExecutionTag'">
-                      {{i.algorithmExecutionTag}}
-                    </td>
-                    <td title="languageContent.submissionsList.table.state" sortable="'state'">
-                      {{i.state}}
-                      <span ng-show="i.state == 'error'" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-                    </td>
-                  </tr>
-                </tbody>
+              <table id="image-table-completed" class="saps-table table" ng-table="ls.tableCompleted">
+                <tr ng-repeat="i in $data">
+                  <td title="languageContent.submissionsList.table.date" sortable="'imageDate'">
+                    {{i.imageDate}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.dataset" sortable="'dataset'">
+                    {{i.dataset}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.landsatTile" sortable="'taskId'">
+                    {{i.region}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.inputGathering" sortable="'inputGatheringTag'">
+                    {{i.inputGatheringTag}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.inputPreprocessing" sortable="'inputPreprocessingTag'">
+                    {{i.inputPreprocessingTag}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.algorithmExecution" sortable="'algorithmExecutionTag'">
+                    {{i.algorithmExecutionTag}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.state" sortable="'state'">
+                    {{i.state}}
+                    <span ng-show="i.state == 'error'" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                  </td>
+                </tr>
               </table>
-            </div>
+	    </div>
           </div>
         </div>
       </div>

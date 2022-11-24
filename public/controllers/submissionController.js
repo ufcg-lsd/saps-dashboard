@@ -1,3 +1,4 @@
+
 var dashboardControllers = angular.module('dashboardControllers');
 
 dashboardControllers.controller('ListSubmissionsController', function($scope, $rootScope, $log, $filter, $timeout, $filter,
@@ -98,10 +99,10 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
                 newCompleted.push(item);
             }
         });
-        self.ongoingTasksCount = newOngoing.length;
-        self.ongoingTasks = new NgTableParams({count:4}, { dataset: newOngoing, counts: [] });
-        self.completedTasksCount = newCompleted.length;
-        self.completedTasks = new NgTableParams({count:4}, { dataset: newCompleted, counts: [] });
+        this.ongoingTasksCount = newOngoing.length;
+        this.ongoingTasks = new NgTableParams({count:4}, { dataset: newOngoing, counts: [] });
+        this.completedTasksCount = newCompleted.length;
+        this.completedTasks = new NgTableParams({count:4}, { dataset: newCompleted, counts: [] });
     }
 
     $scope.filterSubmissions = function() {
@@ -255,35 +256,6 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
         })
     }
 
-    var self = this;
-
-    function isCompleted(processing) {
-        return 'state' in processing &&
-            (processing.state.toUpperCase() === 'SUCCESS' || processing.state.toUpperCase() === 'FAILURE');
-    }
-
-    function isOngoing(processing) {
-        return !isCompleted(processing);
-    }
-
-    var updateProcessingsByState = function(tasks) {
-        $scope.ongoingTasks.splice(0, $scope.ongoingTasks.length);
-        $scope.completedTasks.splice(0, $scope.completedTasks.length)
-
-        tasks.forEach(function(currentProcessing, index) {
-            if (isOngoing(currentProcessing)) {
-                $scope.ongoingTasks.push(currentProcessing)
-            } else if (isCompleted(currentProcessing)) {
-                $scope.completedTasks.push(currentProcessing)
-            }
-        });
-
-        self.ongoingTasksCount = $scope.ongoingTasks.length;
-        self.ongoingTasks = new NgTableParams({ count: 4 }, { dataset: $scope.ongoingTasks, counts: [] });
-        self.completedTasksCount = $scope.completedTasks.length;
-        self.completedTasks = new NgTableParams({ count: 4 }, { dataset: $scope.completedTasks, counts: [] });
-    }
-
     $scope.generateTagsComponent = function(submission) {
 
         if (submission.tagListComponent == undefined) {
@@ -337,20 +309,6 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
         }
     }
 
-    $scope.getSapsSubmissions = function() {
-        SubmissionService.getSubmissions(
-            function(response) {
-                var data = response.data;
-                beautifyStateNames(data);
-                updateProcessingsByState(data);
-            },
-            function(error) {
-                var msg = "An error occurred when tried to get Images";
-                GlobalMsgService.pushMessageFail(msg)
-            }
-        );
-    }
-
     $scope.sendEmail = function() {
         var imgLinks = [];
         $scope.tasksByState.forEach(function(submission, index) {
@@ -390,7 +348,63 @@ dashboardControllers.controller('ListSubmissionsController', function($scope, $r
             })
     }
 
-    $scope.getSapsSubmissions();
+    this.tableCompleted = new NgTableParams({
+      page: 1,
+      count: 10
+    }, {
+      getData: function (params) {
+	const paginationParams = {
+          "taskState": "completed",
+  	  "page": params._params.page,
+          "size": params._params.count,
+	}
+
+        return SubmissionService.getSubmissions(paginationParams,
+          function (response) {
+            let data = response.data;
+	    console.log(data);
+            beautifyStateNames(data.tasks);
+            params.total(data.allTasksCount -1);
+            return data.tasks;
+          },
+          function(error) {
+            var msg = "An error occurred when tried to get Images";
+            GlobalMsgService.pushMessageFail(msg)
+          }
+        );
+      }
+    });
+
+/* 
+   $scope.tableOngoing = new NgTableParams({
+      page: 1,
+      count: 10
+    }, {
+      total: 10000,
+      getData: function (params) {
+        const paginationParams = {
+          "taskState": "ongoing",
+  	  "page": params._params.page,
+          "size": params._params.count,
+	}
+
+        return SubmissionService.getSubmissions(paginationParams,
+          function (response) {
+            let data = response.data;
+	    console.log(data);
+            beautifyStateNames(data.tasks);
+            params.total(data.allTasksCount -1);
+            return data.tasks;
+          },
+          function(error) {
+            var msg = "An error occurred when tried to get Images";
+            GlobalMsgService.pushMessageFail(msg)
+          }
+        );
+      }
+    });     
+*/
+
 });
 
 dashboardControllers.controller('NewSubmissionsController', function($scope, $rootScope, $log, $filter,
@@ -529,3 +543,4 @@ dashboardControllers.controller('NewSubmissionsController', function($scope, $ro
     };
 
 });
+
