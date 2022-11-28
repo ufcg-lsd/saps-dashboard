@@ -3,7 +3,6 @@
 </div>
 
 <br>
-<br>
 
 <div id="sb-content" class="sb-content" ng-controller="ListSubmissionsController as ls" ng-controller-init="init()">
   <div id="steps-panel">
@@ -153,14 +152,14 @@
           <div class="panel-heading">
             <div align="left" class="sb-col-lg-11 sb-col-md-11 sb-col-sm-11 sb-col-xs-20">
               <h4 ng-click="switchVisibility('panel-body-ongoing')" style="cursor:pointer">
-                {{languageContent.submissionsList.table.titleOngoing}} ({{ls.ongoingTasksCount}})
+                {{languageContent.submissionsList.table.titleOngoing}} ({{ongoingTasksCount}})
               </h4>
             </div>
           </div>
           <div id="panel-body-ongoing" class="panel-body sb-hidden">
             <div id="table-div-ongoing">
               <!-- message listings table -->
-              <table id="image-table-ongoing" class="saps-table table" ng-table="ls.tableOngoing">
+              <table id="image-table-ongoing" class="saps-table table" ng-table="tableOngoing">
                 <tr ng-repeat="i in $data">
                   <td title="languageContent.submissionsList.table.date" sortable="'imageDate'">
                     {{i.imageDate}}
@@ -193,14 +192,14 @@
           <div class="panel-heading">
             <div align="left" class="sb-col-lg-11 sb-col-md-11 sb-col-sm-11 sb-col-xs-20">
               <h4 ng-click="switchVisibility('panel-body-completed')" style="cursor:pointer">
-                {{languageContent.submissionsList.table.titleCompleted}} ({{ls.completedTasksCount}})
+                {{languageContent.submissionsList.table.titleCompleted}} ({{completedTasksCount}})
               </h4>
             </div>
           </div>
           <div id="panel-body-completed" class="panel-body sb-hidden">
             <div id="table-div-completed">
               <!-- message listings table -->
-              <table id="image-table-completed" class="saps-table table" ng-table="ls.tableCompleted">
+              <table id="image-table-completed" class="saps-table table" ng-table="tableCompleted">
                 <tr ng-repeat="i in $data">
                   <td title="languageContent.submissionsList.table.date" sortable="'imageDate'">
                     {{i.imageDate}}
@@ -226,7 +225,7 @@
                   </td>
                 </tr>
               </table>
-	    </div>
+	          </div>
           </div>
         </div>
       </div>
