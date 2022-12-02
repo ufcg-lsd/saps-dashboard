@@ -77,7 +77,7 @@ dashboardServices.service('AuthenticationService', function ($log, $http,
     };
 
     authService.startEGICheckInSessionLogin = function () {
-        window.location.href = 'https://saps-test.lsd.ufcg.edu.br/auth-egi'
+        window.location.href = '<BASE-URL>/auth-egi'
     }
 
     authService.confirmEGICheckInSessionLogin = function (userEmail, userEGIPass) {
