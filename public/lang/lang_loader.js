@@ -12,7 +12,7 @@
             },
             messages: {
                 sendEmailSuccess: "Sent successfully,<br>check your email box.",
-                successNewSubmission: 'Successfully submitted.',
+                successNewSubmission: 'Successfully submitted, reload the page to check updates.',
                 failedNewSubmission: 'Failed to submit.',
                 unauthorizedNewSubmission: 'Unauthorized submission.',
                 failCoordinatesRequired: "Coordinates are required",
@@ -21,7 +21,8 @@
                 failFinalDateRequired: "Final date is required",
                 failDateInvalid: "Last year date must be greater than first year date",
                 failPriorityRange: "Priority value must be between 1 and 100",
-                noResultSearch: "There were no results for this search."
+                noResultSearch: "There were no results for this search.",
+                notFoundLandsatImage: "No satellite data was found for this region on that date"
             },
             loginEGICheckIn:{
                 buttonLogin: "Login with EGI Check-in",
