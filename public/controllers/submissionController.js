@@ -459,12 +459,12 @@ dashboardControllers.controller(
     };
 
     $scope.filterTable = function (search) {
-      let rgx_date_y = /^\d[0-9]|[0-9]|[0-9]|[0-9]\-?$/;
+      let rgx_date_y = /^\d{0,4}\-?$/;
       let rgx_date_y_m = /^\d{4}\-(0?[1-9]|1?[012])\-?$/;
       let rgx_date_y_m_d =
         /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/;
 
-      const validEmptySearch = !!String(search).trim();
+      const validEmptySearch = String(search).trim() === "";
 
       const validDateSearch =
         rgx_date_y.test(search) ||
@@ -474,11 +474,15 @@ dashboardControllers.controller(
       if (validDateSearch) {
         loadTableOngoing(search);
         loadTableCompleted(search);
+        GlobalMsgService.cleanMsg();
       } else if (validEmptySearch) {
         loadTableOngoing();
         loadTableCompleted();
+        GlobalMsgService.cleanMsg();
       } else {
-        $scope.filterWarning = "Invalid date";
+        GlobalMsgService.pushMessageWarning(
+          $rootScope.languageContent.submissionsList.filterBox.error
+        );
       }
     };
 
@@ -666,7 +670,6 @@ dashboardControllers.controller(
             GlobalMsgService.globalSuccessModalMsg(
               $rootScope.languageContent.messages.unauthorizedNewSubmission
             );
-            q;
           } else {
             GlobalMsgService.globalSuccessModalMsg(
               $rootScope.languageContent.messages.failedNewSubmission
