@@ -460,16 +460,29 @@ dashboardControllers.controller(
 
     $scope.filterTable = function (search) {
       let rgx_date_y = /^\d{0,4}\-?$/;
-      let rgx_date_y_m = /^\d{4}\-(0?[1-9]|1?[012])\-?$/;
-      let rgx_date_y_m_d =
-        /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/;
+      let rgx_date_y_m0 = /^\d{4}\-[01]\-?$/;
+      let rgx_date_y_m1 = /^\d{4}\-0[1-9]\-?$/;
+      let rgx_date_y_m2 = /^\d{4}\-1[0-2]\-?$/;
+      let rgx_date_y_m_d0 =/^\d{4}\-0[1-9]\-0[1-9]?$/;
+      let rgx_date_y_m_d1 =/^\d{4}\-0[1-9]\-[12][0-9]?$/;
+      let rgx_date_y_m_d2 =/^\d{4}\-0[1-9]\-3[01]?$/;
+      let rgx_date_y_m_d3 =/^\d{4}\-1[0-2]\-0[1-9]?$/;
+      let rgx_date_y_m_d4 =/^\d{4}\-1[0-2]\-[12][0-9]?$/;
+      let rgx_date_y_m_d5 =/^\d{4}\-1[0-2]\-3[01]?$/;
 
       const validEmptySearch = String(search).trim() === "";
 
       const validDateSearch =
-        rgx_date_y.test(search) ||
-        rgx_date_y_m.test(search) ||
-        rgx_date_y_m_d.test(search);
+          rgx_date_y.test(search) ||
+          rgx_date_y_m0.test(search) ||
+          rgx_date_y_m1.test(search) ||
+          rgx_date_y_m2.test(search) ||
+          rgx_date_y_m_d0.test(search) ||
+          rgx_date_y_m_d1.test(search) ||
+          rgx_date_y_m_d2.test(search) ||
+          rgx_date_y_m_d3.test(search) ||
+          rgx_date_y_m_d4.test(search) ||
+          rgx_date_y_m_d5.test(search) 
 
       if (validDateSearch) {
         loadTableOngoing(search);
