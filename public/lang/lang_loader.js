@@ -157,7 +157,7 @@
                     },
                     button: {
                         filter: 'Filter'
-                    },
+                    }
                 },
                 table: {
                     titleOngoing: "Ongoing",
@@ -171,6 +171,10 @@
                     state: "State",
                     priority: "Priority"
                 },
+                filterBox: {
+                  error: "Invalid search, the date must be in the YYYY-MM-DD format",
+                  placeholder: "Filter by date",
+                },
             },
         },
     }, {
@@ -183,7 +187,7 @@
             },
             messages: {
                 sendEmailSuccess: "Enviado com sucesso,<br>verifique sua caixa de email.",
-                successNewSubmission: 'Submetido com sucesso.',
+                successNewSubmission: 'Submetido com sucesso, recarregue a pagina para obter atualizações',
                 failedNewSubmission: 'Falha ao submeter.',
                 unauthorizedNewSubmission: 'Submissão não autorizada.',
                 failCoordinatesRequired: "As coordenadas são necessárias",
@@ -192,7 +196,8 @@
                 failFinalDateRequired: "Data final é necessária",
                 failDateInvalid: "A data final deve ser após a data inicial",
                 failPriorityRange: "O valor da prioridade deve ser entre 1 e 100",
-                noResultSearch: "Não foram encontrados resultados para esta pesquisa."
+                noResultSearch: "Não foram encontrados resultados para esta pesquisa.",
+                notFoundLandsatImage: "Nenhum dado de satélite foi encontrado para essa região nessa data"
             },
             login: {
                 placeholdName: "NOME/EMAIL",
@@ -332,6 +337,10 @@
                     algorithmExecution: "Fase de processamento",
                     state: "Estado",
                     priority: "Prioridade"
+                },
+                filterBox: {
+                  error: "Busca inválida, a data precisa estar no formato: AAAA-MM-DD",
+                  placeholder: "Filtrar por data",
                 }
             }
         },
