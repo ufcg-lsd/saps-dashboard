@@ -69,6 +69,9 @@ if __name__ == "__main__":
         ll_lng = float(split_vals[9])
         lr_lat = float(split_vals[10])
         lr_lng = float(split_vals[11][0:-1])
+        # removes very large tiles
+        if abs(ur_lng - ll_lng) > 5:
+            continue
         # removes tiles outside bounding box
         if not (right_limit < center_lat and center_lat < left_limit and top_limit < center_lon and center_lon < bottom_limit):
             continue
@@ -83,7 +86,7 @@ if __name__ == "__main__":
         }
         geometry = {
             "type": "Polygon",
-            "coordinates": [
+            "coordinates": [ 
                 [
                     [ul_lng, ul_lat],
                     [ur_lng, ur_lat],

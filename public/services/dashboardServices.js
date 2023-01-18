@@ -307,47 +307,48 @@ dashboardServices.service('RegionService', function ($log, $http, Authentication
     var resourceEmail = appConfig.urlSapsService + appConfig.emailPath;
     var regionService = {};
 
-    regionService.getRegions = function (successCallback, errorCalback) {
-        fetch("/regions/regions.geojson").then(
-            function (response) {
-                return response.json();
-            }
-        ).then(
-            function (json) {
-                json.features.forEach(
-                    function (poly) {
-                        poly.properties.processedImages = 0;
-                        poly.properties.totalImgBySatelitte = [
-                            {
-                                name: "L4",
-                                total: 0
-                            },
-                            {
-                                name: "L5",
-                                total: 0
-                            },
-                            {
-                                name: "L7",
-                                total: 0
-                            }
-                        ]
-                        poly.properties.selected = false;
-                    }
-                )
-                successCallback(json);
-            }
-        );
+    regionService.getRegions = function (regionPath) {
+      return fetch(regionPath)
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (json) {
+          json.features.forEach(function (poly) {
+            poly.properties.processedImages = 0;
+            poly.properties.totalImgBySatelitte = [
+              {
+                name: "L4",
+                total: 0,
+              },
+              {
+                name: "L5",
+                total: 0,
+              },
+              {
+                name: "L7",
+                total: 0,
+              },
+            ];
+            poly.properties.selected = false;
+          });
+          return json;
+        });
     };
 
-    regionService.getRegionsDetails = function (successCallback, errorCallback) {
-        var headerCredentials = AuthenticationService.getHeaderCredentials();
-        var config = {
-            url: resourceDetailsUrl,
-            method: "GET",
-            headers: headerCredentials
-        }
+    regionService.getRegionsDetails = function (
+      successCallback,
+      errorCallback
+    ) {
+      var headerCredentials = AuthenticationService.getHeaderCredentials();
+      var config = {
+        url: resourceDetailsUrl,
+        method: "GET",
+        headers: headerCredentials,
+      };
 
-        $http(config).then(successCallback, errorCallback);
+      $http(config).then((r) => {
+        successCallback(r);
+      }, errorCallback);
     };
 
     regionService.postSearch = function (data, successCallback, errorCallback) {
