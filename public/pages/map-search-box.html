@@ -16,10 +16,10 @@
 		<div style="font-weight: bold; font-size: 1em;" class="sb-width-49 sb-col-lg-9">{{languageContent.mapFeature.submissionBox.label.lastDate}}</div>
 
 		<div id="firstYearField" class="sb-width-49 sb-col-lg-11">
-			<md-datepicker required ng-model="searchFilters.initialDate"></md-datepicker>
+			<md-datepicker required ng-model="searchFilters.initialDate" md-min-date="minDate" md-max-date="maxDate"></md-datepicker>
 		</div>
 		<div id="lastYearField" class="sb-width-49 sb-col-lg-9">
-			<md-datepicker required ng-model="searchFilters.finalDate"></md-datepicker>
+			<md-datepicker required ng-model="searchFilters.finalDate" md-min-date="minDate" md-max-date="maxDate"></md-datepicker>
 		</div>
 
 		<br>

@@ -227,7 +227,7 @@ function initiateMap(elementId, colors, transparency) {
         target: elementId,
         controls: [],
         view: new ol.View({
-            center: [-4180799.456017701, -768009.2602094514],
+            center: [-0580799.456017701, 4508009.2602094514],
             zoom: 6,
             maxZoom: 7,
             minZoom: 3,
@@ -265,7 +265,8 @@ function initiateMap(elementId, colors, transparency) {
     }
 
     var generateGridFunc = function (featureCollection) {
-        if (featureCollection) {
+        const initialTime = Date.now();
+	if (featureCollection) {
             var tileIndex = geojsonvt(featureCollection, { buffer: 2048 });
             var vectorSource = new ol.source.VectorTile({
                 format: new ol.format.GeoJSON(),
@@ -295,6 +296,11 @@ function initiateMap(elementId, colors, transparency) {
         } else {
             console.log("Tried to generate grid without features.");
         }
+        
+	const finalTime = Date.now();
+        console.log(" ===== Generate GRID ===== ");
+        console.log(finalTime - initialTime);
+        console.log(" ===== Generate GRID ===== ");
     };
 
     /// ********* INTERACTIONS **********************

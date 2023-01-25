@@ -529,6 +529,13 @@ dashboardControllers.controller(
     $scope.$on(appConfig.MODAL_CLOSED, function (event, value) {
       $scope.cleanForm();
     });
+    
+	
+   $scope.minDate = new Date(1984, 1 - 1, 1);
+
+   var today = new Date()
+   $scope.maxDate = today;
+ 
 
     function msgRequiredShowHide(fieldId, show) {
       requiredMsg = $("#" + fieldId).find(".sb-required");

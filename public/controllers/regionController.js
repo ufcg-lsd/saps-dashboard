@@ -79,14 +79,24 @@ dashboardControllers.controller('RegionController', function ($scope, $rootScope
         return res;
     }
 
+    $scope.minDate = new Date(1984, 1 - 1, 1);
+
+    var today = new Date();
+    $scope.maxDate = today;
+
     function loadRegions() {
+	const initialTime = Date.now();
         RegionService.getRegions(
             function (featureCollection) {
                 var succeededCallback = function (response) {
-                    var processedImagesMap = processedImagesToMap(response.data);
+                    console.log(" ===== get backend region data ===== ");
+                    console.log(Date.now() - initialTime);
+                    console.log(" ===== get backend region data ===== ");
+
+		    var processedImagesMap = processedImagesToMap(response.data);
                     setProcessedCount(featureCollection.features, processedImagesMap);
                     sapsMap.generateGrid(featureCollection);
-                }
+		}
                 var failedCallback = function (error) {
                     console.log("Failed to load region details " + JSON.stringify(error));
                 }
