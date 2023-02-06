@@ -84,31 +84,56 @@ dashboardControllers.controller('RegionController', function ($scope, $rootScope
     var today = new Date();
     $scope.maxDate = today;
 
-    function loadRegions() {
-	const initialTime = Date.now();
-        RegionService.getRegions(
-            function (featureCollection) {
-                var succeededCallback = function (response) {
-                    console.log(" ===== get backend region data ===== ");
-                    console.log(Date.now() - initialTime);
-                    console.log(" ===== get backend region data ===== ");
+    function loadDetails(featureCollection) {
+      var succeededCallback = function (response) {
+        var processedImagesMap = processedImagesToMap(response.data);
+        setProcessedCount(featureCollection.features, processedImagesMap);
+        sapsMap.generateGrid(featureCollection);
+      }
+      var failedCallback = function (error) {
+        console.log("Failed to load region details " + JSON.stringify(error));
+      }
+      
+      RegionService.getRegionsDetails(succeededCallback, failedCallback);
+    }
 
-		    var processedImagesMap = processedImagesToMap(response.data);
-                    setProcessedCount(featureCollection.features, processedImagesMap);
-                    sapsMap.generateGrid(featureCollection);
-		}
-                var failedCallback = function (error) {
-                    console.log("Failed to load region details " + JSON.stringify(error));
-                }
-                RegionService.getRegionsDetails(succeededCallback, failedCallback);
-            },
-            function (error) {
-                if (error.status != 200 && error.status != 0) {
-                    console.log('Error while trying to get regions: ');
-                    console.log(error);
-                }
-            }
-        );
+    async function loadTiles(regionPath) {
+      try {
+        const featureCollection = await RegionService.getRegions(regionPath);
+        sapsMap.generateGrid(featureCollection);
+        localStorage.setItem(regionPath, JSON.stringify(featureCollection));
+        return featureCollection;
+      } catch (error) {
+        if (error.status != 200 && error.status != 0) {
+          console.log('Error while trying to get regions: ');
+          console.log(error);
+        }
+      }
+    }
+
+    function fetchRegions(regionPath) {
+      const localCollection = localStorage.getItem(regionPath);
+      if (localCollection) {
+        // console.log("LOCAL STORAGE " + regionPath);
+        loadDetails(JSON.parse(localCollection));
+      } else {
+        // console.log("SERVER " + regionPath);
+        loadTiles(regionPath)
+        .then((serverCollection) => {
+          loadDetails(serverCollection);
+        });
+      }
+    }
+
+    async function loadRegions () {
+      await fetchRegions("/regions/eur-africa.geojson")
+      await Promise.allSettled([
+        fetchRegions("/regions/northAmerica.geojson"),
+        fetchRegions("/regions/southAmerica.geojson"),
+        fetchRegions("/regions/asia.geojson"),
+        fetchRegions("/regions/oceania.geojson")
+      ]);
+
     }
 
     function processRegionHeatmap(region) {
