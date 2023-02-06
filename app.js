@@ -73,18 +73,18 @@ var loadAppConfig = function() {
 }
 
 const issuerEGI = new openid.Issuer({
-    issuer: "https://aai-dev.egi.eu/auth/realms/egi",
-    authorization_endpoint: "https://aai-dev.egi.eu/auth/realms/egi/protocol/openid-connect/auth",
-    token_endpoint: "https://aai-dev.egi.eu/auth/realms/egi/protocol/openid-connect/token",
-    userinfo_endpoint: "https://aai-dev.egi.eu/auth/realms/egi/protocol/openid-connect/userinfo",
-    jwks_uri: "https://aai-dev.egi.eu/auth/realms/egi/protocol/openid-connect/certs"
+    issuer: "<ISSUER>",
+    authorization_endpoint: "<AUTHORIZATION_ENDPOINT>",
+    token_endpoint: "<TOKEN_ENDPOINT>",
+    userinfo_endpoint: "<USER_INFO_ENDPOINT>",
+    jwks_uri: "<JWKS>"
 })
 
 
 const clientEGI = new issuerEGI.Client({
-    client_id: "a1f41407-d7c5-4705-892b-c91c9abeb994",
-    client_secret: "EC2B24BCCABA39A9",
-    redirect_uris: ["https://saps-test.lsd.ufcg.edu.br/auth-egi-callback"],
+    client_id: "<CLIENT_ID>",
+    client_secret: "<CLIENT_SECRET>",
+    redirect_uris: ["<BASE_URL>/auth-egi-callback"],
     response_types: ["code"],
 });
 

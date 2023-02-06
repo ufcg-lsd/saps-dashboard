@@ -84,18 +84,6 @@ dashboardControllers.controller('RegionController', function ($scope, $rootScope
     var today = new Date();
     $scope.maxDate = today;
 
-    function loadDetails(featureCollection) {
-      var succeededCallback = function (response) {
-        var processedImagesMap = processedImagesToMap(response.data);
-        setProcessedCount(featureCollection.features, processedImagesMap);
-        sapsMap.generateGrid(featureCollection);
-      }
-      var failedCallback = function (error) {
-        console.log("Failed to load region details " + JSON.stringify(error));
-      }
-      
-      RegionService.getRegionsDetails(succeededCallback, failedCallback);
-    }
 
     async function loadTiles(regionPath) {
       try {

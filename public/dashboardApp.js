@@ -49,8 +49,8 @@ let scriptsTags =
 };
 
 app.constant("appConfig", {
-    "urlSapsService": "https://saps-test.lsd.ufcg.edu.br/dispatcher/",
-    "EGISecretKey": "secretKeyEGI!@#",
+    "urlSapsService": "http://localhost:8091/",
+    "EGISecretKey": "<user_egi_secret_key>",
     "authPath": "users?auth",
     "authCreatePath":"users?register",
     "submissionPath": "processings",
