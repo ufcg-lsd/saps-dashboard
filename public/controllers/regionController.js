@@ -79,6 +79,11 @@ dashboardControllers.controller('RegionController', function ($scope, $rootScope
         return res;
     }
 
+    $scope.minDate = new Date(1984, 1 - 1, 1);
+
+    var today = new Date();
+    $scope.maxDate = today;
+
     function loadDetails(featureCollection) {
       var succeededCallback = function (response) {
         var processedImagesMap = processedImagesToMap(response.data);
@@ -88,7 +93,7 @@ dashboardControllers.controller('RegionController', function ($scope, $rootScope
       var failedCallback = function (error) {
         console.log("Failed to load region details " + JSON.stringify(error));
       }
-      
+
       RegionService.getRegionsDetails(succeededCallback, failedCallback);
     }
 
@@ -128,6 +133,7 @@ dashboardControllers.controller('RegionController', function ($scope, $rootScope
         fetchRegions("/regions/asia.geojson"),
         fetchRegions("/regions/oceania.geojson")
       ]);
+
     }
 
     function processRegionHeatmap(region) {
