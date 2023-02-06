@@ -265,7 +265,6 @@ function initiateMap(elementId, colors, transparency) {
     }
 
     var generateGridFunc = function (featureCollection) {
-        const initialTime = Date.now();
 	if (featureCollection) {
             var tileIndex = geojsonvt(featureCollection, { buffer: 2048 });
             var vectorSource = new ol.source.VectorTile({
@@ -296,11 +295,6 @@ function initiateMap(elementId, colors, transparency) {
         } else {
             console.log("Tried to generate grid without features.");
         }
-        
-	const finalTime = Date.now();
-        console.log(" ===== Generate GRID ===== ");
-        console.log(finalTime - initialTime);
-        console.log(" ===== Generate GRID ===== ");
     };
 
     /// ********* INTERACTIONS **********************
