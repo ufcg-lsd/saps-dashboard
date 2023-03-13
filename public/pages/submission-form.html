@@ -1,6 +1,12 @@
 <form ng-controller="NewSubmissionsController">
   <div style="font-weight: bold; font-size: 1.2em;  ">{{languageContent.mapFeature.submissionBox.label.region}}</div>
   <br>
+
+  <div style="font-weight: bold; font-size: 1em;" class="sb-col-lg-9">{{languageContent.mapFeature.submissionBox.label.submissionName}}</div>
+  <br>
+  <input class="saps-input saps-input sb-width-100" ng-model="newSubmission.label" required placeholder={{languageContent.mapFeature.submissionBox.label.submissionName}}>
+  <br>
+
   <div style="font-weight: bold; font-size: 1em;" class="sb-col-lg-9">Upper Right</div>
   <br>
   <input type="number" class="saps-input saps-input input-small sb-width-49" ng-model="newSubmission.upperRightCoord.lat" required

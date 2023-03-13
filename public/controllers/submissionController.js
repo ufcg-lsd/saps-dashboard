@@ -15,21 +15,11 @@ dashboardControllers.controller(
     appConfig,
     NgTableParams
   ) {
-    // ======= Constants
-    const QUERY_ONGOING_TASKS_KEY = "ongoing";
-    const QUERY_COMPLETED_TASKS_KEY = "completed";
-
     // ======= Aux Functions
     function beautifyStateNames(data) {
       if (data) {
-        data.forEach(function (task, index) {
-          if (task.state === "archived") {
-            task.state = "success";
-          } else if (task.state === "failed") {
-            task.state = "failure";
-          }
-
-          task.state = capitalize(task.state);
+        data.forEach(function (job, index) {
+          job.state = capitalize(job.state);
         });
       }
     }
@@ -37,7 +27,7 @@ dashboardControllers.controller(
     function capitalize(string) {
       if (string) {
         return (
-          string.slice(0, 1).toUpperCase() + string.slice(1, string.length)
+          string.slice(0, 1).toUpperCase() + string.slice(1, string.length).toLowerCase()
         );
       } else {
         return string;
@@ -55,24 +45,28 @@ dashboardControllers.controller(
         {
           counts: [], //[5, 10],
           getData: function (params) {
+            if (Object.keys(params._params.sorting).length === 0) {
+              params._params.sorting = { creationTime: "desc" };
+            }
+
             const reqParams = {
-              taskState: QUERY_COMPLETED_TASKS_KEY,
               search: search,
               page: params._params.page,
               size: params._params.count,
               sort: camelCaseToSnakeCase(
                 JSON.stringify(params._params.sorting)
               ),
+              recoverCompleted: true
             };
 
             return SubmissionService.getSubmissions(
               reqParams,
               function (response) {
                 let data = response.data;
-                beautifyStateNames(data.tasks);
-                params.total(data.allTasksCount);
-                $scope.completedTasksCount = data.allTasksCount;
-                return data.tasks;
+                beautifyStateNames(data.jobs);
+                params.total(data.jobsCount);
+                $scope.completedTasksCount = data.jobsCount;
+                return data.jobs;
               },
               function (error) {
                 var msg = "An error occurred when tried to get Images";
@@ -90,24 +84,28 @@ dashboardControllers.controller(
         {
           counts: [], //[5, 10],
           getData: function (params) {
+            if (Object.keys(params._params.sorting).length === 0) {
+              params._params.sorting = { creationTime: "desc" };
+            }
+
             const reqParams = {
-              taskState: QUERY_ONGOING_TASKS_KEY,
               search: search,
               page: params._params.page,
               size: params._params.count,
               sort: camelCaseToSnakeCase(
                 JSON.stringify(params._params.sorting)
               ),
+              recoverOngoing: true
             };
 
             return SubmissionService.getSubmissions(
               reqParams,
               function (response) {
                 let data = response.data;
-                beautifyStateNames(data.tasks);
-                params.total(data.allTasksCount);
-                $scope.ongoingTasksCount = data.allTasksCount;
-                return data.tasks;
+                beautifyStateNames(data.jobs);
+                params.total(data.jobsCount);
+                $scope.ongoingTasksCount = data.jobsCount;
+                return data.jobs;
               },
               function (error) {
                 var msg = "An error occurred when tried to get Images";
@@ -124,6 +122,7 @@ dashboardControllers.controller(
       loadTableCompleted();
     }
 
+    
     // ======= Scope Variables
     $scope.listFilter = "";
 
@@ -459,45 +458,18 @@ dashboardControllers.controller(
     };
 
     $scope.filterTable = function (search) {
-      let rgx_date_y = /^\d{0,4}\-?$/;
-      let rgx_date_y_m0 = /^\d{4}\-[01]\-?$/;
-      let rgx_date_y_m1 = /^\d{4}\-0[1-9]\-?$/;
-      let rgx_date_y_m2 = /^\d{4}\-1[0-2]\-?$/;
-      let rgx_date_y_m_d0 =/^\d{4}\-0[1-9]\-0[1-9]?$/;
-      let rgx_date_y_m_d1 =/^\d{4}\-0[1-9]\-[12][0-9]?$/;
-      let rgx_date_y_m_d2 =/^\d{4}\-0[1-9]\-3[01]?$/;
-      let rgx_date_y_m_d3 =/^\d{4}\-1[0-2]\-0[1-9]?$/;
-      let rgx_date_y_m_d4 =/^\d{4}\-1[0-2]\-[12][0-9]?$/;
-      let rgx_date_y_m_d5 =/^\d{4}\-1[0-2]\-3[01]?$/;
-
-      const validEmptySearch = String(search).trim() === "";
-
-      const validDateSearch =
-          rgx_date_y.test(search) ||
-          rgx_date_y_m0.test(search) ||
-          rgx_date_y_m1.test(search) ||
-          rgx_date_y_m2.test(search) ||
-          rgx_date_y_m_d0.test(search) ||
-          rgx_date_y_m_d1.test(search) ||
-          rgx_date_y_m_d2.test(search) ||
-          rgx_date_y_m_d3.test(search) ||
-          rgx_date_y_m_d4.test(search) ||
-          rgx_date_y_m_d5.test(search) 
-
-      if (validDateSearch) {
         loadTableOngoing(search);
         loadTableCompleted(search);
-        GlobalMsgService.cleanMsg();
-      } else if (validEmptySearch) {
-        loadTableOngoing();
-        loadTableCompleted();
-        GlobalMsgService.cleanMsg();
-      } else {
-        GlobalMsgService.pushMessageWarning(
-          $rootScope.languageContent.submissionsList.filterBox.error
-        );
-      }
     };
+
+    $scope.openCloseTasksModal = function (open, job) {
+      $scope.modalOpen = true;
+      $scope.openCloseModal('tasksModal', open);
+      $rootScope.$broadcast('handleOpenTasksModal', {
+        jobData: job
+      });
+      console.log(open)
+    }
 
     init();
   }
@@ -553,6 +525,7 @@ dashboardControllers.controller(
       $scope.submissionName = undefined;
 
       $scope.newSubmission = {
+        label: undefined,
         lowerLeftCoord: {
           lat: -8.676947,
           long: -37.095067,
@@ -614,6 +587,12 @@ dashboardControllers.controller(
         ];
       }
 
+      if ($scope.newSubmission.label === undefined) {
+        GlobalMsgService.globalSuccessModalMsg(
+          $rootScope.languageContent.messages.failLabelRequired
+        );
+        return;
+      }
       if ($scope.newSubmission.initialDate === undefined) {
         GlobalMsgService.globalSuccessModalMsg(
           $rootScope.languageContent.messages.failInitialDateRequired
@@ -654,6 +633,7 @@ dashboardControllers.controller(
       data.inputGatheringTag = $scope.newSubmission.inputGathering.name;
       data.inputPreprocessingTag = $scope.newSubmission.inputPreprocessing.name;
       data.algorithmExecutionTag = $scope.newSubmission.algorithmExecution.name;
+      data.label = $scope.newSubmission.label;
       data.email = AuthenticationService.getUserName();
 
       console.log("Sending " + JSON.stringify(data));
@@ -697,6 +677,135 @@ dashboardControllers.controller(
           }
         }
       );
+    };
+  }
+);
+
+dashboardControllers.controller(
+  "TaskModalController",
+  function (
+    $scope,
+    $rootScope,
+    $log,
+    $filter,
+    $timeout,
+    AuthenticationService,
+    SubmissionService,
+    GlobalMsgService,
+    NgTableParams,
+  ) {
+
+    function beautifyStateNames(data) {
+      if (data) {
+        data.forEach(function (task, index) {
+          if (task.state === "archived") {
+            task.state = "success";
+          } else if (task.state === "failed") {
+            task.state = "failure";
+          }
+
+          task.state = capitalize(task.state);
+        });
+      }
+    }
+
+    function capitalize(string) {
+      if (string) {
+        return (
+          string.slice(0, 1).toUpperCase() + string.slice(1, string.length)
+        );
+      } else {
+        return string;
+      }
+    }
+
+    function camelCaseToSnakeCase(srt) {
+      let result = srt.replace(/([A-Z])/g, " $1");
+      return result.split(" ").join("_").toLowerCase();
+    }
+
+    function loadTasksTable(jobId, search) {
+      $scope.tasksTable = new NgTableParams(
+        { page: 1, count: 5 },
+        {
+          counts: [5, 10, 15],
+          getData: function (params) {
+            if (Object.keys(params._params.sorting).length === 0) {
+              params._params.sorting = { creationTime: "desc" };
+            }
+
+            const reqParams = {
+              search: search,
+              page: params._params.page,
+              size: params._params.count,
+              sort: camelCaseToSnakeCase(
+                JSON.stringify(params._params.sorting)
+              ),
+              jobId: jobId,
+            };
+
+            return SubmissionService.getSubmissions(
+              reqParams,
+              function (response) {
+                let data = response.data;
+                params.total(data.tasksCount);
+                beautifyStateNames(data.tasks);
+                return data.tasks;
+              },
+              function (error) {
+                var msg = "An error occurred when tried to get Images";
+                GlobalMsgService.pushMessageFail(msg);
+              }
+            );
+          },
+        }
+      );
+    }
+
+    $rootScope.$on("handleOpenTasksModal", function (event, data) {
+      $scope.selectedJob = data.jobData;
+      loadTasksTable(data.jobData.jobId);
+    });
+
+    $scope.openCloseModal('taskModal', false);
+
+    $scope.filterTable = function (search) {
+      let rgx_date_y = /^\d{0,4}\-?$/;
+      let rgx_date_y_m0 = /^\d{4}\-[01]\-?$/;
+      let rgx_date_y_m1 = /^\d{4}\-0[1-9]\-?$/;
+      let rgx_date_y_m2 = /^\d{4}\-1[0-2]\-?$/;
+      let rgx_date_y_m_d0 = /^\d{4}\-0[1-9]\-0[1-9]?$/;
+      let rgx_date_y_m_d1 = /^\d{4}\-0[1-9]\-[12][0-9]?$/;
+      let rgx_date_y_m_d2 = /^\d{4}\-0[1-9]\-3[01]?$/;
+      let rgx_date_y_m_d3 = /^\d{4}\-1[0-2]\-0[1-9]?$/;
+      let rgx_date_y_m_d4 = /^\d{4}\-1[0-2]\-[12][0-9]?$/;
+      let rgx_date_y_m_d5 = /^\d{4}\-1[0-2]\-3[01]?$/;
+
+      const validEmptySearch = String(search).trim() === "";
+
+      const validDateSearch =
+        rgx_date_y.test(search) ||
+        rgx_date_y_m0.test(search) ||
+        rgx_date_y_m1.test(search) ||
+        rgx_date_y_m2.test(search) ||
+        rgx_date_y_m_d0.test(search) ||
+        rgx_date_y_m_d1.test(search) ||
+        rgx_date_y_m_d2.test(search) ||
+        rgx_date_y_m_d3.test(search) ||
+        rgx_date_y_m_d4.test(search) ||
+        rgx_date_y_m_d5.test(search)
+
+      if (validDateSearch) {
+        loadTasksTable($scope.selectedJob.jobId, search);
+        GlobalMsgService.cleanMsg();
+      } else if (validEmptySearch) {
+        loadTasksTable($scope.selectedJob.jobId);
+        GlobalMsgService.cleanMsg();
+      } else {
+        GlobalMsgService.pushMessageWarning(
+          $rootScope.languageContent.submissionsList.taskFilterBox.error
+        );
+      }
     };
   }
 );

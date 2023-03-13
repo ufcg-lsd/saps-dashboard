@@ -21,6 +21,7 @@
                 failFinalDateRequired: "Final date is required",
                 failDateInvalid: "Last year date must be greater than first year date",
                 failPriorityRange: "Priority value must be between 1 and 100",
+                failLabelRequired: "Label is required",
                 noResultSearch: "There were no results for this search.",
                 notFoundLandsatImage: "No satellite data was found for this region on that date"
             },
@@ -90,7 +91,7 @@
                 submissionBox: {
                     title: "New Processing",
                     label: {
-                        submissionName: "Name",
+                        submissionName: "Label",
                         submissionTags: "Tags",
                         firstDate: "Initial date",
                         lastDate: "Final date",
@@ -160,6 +161,12 @@
                     }
                 },
                 table: {
+                    label: "label",
+                    startDate: "startDate",
+                    endDate: "endDate",
+                    upperRight: "upperRight",
+                    lowerLeft: "lowerLeft",
+                    progress: "progress",
                     titleOngoing: "Ongoing",
                     titleCompleted: "Completed",
                     landsatTile: "Landsat tile",
@@ -171,10 +178,14 @@
                     state: "State",
                     priority: "Priority"
                 },
-                filterBox: {
+                taskFilterBox: {
                   error: "Invalid search, the date must be in the YYYY-MM-DD format",
                   placeholder: "Filter by date",
                 },
+                jobFilterBox: {
+                  error: "Job label not found",
+                  placeholder: "Filter by label",
+                }
             },
         },
     }, {
@@ -196,6 +207,7 @@
                 failFinalDateRequired: "Data final é necessária",
                 failDateInvalid: "A data final deve ser após a data inicial",
                 failPriorityRange: "O valor da prioridade deve ser entre 1 e 100",
+                failLabelRequired: "É preciso definir um nome para a submissão",
                 noResultSearch: "Não foram encontrados resultados para esta pesquisa.",
                 notFoundLandsatImage: "Nenhum dado de satélite foi encontrado para essa região nessa data"
             },
@@ -327,6 +339,12 @@
                     },
                 },
                 table: {
+                    label: "nome",
+                    startDate: "Data inicial",
+                    endDate: "Data final",
+                    upperRight: "Coord. Sup. Direita",
+                    lowerLeft: "Coord. Inf. Esquerda",
+                    progress: "Progresso",
                     titleOngoing: "Em andamento",
                     titleCompleted: "Concluídos",
                     landsatTile: "Região",
@@ -338,9 +356,13 @@
                     state: "Estado",
                     priority: "Prioridade"
                 },
-                filterBox: {
+                taskFilterBox: {
                   error: "Busca inválida, a data precisa estar no formato: AAAA-MM-DD",
                   placeholder: "Filtrar por data",
+                },
+                jobFilterBox: {
+                  error: "Nome não encotrado",
+                  placeholder: "Filtrar por nome",
                 }
             }
         },
