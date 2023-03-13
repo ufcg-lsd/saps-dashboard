@@ -46,7 +46,7 @@ dashboardControllers.controller(
           counts: [], //[5, 10],
           getData: function (params) {
             if (Object.keys(params._params.sorting).length === 0) {
-              params._params.sorting = { creationTime: "desc" };
+              params._params.sorting = { creation_time: "desc" };
             }
 
             const reqParams = {
@@ -85,7 +85,7 @@ dashboardControllers.controller(
           counts: [], //[5, 10],
           getData: function (params) {
             if (Object.keys(params._params.sorting).length === 0) {
-              params._params.sorting = { creationTime: "desc" };
+              params._params.sorting = { creation_time: "desc" };
             }
 
             const reqParams = {
