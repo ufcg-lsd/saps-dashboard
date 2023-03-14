@@ -731,7 +731,7 @@ dashboardControllers.controller(
           counts: [5, 10, 15],
           getData: function (params) {
             if (Object.keys(params._params.sorting).length === 0) {
-              params._params.sorting = { creationTime: "desc" };
+              params._params.sorting = { creation_time: "desc" };
             }
 
             const reqParams = {
@@ -748,7 +748,16 @@ dashboardControllers.controller(
               reqParams,
               function (response) {
                 let data = response.data;
-                params.total(data.tasksCount);
+
+                $scope.selectedJob = {
+                  ...$scope.selectedJob, 
+                  tasksAmount: data.tasksAmount,
+                  tasksOngoing: data.tasksOngoing,
+                  tasksFailed: data.tasksFailed, 
+                  tasksArchived: data.tasksArchived,
+                }
+
+                params.total(data.tasksAmount);
                 beautifyStateNames(data.tasks);
                 return data.tasks;
               },

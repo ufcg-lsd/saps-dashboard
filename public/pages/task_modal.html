@@ -7,13 +7,11 @@
           <div class="container-fluid">
             <div style="display: flex; align-items: center; justify-content: space-between;">
               <h3 ng-click="closeModal" style="cursor:pointer; width: 20%;">{{selectedJob.jobLabel}}</h3>
-              <!-- <h4> Created:10/60 | Running:30/60 | Failed:10/60 | Archvied:20/60 </h4> -->
-              <!-- <div style="display: flex; align-items: center; justify-content: space-between; width: 50%;">
-                <h4> Created: {{selectedItem.tasksCreated}}/{{selectedItem.tasksTotal}} </h4>
-                <h4> Running: {{selectedItem.tasksRunning}}/{{selectedItem.tasksTotal}} </h4>
-                <h4> Failed: {{selectedItem.tasksFailed}}/{{selectedItem.tasksTotal}} </h4>
-                <h4> Success: {{selectedItem.tasksSuccess}}/{{selectedItem.tasksTotal}} </h4>
-              </div> -->
+              <div style="display: flex; align-items: center; justify-content: space-between; width: 30%;">
+                <h4 ng-show="selectedJob.tasksOngoing"> Running: {{selectedJob.tasksOngoing}}/{{selectedJob.tasksAmount}} </h4>
+                <h4> Failed: {{selectedJob.tasksFailed}}/{{selectedJob.tasksAmount}} </h4>
+                <h4> Archived: {{selectedJob.tasksArchived}}/{{selectedJob.tasksAmount}} </h4>
+              </div>
               <div class="saps-input-image"
                 style="display: inline-block; margin-right: -20px; font-size: 14px; color: black;">
                 <input type="text" class="saps-input sb-md sb-height-sm" id="filter-all" ng-model="listFilter"
