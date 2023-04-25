@@ -3,7 +3,9 @@ export const createFinalUrl = (
   endpoint: string,
   params?: Record<string, string>
 ) => {
-  const urlObject = new URL(`${url}${endpoint}`);
+  const urlString = `${url}${endpoint}`;
+
+  const urlObject = new URL(urlString);
 
   if (params)
     Object.keys(params).forEach((key) => {

@@ -1,5 +1,5 @@
-import { AllJobsArgs, JobBody } from "@types/services/job";
-import { getFetcher } from "../fetcher";
+import { AllJobsArgs, JobBody } from "@src/types/services/job";
+import Fetcher from "../fetcher";
 import { createFinalUrl } from "../utils";
 
 export const getAllJobs = async (
@@ -9,7 +9,7 @@ export const getAllJobs = async (
   args?: AllJobsArgs
 ) => {
   const apiUrl = process.env["API_URL"] || "";
-  const fetcher = getFetcher();
+  const fetcher = Fetcher;
   const url = createFinalUrl(apiUrl, "/processings");
 
   const headers: Record<string, string> = {
@@ -42,7 +42,7 @@ export const getJobTask = async (
   args?: AllJobsArgs
 ) => {
   const apiURL = process.env["API_URL"] || "";
-  const fetcher = getFetcher();
+  const fetcher = Fetcher;
   const url = createFinalUrl(apiURL, `/processings`);
 
   const headers: Record<string, string> = {
@@ -70,7 +70,7 @@ export const getJobTask = async (
 
 export const addJob = async (job: JobBody) => {
   const apiUrl = process.env["API_URL"] || "";
-  const fetcher = getFetcher();
+  const fetcher = Fetcher;
   const url = createFinalUrl(apiUrl, "/processings");
 
   const headers: Record<string, string> = {

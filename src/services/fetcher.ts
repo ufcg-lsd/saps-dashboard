@@ -1,4 +1,4 @@
-import { FetcherArgs } from "@types/fetcher";
+import { FetcherArgs } from "@src/types/fetcher";
 import { HTTP_METHOD } from "next/dist/server/web/http";
 
 interface Fetcher {
@@ -18,7 +18,7 @@ interface Fetcher {
 
 let fetcher: Fetcher;
 
-export const getFetcher = (): Fetcher => {
+const getFetcher = (): Fetcher => {
   let headers: Record<string, string> = {};
 
   if (!fetcher) {
@@ -55,3 +55,5 @@ export const getFetcher = (): Fetcher => {
 
   return Object.freeze(fetcher);
 };
+
+export default getFetcher();
