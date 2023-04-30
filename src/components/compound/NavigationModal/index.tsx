@@ -26,8 +26,12 @@ const NavigationModal = () => {
       route: "/register",
       icon: <></>,
     },
-    Page3: {
-      route: "/page3",
+    Processing: {
+      route: "/processing",
+      icon: <></>,
+    },
+    Data: {
+      route: "/data",
       icon: <></>,
     },
   };
