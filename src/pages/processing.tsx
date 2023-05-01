@@ -4,17 +4,18 @@ import { Roboto } from "next/font/google";
 import NavigationModal from "@components/compound/NavigationModal";
 import {
   Box,
+  Checkbox,
   Container,
   Fade,
   Table,
   TableBody,
+  TableCell,
   TableContainer,
   TableFooter,
   TablePagination,
   TableRow,
 } from "@mui/material";
 import { useState } from "react";
-import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 
 const roboto = Roboto({
   weight: ["400", "500", "700"],
@@ -23,6 +24,25 @@ const roboto = Roboto({
 
 export default function Home() {
   const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  function createData(
+    name: string,
+    calories: number,
+    fat: number,
+    carbs: number,
+    protein: number
+  ) {
+    return { name, calories, fat, carbs, protein };
+  }
+
+  const rows = [
+    createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
+    createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
+    createData("Eclair", 262, 16.0, 24, 6.0),
+    createData("Cupcake", 305, 3.7, 67, 4.3),
+    createData("Gingerbread", 356, 16.0, 49, 3.9),
+  ];
 
   return (
     <>
@@ -64,15 +84,10 @@ export default function Home() {
                   <TableFooter>
                     <TableRow>
                       <TablePagination
-                        rowsPerPageOptions={[
-                          5,
-                          10,
-                          25,
-                          { label: "All", value: -1 },
-                        ]}
+                        rowsPerPageOptions={[5, 10, 15]}
                         colSpan={3}
                         count={5}
-                        rowsPerPage={5}
+                        rowsPerPage={rowsPerPage}
                         page={page}
                         SelectProps={{
                           inputProps: {
@@ -82,7 +97,6 @@ export default function Home() {
                         }}
                         onPageChange={() => {}}
                         onRowsPerPageChange={() => {}}
-                        ActionsComponent={TablePaginationActions}
                       />
                     </TableRow>
                   </TableFooter>
