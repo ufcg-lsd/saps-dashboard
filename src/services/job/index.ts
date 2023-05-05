@@ -2,19 +2,20 @@ import { AllJobsArgs, JobBody } from "@src/types/services/job";
 import Fetcher from "../fetcher";
 import { createFinalUrl } from "../utils";
 
+const apiUrl = process.env["API_URL"] || "150.165.15.82:8091";
+
 export const getAllJobs = async (
   page: number,
   size: number,
   sort: Record<string, string>,
   args?: AllJobsArgs
 ) => {
-  const apiUrl = process.env["API_URL"] || "";
   const fetcher = Fetcher;
   const url = createFinalUrl(apiUrl, "/processings");
 
   const headers: Record<string, string> = {
-    userEmail: "",
-    userPass: "",
+    userEmail: "{user email here}",
+    userPass: "{user pass here}",
     page: String(page),
     size: String(size),
     sort: JSON.stringify(sort),
@@ -41,9 +42,8 @@ export const getJobTask = async (
   sort: Record<string, string>,
   args?: AllJobsArgs
 ) => {
-  const apiURL = process.env["API_URL"] || "";
   const fetcher = Fetcher;
-  const url = createFinalUrl(apiURL, `/processings`);
+  const url = createFinalUrl(apiUrl, `/processings`);
 
   const headers: Record<string, string> = {
     userEmail: "",
@@ -69,7 +69,6 @@ export const getJobTask = async (
 };
 
 export const addJob = async (job: JobBody) => {
-  const apiUrl = process.env["API_URL"] || "";
   const fetcher = Fetcher;
   const url = createFinalUrl(apiUrl, "/processings");
 

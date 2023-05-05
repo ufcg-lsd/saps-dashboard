@@ -44,7 +44,7 @@ const NavigationModal = () => {
           return (
             <Link
               key={key}
-              href={`/${value.route}`}
+              href={`${value.route}`}
               style={{
                 textDecoration: "none",
                 color: grey[900],
