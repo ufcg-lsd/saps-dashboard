@@ -1,13 +1,17 @@
 import Head from "next/head";
 import Image from "next/image";
+import { alpha } from "@mui/material/styles";
 import logo from "../../../public/logo-abertura.svg";
 import { Roboto } from "next/font/google";
 import NavigationModal from "@components/compound/NavigationModal";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import {
   Box,
   Container,
   Fade,
+  IconButton,
   Paper,
+  Popover,
   Table,
   TableBody,
   TableCell,
@@ -16,8 +20,14 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+  Toolbar,
+  Tooltip,
+  Typography,
 } from "@mui/material";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { forwardRef, useCallback, useMemo, useRef, useState } from "react";
 import useHandler from "./useHandler";
 
 const roboto = Roboto({
@@ -25,15 +35,66 @@ const roboto = Roboto({
   subsets: ["latin-ext"],
 });
 
+function TableToolbar(props: any, ref: any) {
+  const { setOpenPopover } = props;
+
+  return (
+    <Toolbar
+      sx={{
+        pl: { sm: 2 },
+        pr: { xs: 1, sm: 1 },
+        ...{
+          bgcolor: (theme) =>
+            alpha(
+              theme.palette.primary.main,
+              theme.palette.action.activatedOpacity
+            ),
+        },
+      }}
+    >
+      <Typography
+        sx={{ flex: "1 1 100%" }}
+        variant="h6"
+        id="tableTitle"
+        component="div"
+      >
+        Jobs
+      </Typography>
+      <Tooltip title="Filter list">
+        <IconButton onClick={() => setOpenPopover(true)}>
+          <FilterListIcon />
+          <div
+            ref={ref}
+            style={{
+              position: "absolute",
+              bottom: "0",
+              right: "0",
+            }}
+          />
+        </IconButton>
+      </Tooltip>
+    </Toolbar>
+  );
+}
+
+const EnhancedTableToolbar = forwardRef(TableToolbar);
+
 export default function Processing() {
   const {
     dataInfo,
     columnTitles,
     page,
     rowsPerPage,
+    selectedFilter,
+    filterValue,
     handleChangePage,
     handleChangeRowsPerPage,
+    handleFilterChange,
+    handleFilterValueChange,
   } = useHandler();
+  const [openPopover, setOpenPopover] = useState(false);
+
+  const filterButtonRef = useRef(null);
 
   const rowsPerPageFixed = useRef(rowsPerPage);
 
@@ -135,6 +196,58 @@ export default function Processing() {
                   padding: "2vh 0",
                 }}
               >
+                <EnhancedTableToolbar
+                  setOpenPopover={setOpenPopover}
+                  ref={filterButtonRef}
+                />
+                <Popover
+                  open={openPopover}
+                  onClose={() => setOpenPopover(false)}
+                  anchorEl={filterButtonRef.current}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      padding: "12px",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                  >
+                    <ToggleButtonGroup
+                      color="primary"
+                      value={selectedFilter}
+                      exclusive
+                      onChange={handleFilterChange}
+                      aria-label="Platform"
+                      orientation="vertical"
+                      size="small"
+                      sx={{
+                        width: "100%",
+                        marginBottom: "12px",
+                      }}
+                    >
+                      <ToggleButton value="label">Label</ToggleButton>
+                      <ToggleButton value="id">{"  Id  "}</ToggleButton>
+                    </ToggleButtonGroup>
+                    <TextField
+                      id="standard-basic"
+                      label="Filter"
+                      variant="outlined"
+                      size="small"
+                      value={filterValue}
+                      disabled={!selectedFilter}
+                      onChange={handleFilterValueChange}
+                    />
+                  </Box>
+                </Popover>
                 <TableContainer component={Paper}>
                   <Table>
                     <TableHead>

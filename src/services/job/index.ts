@@ -14,8 +14,8 @@ export const getAllJobs = async (
   const url = createFinalUrl(apiUrl, "/processings");
 
   const headers: Record<string, string> = {
-    userEmail: "{user email here}",
-    userPass: "{user pass here}",
+    userEmail: "felipe.amorim.ferreira@ccc.ufcg.edu.br",
+    userPass: "118111800",
     page: String(page),
     size: String(size),
     sort: JSON.stringify(sort),
