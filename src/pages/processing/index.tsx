@@ -29,6 +29,8 @@ import {
 } from "@mui/material";
 import { forwardRef, useCallback, useMemo, useRef, useState } from "react";
 import useHandler from "./useHandler";
+import { AddCircleOutline } from "@mui/icons-material";
+import NewProcessingModal from "@components/compound/NewProcessingModal";
 
 const roboto = Roboto({
   weight: ["400", "500", "700"],
@@ -36,7 +38,7 @@ const roboto = Roboto({
 });
 
 function TableToolbar(props: any, ref: any) {
-  const { setOpenPopover } = props;
+  const { setOpenPopover, setShowNewProcessingModal } = props;
 
   return (
     <Toolbar
@@ -60,6 +62,19 @@ function TableToolbar(props: any, ref: any) {
       >
         Jobs
       </Typography>
+      <Tooltip title="New Processing">
+        <IconButton onClick={() => setShowNewProcessingModal(true)}>
+          <AddCircleOutline />
+          <div
+            ref={ref}
+            style={{
+              position: "absolute",
+              bottom: "0",
+              right: "0",
+            }}
+          />
+        </IconButton>
+      </Tooltip>
       <Tooltip title="Filter list">
         <IconButton onClick={() => setOpenPopover(true)}>
           <FilterListIcon />
@@ -93,6 +108,7 @@ export default function Processing() {
     handleFilterValueChange,
   } = useHandler();
   const [openPopover, setOpenPopover] = useState(false);
+  const [showNewProcessingModal, setShowNewProcessingModal] = useState(false);
 
   const filterButtonRef = useRef(null);
 
@@ -198,7 +214,14 @@ export default function Processing() {
               >
                 <EnhancedTableToolbar
                   setOpenPopover={setOpenPopover}
+                  setShowNewProcessingModal={setShowNewProcessingModal}
                   ref={filterButtonRef}
+                />
+                <NewProcessingModal
+                  open={showNewProcessingModal}
+                  onClose={() => {
+                    setShowNewProcessingModal(false);
+                  }}
                 />
                 <Popover
                   open={openPopover}

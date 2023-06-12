@@ -1,17 +1,33 @@
+import { useCallback, useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import { Roboto } from "next/font/google";
 import logo from "../../public/logo-abertura.svg";
 import NavigationModal from "@components/compound/NavigationModal";
 import Map from "@components/simple/Map";
-import { Box, Container, Fade } from "@mui/material";
+import { Box, Fade } from "@mui/material";
+import DataProcessingForm from "@components/compound/DataProcessingForm";
 
 const roboto = Roboto({
   weight: ["400", "500", "700"],
   subsets: ["latin-ext"],
 });
 
+export interface Area {
+  upperRight: { latitude: number; longitude: number };
+  lowerLeft: { latitude: number; longitude: number };
+}
+
 export default function Home() {
+  const [area, setArea] = useState<Area>({
+    upperRight: { latitude: 0, longitude: 0 },
+    lowerLeft: { latitude: 0, longitude: 0 },
+  });
+
+  const onPolygonClick = useCallback((area: Area) => {
+    setArea(area);
+  }, []);
+
   return (
     <>
       <Head>
@@ -58,6 +74,8 @@ export default function Home() {
               sx={{
                 flexGrow: 1,
                 width: "100%",
+                overflow: "hidden",
+                scroll: "none",
               }}
             >
               <Box
@@ -65,7 +83,8 @@ export default function Home() {
                   height: "100%",
                 }}
               >
-                <Map />
+                <DataProcessingForm area={area} />
+                <Map onPolygonClick={onPolygonClick} />
               </Box>
             </Box>
           </Box>

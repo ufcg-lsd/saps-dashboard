@@ -11,6 +11,8 @@ import southAmericaGeoJson from "public/southAmerica.geojson";
 import eurAfricaGeoJson from "public/eurAfrica.geojson";
 // @ts-ignore
 import oceaniaGeoJson from "public/oceania.geojson";
+import { Area } from "@pages/data";
+import { on } from "events";
 
 const geoJsons = {
   asia: asiaGeoJson,
@@ -20,7 +22,13 @@ const geoJsons = {
   oceania: oceaniaGeoJson,
 };
 
-const Map = () => {
+interface PropsTypes {
+  onPolygonClick: (area: Area) => void;
+}
+
+const Map = (props: PropsTypes) => {
+  const { onPolygonClick } = props;
+
   const map = useRef<MapObject | null>(null);
 
   useEffect(() => {
@@ -37,8 +45,9 @@ const Map = () => {
 
     for (const [key, value] of Object.entries(geoJsons)) {
       map.current.addSource(value, key);
+      map.current.onPolygonClick(key, onPolygonClick);
     }
-  }, []);
+  }, [onPolygonClick]);
 
   return (
     <Container style={{ height: "100%", width: "100%" }} id="map"></Container>
