@@ -12,7 +12,8 @@ import eurAfricaGeoJson from "public/eurAfrica.geojson";
 // @ts-ignore
 import oceaniaGeoJson from "public/oceania.geojson";
 import { Area } from "@pages/data";
-import { on } from "events";
+import { getHeatMap } from "@src/services/heatmap";
+import { getHeatMapInterval, getHeatMapOpacity } from "@src/utils/heatmap";
 
 const geoJsons = {
   asia: asiaGeoJson,
@@ -43,10 +44,43 @@ const Map = (props: PropsTypes) => {
       projection: "globe",
     });
 
-    for (const [key, value] of Object.entries(geoJsons)) {
-      map.current.addSource(value, key);
-      map.current.onPolygonClick(key, onPolygonClick);
-    }
+    const joinedGeoJsons = Object.values(geoJsons).reduce((acc, curr) => {
+      if (!acc.type) {
+        acc = curr;
+        return acc;
+      }
+
+      return {
+        ...acc,
+        features: [...acc.features, ...curr.features],
+      };
+    }, {});
+
+    joinedGeoJsons.features.sort((a: any, b: any) => {
+      if (a.id < b.id) return -1;
+      if (a.id > b.id) return 1;
+
+      return 0;
+    });
+
+    const opacityMapping: Record<string, number> = {};
+
+    getHeatMap().then((data: Record<string, number>) => {
+      const interval = getHeatMapInterval(data);
+
+      Object.entries(data).forEach(([key, value]) => {
+        const opacity = getHeatMapOpacity(interval, value);
+        opacityMapping[key] = Number(opacity.toFixed(3));
+      });
+
+      joinedGeoJsons.features.forEach((feature: any) => {
+        const opacity = opacityMapping[feature.id] || 0;
+        feature.properties = { ...feature.properties, opacity };
+      });
+
+      map?.current?.addSource(joinedGeoJsons, "joined");
+      map?.current?.onPolygonClick("joined", onPolygonClick);
+    });
   }, [onPolygonClick]);
 
   return (

@@ -57,28 +57,33 @@ export class Map {
       source: sourceName, // reference the data source
       layout: {},
       paint: {
-        "fill-color": "#0080ff", // blue color fill
+        "fill-color": [
+          "case",
+          ["boolean", ["feature-state", "hover"], false],
+          "#22A699",
+          "#F24C3D",
+        ], // blue color fill
         "fill-opacity": [
           "case",
           ["boolean", ["feature-state", "hover"], false],
-          0.5,
-          0.1,
+          0.9,
+          ["get", "opacity"],
         ],
         "fill-outline-color": "#000", // blue color outline
       },
     });
     // Add a black outline around the polygon.
-    // this.map.addLayer({
-    //   id: "outline " + sourceName,
-    //   type: "line",
-    //   source: sourceName,
-    //   layout: {},
-    //   paint: {
-    //     "line-color": "#000",
-    //     "line-width": 1,
-    //     "line-opacity": 0.5,
-    //   },
-    // });
+    this.map.addLayer({
+      id: "outline " + sourceName,
+      type: "line",
+      source: sourceName,
+      layout: {},
+      paint: {
+        "line-color": "#000",
+        "line-width": 1,
+        "line-opacity": 0.1,
+      },
+    });
     let hoveredPolygonId: any = null;
 
     this.map.on("mousemove", sourceName + "-fills", (e) => {
@@ -96,18 +101,6 @@ export class Map {
         );
       }
     });
-
-    // When the mouse leaves the state-fill layer, update the feature state of the
-    // previously hovered feature.
-    // this.map.on("mouseleave", sourceName + "-fills", () => {
-    //   if (hoveredPolygonId !== null) {
-    //     this.map.setFeatureState(
-    //       { source: sourceName, id: hoveredPolygonId },
-    //       { hover: false }
-    //     );
-    //   }
-    //   hoveredPolygonId = null;
-    // });
   }
 
   public onPolygonClick(sourceName: string, callback: Function): void {
