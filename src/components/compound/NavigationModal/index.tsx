@@ -26,8 +26,12 @@ const NavigationModal = () => {
       route: "/register",
       icon: <></>,
     },
-    Page3: {
-      route: "/page3",
+    Processing: {
+      route: "/processing",
+      icon: <></>,
+    },
+    Data: {
+      route: "/data",
       icon: <></>,
     },
   };
@@ -40,7 +44,7 @@ const NavigationModal = () => {
           return (
             <Link
               key={key}
-              href={`/${value.route}`}
+              href={`${value.route}`}
               style={{
                 textDecoration: "none",
                 color: grey[900],
