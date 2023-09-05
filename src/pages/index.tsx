@@ -6,6 +6,7 @@ import NavigationModal from "@components/compound/NavigationModal";
 import { Box, Container, Fade } from "@mui/material";
 import StyledLink from "@components/styled/StyledLink";
 import LoginForm from "@components/compound/LoginForm";
+
 const roboto = Roboto({
   weight: ["400", "500", "700"],
   subsets: ["latin-ext"],

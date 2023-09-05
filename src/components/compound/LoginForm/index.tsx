@@ -11,10 +11,24 @@ import {
 import { grey } from "@mui/material/colors";
 import StyledLink from "@components/styled/StyledLink";
 import { useState } from "react";
+import { login } from "@src/services/auth";
+import { useRouter } from "next/router";
 
 const LoginForm = () => {
+  const router = useRouter();
+
+  async function handleSubmit(
+    email: string,
+    passwd: string
+  ) {
+    const result = await login(email, passwd);
+    if (result) router.push("/processing") }
+  
   const [loginType, setLoginType] = useState("regular");
   const leftDiffLoginType = loginType === "regular" ? 0 : -100;
+  const [email, setEmail] = useState(""); 
+  const [passwd, setPasswd] = useState("");
+  console.log(login, passwd); 
 
   return (
     <Fade in={true} unmountOnExit>
@@ -64,6 +78,10 @@ const LoginForm = () => {
             <Button variant="contained">Login with EGI</Button>
           </Box>
           <TextField
+            onChange={(e) => {
+              setEmail(e.target.value)}}
+
+            value={email}
             id="outlined-basic"
             size="small"
             label="Email"
@@ -71,13 +89,17 @@ const LoginForm = () => {
             type=""
           />
           <TextField
+          onChange={(e) => {
+            setPasswd(e.target.value)}}
+            value={passwd}
             id="outlined-basic"
             size="small"
             label="Password"
             variant="outlined"
             type="password"
           />
-          <Button variant="contained">Enter</Button>
+          <Button variant="contained" onClick={()=> {handleSubmit(email,passwd)}}>Enter</Button>
+          
         </Box>
         <Box
           sx={{
@@ -106,3 +128,5 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
+
+
