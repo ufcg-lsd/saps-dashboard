@@ -2,7 +2,8 @@ import { AllJobsArgs, JobBody } from "@src/types/services/job";
 import Fetcher from "../fetcher";
 import { createFinalUrl } from "../utils";
 
-const apiUrl = process.env["API_URL"] || "150.165.15.82:8091";
+const apiUrl = process.env["NEXT_PUBLIC_API_URL"] || "150.165.15.82:8091";
+console.log(apiUrl);
 
 export const getAllJobs = async (
   page: number,
@@ -14,8 +15,8 @@ export const getAllJobs = async (
   const url = createFinalUrl(apiUrl, "/processings");
 
   const headers: Record<string, string> = {
-    userEmail: "felipe.amorim.ferreira@ccc.ufcg.edu.br",
-    userPass: "118111800",
+    userEmail: "admin_email",
+    userPass: "admin_password",
     page: String(page),
     size: String(size),
     sort: JSON.stringify(sort),

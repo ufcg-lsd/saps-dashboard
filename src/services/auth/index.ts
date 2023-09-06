@@ -17,7 +17,7 @@ return { login, password };
 function isValid(login: string, password: string): Promise<boolean> {
 	return new Promise((res, rej) => {
 		setTimeout(() => {
-			if (login === "admin" && password === "admin")
+			if (login === "admin_email" && password === "admin_password")
 				res(true)
 
 			res(false)
