@@ -71,8 +71,6 @@ export default function Home() {
           </Box>
         </Container>
       </Fade>
-
-      <NavigationModal />
     </>
   );
 }
