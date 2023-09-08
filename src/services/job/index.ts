@@ -79,21 +79,33 @@ export const addJob = async (job: JobBody) => {
   };
 
   const finalBody = {
+    label: job.label,
     initialDate: job.initialDate,
     finalDate: job.finalDate,
     priority: job.priority,
-    inputGatheringTag: job.inputGatheringTag,
+    inputDownloadingTag: job.inputGatheringTag,
     inputPreprocessingTag: job.inputPreprocessingTag,
-    algorithmExecutionTag: job.algorithmExecutionTag,
+    inputProcessingTag: job.algorithmExecutionTag,
     userEmail: job.userEmail,
     userPass: job.userPass,
-    label: job.label,
     email: job.email,
+    coordinates: {
+      upperRight: {
+        latitudeLowerLeft: job.coordinates,
+        longitudeLowerLeft: job.coordinates,
+      },
+      lowerLeft: {
+        latitudeLowerLeft: job.coordinates,
+        longitudeLowerLeft: job.coordinates,
+      }
+    }
   };
 
   const response = await fetcher.fetch(url, "POST", finalBody, {
     headers,
   });
+
+  console.log(response);
 
   const json = await response.json();
 

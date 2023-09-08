@@ -1,3 +1,4 @@
+import { Password } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -11,6 +12,9 @@ import {
   Typography,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
+import { useState } from "react";
+import { addJob } from "@src/services/job";
+import { useRouter } from "next/router";
 
 interface PropsTypes {
   open: boolean;
@@ -25,7 +29,67 @@ const style = {
 };
 
 const NewProcessingModal = (props: PropsTypes) => {
+  const router = useRouter();
   const { open, onClose } = props;
+
+  const [label, setLabel] = useState("");
+  const [latitudeUpperRight, setLatitudeUpperRight] = useState(null);
+  const [longitudeUpperRight, setLongitudeUpperRight] = useState(null);
+  const [latitudeLowerLeft, setLatitudeLowerLeft] = useState(null);
+  const [longitudeLowerLeft, setLongitudeLowerLeft] = useState(null);
+  const [initialDate, setInitialDate] = useState("");
+  const [finalDate, setFinalDate] = useState("");
+  const [inputDownloadingPhase, setInputDownloadingPhase] = useState("");
+  const [preprocessingPhase, setPreprocessingPhase] = useState("");
+  const [processingPhase, setProcessingPhase] = useState("");
+  const [priority, setPriority] = useState("");
+  const [email, setEmai] = useState("");
+
+  const lowerLeftLatitude = latitudeLowerLeft !== null ? latitudeLowerLeft : 0;
+  const lowerLeftLongitude = longitudeLowerLeft !== null ? longitudeLowerLeft : 0;
+  const upperRightLatitude = latitudeUpperRight !== null ? latitudeUpperRight : 0;
+  const upperRightLongitude = longitudeUpperRight !== null ? longitudeUpperRight : 0;
+
+  const handleSetLatitude = () => {
+    console.log(e.target.value)
+
+    setLatitudeUpperRight(e.target.value[0])
+    setLatitudeLowerLeft(e.target.value[1])
+  }
+
+  const handleSetLongitude = () => {
+    console.log(e.target.value)
+
+    setLongitudeUpperRight(e.target.value[0])
+    setLatitudeLowerLeft(e.target.value[1])
+  }
+
+  const handleProcessClick = async () => {
+    const jobData = {
+      label: label,
+      initialDate: initialDate,
+      finalDate: finalDate,
+      priority: parseInt(priority),
+      inputGatheringTag: inputDownloadingPhase,
+      inputPreprocessingTag: preprocessingPhase,
+      algorithmExecutionTag: processingPhase,
+      userEmail: localStorage.getItem('login') || '', 
+      userPass: localStorage.getItem('password') || '',
+      email: email,
+      coordinates: {
+        lowerLeft: [
+          lowerLeftLatitude, lowerLeftLongitude],
+        upperRight: [
+          upperRightLatitude, upperRightLongitude],
+    },
+    };
+
+    try {
+      const response = await addJob(jobData); 
+      console.log(response);
+    } catch (error) {
+      console.error("Failed to add job: ", error);
+    }
 
   return (
     <Modal
@@ -120,7 +184,7 @@ const NewProcessingModal = (props: PropsTypes) => {
                   mr: "12px",
                 }}
                 value={null}
-                onChange={() => {}}
+                onChange={(e) => handleSetLatitude(e)}
               />
               <TextField
                 id="outlined-basic"
@@ -248,13 +312,13 @@ const NewProcessingModal = (props: PropsTypes) => {
                 justifyContent: "space-around",
               }}
             >
-              <Button variant="contained">Process</Button>
+              <Button variant="contained" onClick={() => {handleProcessClick()}}>Process</Button>
             </Box>
           </CardContent>
         </Card>
       </Box>
     </Modal>
   );
-};
+}};
 
 export default NewProcessingModal;
