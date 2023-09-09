@@ -7,6 +7,9 @@ import NavigationModal from "@components/compound/NavigationModal";
 import Map from "@components/simple/Map";
 import { Box, Fade } from "@mui/material";
 import DataProcessingForm from "@components/compound/DataProcessingForm";
+import { useAuth } from '@src/services/auth/authContext.js';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 const roboto = Roboto({
   weight: ["400", "500", "700"],
@@ -23,6 +26,17 @@ export default function Home() {
     upperRight: { latitude: 0, longitude: 0 },
     lowerLeft: { latitude: 0, longitude: 0 },
   });
+
+  
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
+  
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push('/');  
+    }
+  }, [isAuthenticated, router]);
+  
 
   const onPolygonClick = useCallback((area: Area) => {
     setArea(area);

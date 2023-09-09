@@ -14,7 +14,7 @@ import {
 import { DatePicker } from "@mui/x-date-pickers";
 import { useState } from "react";
 import { addJob } from "@src/services/job";
-import { useRouter } from "next/router";
+
 
 interface PropsTypes {
   open: boolean;
@@ -29,42 +29,32 @@ const style = {
 };
 
 const NewProcessingModal = (props: PropsTypes) => {
-  const router = useRouter();
   const { open, onClose } = props;
 
   const [label, setLabel] = useState("");
-  const [latitudeUpperRight, setLatitudeUpperRight] = useState(null);
-  const [longitudeUpperRight, setLongitudeUpperRight] = useState(null);
-  const [latitudeLowerLeft, setLatitudeLowerLeft] = useState(null);
-  const [longitudeLowerLeft, setLongitudeLowerLeft] = useState(null);
+  const [latitudeUpperRight, setLatitudeUpperRight] = useState(0);
+  const [longitudeUpperRight, setLongitudeUpperRight] = useState(0);
+  const [latitudeLowerLeft, setLatitudeLowerLeft] = useState(0);
+  const [longitudeLowerLeft, setLongitudeLowerLeft] = useState(0);
   const [initialDate, setInitialDate] = useState("");
   const [finalDate, setFinalDate] = useState("");
   const [inputDownloadingPhase, setInputDownloadingPhase] = useState("");
   const [preprocessingPhase, setPreprocessingPhase] = useState("");
   const [processingPhase, setProcessingPhase] = useState("");
   const [priority, setPriority] = useState("");
-  const [email, setEmai] = useState("");
 
-  const lowerLeftLatitude = latitudeLowerLeft !== null ? latitudeLowerLeft : 0;
-  const lowerLeftLongitude = longitudeLowerLeft !== null ? longitudeLowerLeft : 0;
-  const upperRightLatitude = latitudeUpperRight !== null ? latitudeUpperRight : 0;
-  const upperRightLongitude = longitudeUpperRight !== null ? longitudeUpperRight : 0;
+  const handleInitialDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInitialDate(e.target.value);
+  };
 
-  const handleSetLatitude = () => {
-    console.log(e.target.value)
+  const handleFinalDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFinalDate(e.target.value);
+  };
 
-    setLatitudeUpperRight(e.target.value[0])
-    setLatitudeLowerLeft(e.target.value[1])
-  }
-
-  const handleSetLongitude = () => {
-    console.log(e.target.value)
-
-    setLongitudeUpperRight(e.target.value[0])
-    setLatitudeLowerLeft(e.target.value[1])
-  }
-
-  const handleProcessClick = async () => {
+  const handleProcessClick = async (
+    email: string,
+    passwd: string
+  ) => {
     const jobData = {
       label: label,
       initialDate: initialDate,
@@ -73,14 +63,14 @@ const NewProcessingModal = (props: PropsTypes) => {
       inputGatheringTag: inputDownloadingPhase,
       inputPreprocessingTag: preprocessingPhase,
       algorithmExecutionTag: processingPhase,
-      userEmail: localStorage.getItem('login') || '', 
+      userEmail: localStorage.getItem('email') || '', 
       userPass: localStorage.getItem('password') || '',
-      email: email,
+      email: localStorage.getItem('email') || '',
       coordinates: {
         lowerLeft: [
-          lowerLeftLatitude, lowerLeftLongitude],
+          latitudeLowerLeft, longitudeLowerLeft],
         upperRight: [
-          upperRightLatitude, upperRightLongitude],
+          latitudeUpperRight, longitudeUpperRight],
     },
     };
 
@@ -116,8 +106,8 @@ const NewProcessingModal = (props: PropsTypes) => {
                 size="small"
                 variant="standard"
                 type="text"
-                value={null}
-                onChange={() => {}}
+                value={label}
+                onChange={(e) => {setLabel(e.target.value)}}
               />
             </Box>
             <Typography
@@ -143,8 +133,8 @@ const NewProcessingModal = (props: PropsTypes) => {
                 size="small"
                 variant="standard"
                 type="number"
-                value={null}
-                onChange={() => {}}
+                value={latitudeUpperRight}
+                onChange={(e) => {setLatitudeUpperRight(parseFloat(e.target.value))}}
               />
               <TextField
                 id="outlined-basic"
@@ -152,8 +142,8 @@ const NewProcessingModal = (props: PropsTypes) => {
                 size="small"
                 variant="standard"
                 type="number"
-                onChange={() => {}}
-                value={null}
+                onChange={(e) => {setLongitudeUpperRight(parseFloat(e.target.value))}}
+                value={longitudeUpperRight}
               />
             </Box>
             <Typography
@@ -183,8 +173,8 @@ const NewProcessingModal = (props: PropsTypes) => {
                 sx={{
                   mr: "12px",
                 }}
-                value={null}
-                onChange={(e) => handleSetLatitude(e)}
+                value={latitudeLowerLeft}
+                onChange={(e) => setLatitudeLowerLeft(parseFloat(e.target.value))}
               />
               <TextField
                 id="outlined-basic"
@@ -192,8 +182,8 @@ const NewProcessingModal = (props: PropsTypes) => {
                 size="small"
                 variant="standard"
                 type="number"
-                value={null}
-                onChange={() => {}}
+                value={longitudeLowerLeft}
+                onChange={(e) => {setLongitudeLowerLeft(parseFloat(e.target.value))}}
               />
             </Box>
             <Box
@@ -216,7 +206,7 @@ const NewProcessingModal = (props: PropsTypes) => {
                   shouldDisableDate={(day) => {
                     return false;
                   }}
-                  onChange={() => {}}
+                  onChange={(e) => {handleInitialDateChange}}
                 />
               </Box>
               <Box
@@ -233,7 +223,7 @@ const NewProcessingModal = (props: PropsTypes) => {
                   shouldDisableDate={(day) => {
                     return false;
                   }}
-                  onChange={() => {}}
+                  onChange={(e) => {handleFinalDateChange}}
                 />
               </Box>
             </Box>
@@ -255,8 +245,8 @@ const NewProcessingModal = (props: PropsTypes) => {
               </Typography>
               <Select
                 id="demo-simple-select-standard"
-                value={null}
-                onChange={() => {}}
+                value={inputDownloadingPhase}
+                onChange={(e) => {setInputDownloadingPhase(e.target.value)}}
                 label="Age"
                 variant="standard"
               >
@@ -275,8 +265,8 @@ const NewProcessingModal = (props: PropsTypes) => {
               </Typography>
               <Select
                 id="demo-simple-select-standard"
-                value={null}
-                onChange={() => {}}
+                value={preprocessingPhase}
+                onChange={(e) => {setPreprocessingPhase(e.target.value)}}
                 label="Age"
                 variant="standard"
               >
@@ -295,8 +285,8 @@ const NewProcessingModal = (props: PropsTypes) => {
               </Typography>
               <Select
                 id="demo-simple-select-standard"
-                value={null}
-                onChange={() => {}}
+                value={processingPhase}
+                onChange={(e) => {setProcessingPhase(e.target.value)}}
                 label="Age"
                 variant="standard"
               >
@@ -312,7 +302,8 @@ const NewProcessingModal = (props: PropsTypes) => {
                 justifyContent: "space-around",
               }}
             >
-              <Button variant="contained" onClick={() => {handleProcessClick()}}>Process</Button>
+              <Button variant="contained" onClick={() => 
+              {handleProcessClick(localStorage.getItem('email') || '', localStorage.getItem('password') || '')}}>Process</Button>
             </Box>
           </CardContent>
         </Card>

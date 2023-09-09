@@ -31,6 +31,10 @@ import { forwardRef, useCallback, useMemo, useRef, useState } from "react";
 import useHandler from "./useHandler";
 import { AddCircleOutline } from "@mui/icons-material";
 import NewProcessingModal from "@components/compound/NewProcessingModal";
+import { useAuth } from '../../services/auth/authContext';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+
 
 const roboto = Roboto({
   weight: ["400", "500", "700"],
@@ -95,6 +99,18 @@ function TableToolbar(props: any, ref: any) {
 const EnhancedTableToolbar = forwardRef(TableToolbar);
 
 export default function Processing() {
+  
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
+  
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push('/');  
+    }
+  }, [isAuthenticated, router]);
+  
+
+
   const {
     dataInfo,
     columnTitles,

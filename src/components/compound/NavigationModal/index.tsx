@@ -4,10 +4,24 @@ import { grey } from "@mui/material/colors";
 import StyledMenu from "@components/simple/StyledMenu";
 import { useState } from "react";
 import Link from "next/link";
+import { useAuth } from '/home/ubuntu/saps-dashboard/src/services/auth/authContext.js';  // Make sure the path is correct
+
+interface RouteInfo {
+  route: string;
+  icon: JSX.Element;
+  action?: () => void;
+}
 
 const NavigationModal = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openMenu = Boolean(anchorEl);
+
+  const { setIsAuthenticated } = useAuth();
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    // If you need any other cleanup upon logging out, you can add it here
+  };
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -17,10 +31,11 @@ const NavigationModal = () => {
     setAnchorEl(null);
   };
 
-  const routes = {
-    Main: {
+  const routes: Record<string, RouteInfo> = {
+    Logout: {
       route: "/",
       icon: <></>,
+      action: handleLogout
     },
     Register: {
       route: "/register",
@@ -44,14 +59,22 @@ const NavigationModal = () => {
           return (
             <Link
               key={key}
-              href={`${value.route}`}
+              href={value.route}
+              onClick={value.action}
               style={{
                 textDecoration: "none",
                 color: grey[900],
                 fontWeight: "bolder",
               }}
             >
-              <MenuItem>{key}</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  if (value.action) value.action(); 
+                  handleClose();
+                }}
+              >
+                {key}
+              </MenuItem>
             </Link>
           );
         })}

@@ -1,35 +1,17 @@
-function saveCredentialsToLocalStorage(login: string, password: string): void {
-    try {
-        localStorage.setItem('login', login);
-        localStorage.setItem('password', password);
-    } catch (error) {
-        console.error('Erro ao salvar as credenciais no localStorage:', error);
-    }
-}
+import axios from 'axios';
 
-function getCredentialsFromLocalStorage(): { login: string | null, password: string | null } {
-    const login = localStorage.getItem('login');
-    const password = localStorage.getItem('password');
+const authEndpoint = 'http://10.11.19.26:8091/users?auth';
 
-return { login, password };
-}
+export const loginUser = async (email: string, passwd: string, loginType: string) => {
+    const data = `userEmail=${encodeURIComponent(email)}&userPass=${encodeURIComponent(passwd)}&REQUEST_ATTR_USER_EGI=${encodeURIComponent(loginType === 'egi' ? 'EGI_VALUE' : '')}`;
 
-function isValid(login: string, password: string): Promise<boolean> {
-	return new Promise((res, rej) => {
-		setTimeout(() => {
-			if (login === "admin_email" && password === "admin_password")
-				res(true)
+    console.log("Dados enviados:", data);
 
-			res(false)
-		}, 1000);
-	
-	})
-}
+    const response = await axios.post(authEndpoint, data, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    });
 
-export async function login(
-    login: string,
-    passwd: string
-) {
-    saveCredentialsToLocalStorage(login, passwd);
-    return await isValid(login, passwd);
-}
+    return response.data;
+};
