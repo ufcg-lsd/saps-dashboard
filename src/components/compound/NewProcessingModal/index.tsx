@@ -1,4 +1,3 @@
-import { Password } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -14,7 +13,7 @@ import {
 import { DatePicker } from "@mui/x-date-pickers";
 import { useState } from "react";
 import { addJob } from "@src/services/job";
-import { useRouter } from "next/router";
+
 
 interface PropsTypes {
   open: boolean;
@@ -29,67 +28,58 @@ const style = {
 };
 
 const NewProcessingModal = (props: PropsTypes) => {
-  const router = useRouter();
   const { open, onClose } = props;
 
+  console.log("testing if props is open");
+  console.log(open);
+
   const [label, setLabel] = useState("");
-  const [latitudeUpperRight, setLatitudeUpperRight] = useState(null);
-  const [longitudeUpperRight, setLongitudeUpperRight] = useState(null);
-  const [latitudeLowerLeft, setLatitudeLowerLeft] = useState(null);
-  const [longitudeLowerLeft, setLongitudeLowerLeft] = useState(null);
+  const [latitudeUpperRight, setLatitudeUpperRight] = useState(0);
+  const [longitudeUpperRight, setLongitudeUpperRight] = useState(0);
+  const [latitudeLowerLeft, setLatitudeLowerLeft] = useState(0);
+  const [longitudeLowerLeft, setLongitudeLowerLeft] = useState(0);
   const [initialDate, setInitialDate] = useState("");
   const [finalDate, setFinalDate] = useState("");
   const [inputDownloadingPhase, setInputDownloadingPhase] = useState("");
   const [preprocessingPhase, setPreprocessingPhase] = useState("");
   const [processingPhase, setProcessingPhase] = useState("");
-  const [priority, setPriority] = useState("");
-  const [email, setEmai] = useState("");
 
-  const lowerLeftLatitude = latitudeLowerLeft !== null ? latitudeLowerLeft : 0;
-  const lowerLeftLongitude = longitudeLowerLeft !== null ? longitudeLowerLeft : 0;
-  const upperRightLatitude = latitudeUpperRight !== null ? latitudeUpperRight : 0;
-  const upperRightLongitude = longitudeUpperRight !== null ? longitudeUpperRight : 0;
+  console.log("teste");
 
-  const handleSetLatitude = () => {
-    console.log(e.target.value)
+  const handleInitialDateChange = (date: Date) => {
+    setInitialDate(date.toISOString()); 
+  };
+  
+  const handleFinalDateChange = (date: Date) => {
+    setFinalDate(date.toISOString()); 
+  };
 
-    setLatitudeUpperRight(e.target.value[0])
-    setLatitudeLowerLeft(e.target.value[1])
-  }
-
-  const handleSetLongitude = () => {
-    console.log(e.target.value)
-
-    setLongitudeUpperRight(e.target.value[0])
-    setLatitudeLowerLeft(e.target.value[1])
-  }
-
-  const handleProcessClick = async () => {
-    const jobData = {
-      label: label,
-      initialDate: initialDate,
-      finalDate: finalDate,
-      priority: parseInt(priority),
-      inputGatheringTag: inputDownloadingPhase,
-      inputPreprocessingTag: preprocessingPhase,
-      algorithmExecutionTag: processingPhase,
-      userEmail: localStorage.getItem('login') || '', 
-      userPass: localStorage.getItem('password') || '',
-      email: email,
-      coordinates: {
-        lowerLeft: [
-          lowerLeftLatitude, lowerLeftLongitude],
-        upperRight: [
-          upperRightLatitude, upperRightLongitude],
-    },
-    };
-
+  async function handleProcessClick() {
+    console.log('handleProcessClick have been called');
     try {
-      const response = await addJob(jobData); 
+      const response = await addJob(jobData);
       console.log(response);
     } catch (error) {
       console.error("Failed to add job: ", error);
     }
+  }
+
+  const jobData = {
+    label: label,
+    initialDate: initialDate,
+    finalDate: finalDate,
+    priority: 0,
+    inputGatheringTag: inputDownloadingPhase,
+    inputPreprocessingTag: preprocessingPhase,
+    algorithmExecutionTag: processingPhase,
+    userEmail: localStorage.getItem('login') || '', 
+    userPass: localStorage.getItem('password') || '',
+    email: localStorage.getItem('login') || '',
+    coordinates: {
+      lowerLeft: [latitudeLowerLeft, longitudeLowerLeft],
+      upperRight: [latitudeUpperRight, longitudeUpperRight],
+    }
+  }
 
   return (
     <Modal
@@ -116,8 +106,8 @@ const NewProcessingModal = (props: PropsTypes) => {
                 size="small"
                 variant="standard"
                 type="text"
-                value={null}
-                onChange={() => {}}
+                value={label}
+                onChange={(e) => {setLabel(e.target.value)}}
               />
             </Box>
             <Typography
@@ -143,8 +133,8 @@ const NewProcessingModal = (props: PropsTypes) => {
                 size="small"
                 variant="standard"
                 type="number"
-                value={null}
-                onChange={() => {}}
+                value={latitudeUpperRight}
+                onChange={(e) => {setLatitudeUpperRight(parseFloat(e.target.value))}}
               />
               <TextField
                 id="outlined-basic"
@@ -152,8 +142,8 @@ const NewProcessingModal = (props: PropsTypes) => {
                 size="small"
                 variant="standard"
                 type="number"
-                onChange={() => {}}
-                value={null}
+                value={longitudeUpperRight}
+                onChange={(e) => {setLongitudeUpperRight(parseFloat(e.target.value))}}
               />
             </Box>
             <Typography
@@ -183,8 +173,8 @@ const NewProcessingModal = (props: PropsTypes) => {
                 sx={{
                   mr: "12px",
                 }}
-                value={null}
-                onChange={(e) => handleSetLatitude(e)}
+                value={latitudeLowerLeft}
+                onChange={(e) => setLatitudeLowerLeft(parseFloat(e.target.value))}
               />
               <TextField
                 id="outlined-basic"
@@ -192,8 +182,8 @@ const NewProcessingModal = (props: PropsTypes) => {
                 size="small"
                 variant="standard"
                 type="number"
-                value={null}
-                onChange={() => {}}
+                value={longitudeLowerLeft}
+                onChange={(e) => {setLongitudeLowerLeft(parseFloat(e.target.value))}}
               />
             </Box>
             <Box
@@ -216,7 +206,10 @@ const NewProcessingModal = (props: PropsTypes) => {
                   shouldDisableDate={(day) => {
                     return false;
                   }}
-                  onChange={() => {}}
+                  onChange={(date: Date | null) => {
+                    if (date !== null) {
+                      handleInitialDateChange(date)}}
+                    }
                 />
               </Box>
               <Box
@@ -233,7 +226,10 @@ const NewProcessingModal = (props: PropsTypes) => {
                   shouldDisableDate={(day) => {
                     return false;
                   }}
-                  onChange={() => {}}
+                  onChange={(date: Date | null) => {
+                    if (date !== null) {
+                      handleInitialDateChange(date)}}
+                    }
                 />
               </Box>
             </Box>
@@ -255,8 +251,8 @@ const NewProcessingModal = (props: PropsTypes) => {
               </Typography>
               <Select
                 id="demo-simple-select-standard"
-                value={null}
-                onChange={() => {}}
+                value={inputDownloadingPhase}
+                onChange={(e) => {setInputDownloadingPhase(e.target.value)}}
                 label="Age"
                 variant="standard"
               >
@@ -275,8 +271,8 @@ const NewProcessingModal = (props: PropsTypes) => {
               </Typography>
               <Select
                 id="demo-simple-select-standard"
-                value={null}
-                onChange={() => {}}
+                value={preprocessingPhase}
+                onChange={(e) => {setPreprocessingPhase(e.target.value)}}
                 label="Age"
                 variant="standard"
               >
@@ -295,8 +291,8 @@ const NewProcessingModal = (props: PropsTypes) => {
               </Typography>
               <Select
                 id="demo-simple-select-standard"
-                value={null}
-                onChange={() => {}}
+                value={processingPhase}
+                onChange={(e) => {setProcessingPhase(e.target.value)}}
                 label="Age"
                 variant="standard"
               >
@@ -319,6 +315,6 @@ const NewProcessingModal = (props: PropsTypes) => {
       </Box>
     </Modal>
   );
-}};
+};
 
 export default NewProcessingModal;

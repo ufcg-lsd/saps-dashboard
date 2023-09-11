@@ -71,7 +71,7 @@ export const getJobTask = async (
 
 export const addJob = async (job: JobBody) => {
   const fetcher = Fetcher;
-  const url = createFinalUrl(apiUrl, "/processings");
+  const url = createFinalUrl(apiUrl, '/processings');
 
   const headers: Record<string, string> = {
     userEmail: "",
@@ -89,16 +89,7 @@ export const addJob = async (job: JobBody) => {
     userEmail: job.userEmail,
     userPass: job.userPass,
     email: job.email,
-    coordinates: {
-      upperRight: {
-        latitudeLowerLeft: job.coordinates,
-        longitudeLowerLeft: job.coordinates,
-      },
-      lowerLeft: {
-        latitudeLowerLeft: job.coordinates,
-        longitudeLowerLeft: job.coordinates,
-      }
-    }
+    coordinates: job.coordinates
   };
 
   const response = await fetcher.fetch(url, "POST", finalBody, {
