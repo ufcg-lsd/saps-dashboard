@@ -15,6 +15,7 @@ import { useState } from "react";
 import { addJob } from "@src/services/job";
 
 
+
 interface PropsTypes {
   open: boolean;
   onClose: () => void;
@@ -34,6 +35,10 @@ const NewProcessingModal = (props: PropsTypes) => {
   console.log(open);
 
   const [label, setLabel] = useState("");
+  const [latitudeUpperRight, setLatitudeUpperRight] = useState(0);
+  const [longitudeUpperRight, setLongitudeUpperRight] = useState(0);
+  const [latitudeLowerLeft, setLatitudeLowerLeft] = useState(0);
+  const [longitudeLowerLeft, setLongitudeLowerLeft] = useState(0);
   const [latitudeUpperRight, setLatitudeUpperRight] = useState(0);
   const [longitudeUpperRight, setLongitudeUpperRight] = useState(0);
   const [latitudeLowerLeft, setLatitudeLowerLeft] = useState(0);
@@ -308,7 +313,8 @@ const NewProcessingModal = (props: PropsTypes) => {
                 justifyContent: "space-around",
               }}
             >
-              <Button variant="contained" onClick={() => {handleProcessClick()}}>Process</Button>
+              <Button variant="contained" onClick={() => 
+              {handleProcessClick(localStorage.getItem('email') || '', localStorage.getItem('password') || '')}}>Process</Button>
             </Box>
           </CardContent>
         </Card>
