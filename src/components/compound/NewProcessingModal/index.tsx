@@ -35,32 +35,39 @@ const NewProcessingModal = (props: PropsTypes) => {
   console.log(open);
 
   const [label, setLabel] = useState("");
-  const [latitudeUpperRight, setLatitudeUpperRight] = useState(0);
-  const [longitudeUpperRight, setLongitudeUpperRight] = useState(0);
-  const [latitudeLowerLeft, setLatitudeLowerLeft] = useState(0);
-  const [longitudeLowerLeft, setLongitudeLowerLeft] = useState(0);
-  const [latitudeUpperRight, setLatitudeUpperRight] = useState(0);
-  const [longitudeUpperRight, setLongitudeUpperRight] = useState(0);
-  const [latitudeLowerLeft, setLatitudeLowerLeft] = useState(0);
-  const [longitudeLowerLeft, setLongitudeLowerLeft] = useState(0);
-  const [initialDate, setInitialDate] = useState("");
-  const [finalDate, setFinalDate] = useState("");
-  const [inputDownloadingPhase, setInputDownloadingPhase] = useState("");
-  const [preprocessingPhase, setPreprocessingPhase] = useState("");
-  const [processingPhase, setProcessingPhase] = useState("");
-
-  console.log("teste");
+  const [latitudeUpperRight, setLatitudeUpperRight] = useState("");
+  const [longitudeUpperRight, setLongitudeUpperRight] = useState("");
+  const [latitudeLowerLeft, setLatitudeLowerLeft] = useState("");
+  const [longitudeLowerLeft, setLongitudeLowerLeft] = useState("");
+  const [initialDate, setInitialDate] = useState<Date | Null>(null);
+  const [finalDate, setFinalDate] = useState<Date | Null>(null);
+  const [inputGatheringTag, setInputGatheringTag] = useState("");
+  const [inputPreprocessingTag, setInputPreprocessingTag] = useState("");
+  const [inputProcessingTag, setInputProcessingTag] = useState("");
 
   const handleInitialDateChange = (date: Date) => {
-    setInitialDate(date.toISOString()); 
+    setInitialDate(date); 
   };
   
   const handleFinalDateChange = (date: Date) => {
-    setFinalDate(date.toISOString()); 
+    setFinalDate(date); 
   };
 
   async function handleProcessClick() {
     console.log('handleProcessClick have been called');
+    
+    console.log("latitudeLL: ");
+    console.log(latitudeLowerLeft);
+
+    console.log("LongitudeLL: ")
+    console.log(longitudeLowerLeft);
+
+    console.log("LatitudeUR: ");
+    console.log(latitudeUpperRight);
+
+    console.log("LongitudeUR: ");
+    console.log(longitudeUpperRight);
+
     try {
       const response = await addJob(jobData);
       console.log(response);
@@ -74,9 +81,9 @@ const NewProcessingModal = (props: PropsTypes) => {
     initialDate: initialDate,
     finalDate: finalDate,
     priority: 0,
-    inputGatheringTag: inputDownloadingPhase,
-    inputPreprocessingTag: preprocessingPhase,
-    algorithmExecutionTag: processingPhase,
+    inputGatheringTag: inputGatheringTag,
+    inputPreprocessingTag: inputPreprocessingTag,
+    inputProcessingTag: inputProcessingTag,
     userEmail: localStorage.getItem('login') || '', 
     userPass: localStorage.getItem('password') || '',
     email: localStorage.getItem('login') || '',
@@ -85,6 +92,7 @@ const NewProcessingModal = (props: PropsTypes) => {
       upperRight: [latitudeUpperRight, longitudeUpperRight],
     }
   }
+  
 
   return (
     <Modal
@@ -137,18 +145,18 @@ const NewProcessingModal = (props: PropsTypes) => {
                 label="Latitude"
                 size="small"
                 variant="standard"
-                type="number"
+                type="text"
                 value={latitudeUpperRight}
-                onChange={(e) => {setLatitudeUpperRight(parseFloat(e.target.value))}}
+                onChange={(e) => {setLatitudeUpperRight(e.target.value)}}
               />
               <TextField
                 id="outlined-basic"
                 label="Longitude"
                 size="small"
                 variant="standard"
-                type="number"
+                type="text"
                 value={longitudeUpperRight}
-                onChange={(e) => {setLongitudeUpperRight(parseFloat(e.target.value))}}
+                onChange={(e) => {setLongitudeUpperRight(e.target.value)}}
               />
             </Box>
             <Typography
@@ -174,21 +182,21 @@ const NewProcessingModal = (props: PropsTypes) => {
                 label="Latitude"
                 size="small"
                 variant="standard"
-                type="number"
+                type="text"
                 sx={{
                   mr: "12px",
                 }}
                 value={latitudeLowerLeft}
-                onChange={(e) => setLatitudeLowerLeft(parseFloat(e.target.value))}
+                onChange={(e) => setLatitudeLowerLeft(e.target.value)}
               />
               <TextField
                 id="outlined-basic"
                 label="Longitude"
                 size="small"
                 variant="standard"
-                type="number"
+                type="text"
                 value={longitudeLowerLeft}
-                onChange={(e) => {setLongitudeLowerLeft(parseFloat(e.target.value))}}
+                onChange={(e) => {setLongitudeLowerLeft(e.target.value)}}
               />
             </Box>
             <Box
@@ -233,7 +241,7 @@ const NewProcessingModal = (props: PropsTypes) => {
                   }}
                   onChange={(date: Date | null) => {
                     if (date !== null) {
-                      handleInitialDateChange(date)}}
+                      handleFinalDateChange(date)}}
                     }
                 />
               </Box>
@@ -256,13 +264,13 @@ const NewProcessingModal = (props: PropsTypes) => {
               </Typography>
               <Select
                 id="demo-simple-select-standard"
-                value={inputDownloadingPhase}
-                onChange={(e) => {setInputDownloadingPhase(e.target.value)}}
+                value={inputGatheringTag}
+                onChange={(e) => {setInputGatheringTag(e.target.value)}}
                 label="Age"
                 variant="standard"
               >
-                <MenuItem value={1}>googleapis</MenuItem>
-                <MenuItem value={1}>usgapis</MenuItem>
+                <MenuItem value={"googleapis"}>googleapis</MenuItem>
+                <MenuItem value={"usgapis"}>usgapis</MenuItem>
               </Select>
               <Typography
                 variant="body2"
@@ -276,13 +284,13 @@ const NewProcessingModal = (props: PropsTypes) => {
               </Typography>
               <Select
                 id="demo-simple-select-standard"
-                value={preprocessingPhase}
-                onChange={(e) => {setPreprocessingPhase(e.target.value)}}
+                value={inputPreprocessingTag}
+                onChange={(e) => {setInputPreprocessingTag(e.target.value)}}
                 label="Age"
                 variant="standard"
               >
-                <MenuItem value={1}>default</MenuItem>
-                <MenuItem value={1}>legacy</MenuItem>
+                <MenuItem value={"default"}>default</MenuItem>
+                <MenuItem value={"legacy"}>legacy</MenuItem>
               </Select>
               <Typography
                 variant="body2"
@@ -296,14 +304,14 @@ const NewProcessingModal = (props: PropsTypes) => {
               </Typography>
               <Select
                 id="demo-simple-select-standard"
-                value={processingPhase}
-                onChange={(e) => {setProcessingPhase(e.target.value)}}
+                value={inputProcessingTag}
+                onChange={(e) => {setInputProcessingTag(e.target.value)}}
                 label="Age"
                 variant="standard"
               >
-                <MenuItem value={1}>ufcg-sebal</MenuItem>
-                <MenuItem value={1}>sebkc-sebal</MenuItem>
-                <MenuItem value={1}>sebkc-tseb</MenuItem>
+                <MenuItem value={"ufcg-sebal"}>ufcg-sebal</MenuItem>
+                <MenuItem value={"sebkc-sebal"}>sebkc-sebal</MenuItem>
+                <MenuItem value={"sebkc-tseb"}>sebkc-tseb</MenuItem>
               </Select>
             </Box>
             <Box
@@ -314,7 +322,7 @@ const NewProcessingModal = (props: PropsTypes) => {
               }}
             >
               <Button variant="contained" onClick={() => 
-              {handleProcessClick(localStorage.getItem('email') || '', localStorage.getItem('password') || '')}}>Process</Button>
+              {handleProcessClick()}}>Process</Button>
             </Box>
           </CardContent>
         </Card>

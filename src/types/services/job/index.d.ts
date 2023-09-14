@@ -3,17 +3,17 @@ export interface AllJobsArgs {
 }
 
 interface Coordinates {
-  lowerLeft: number[];
-  upperRight: number[];
+  lowerLeft: string[];
+  upperRight: string[];
 }
 
 export interface JobBody {
-  initialDate: string;
-  finalDate: string;
+  initialDate: Date;
+  finalDate: Date;
   priority: number;
   inputGatheringTag: string;
   inputPreprocessingTag: string;
-  algorithmExecutionTag: string;
+  inputProcessingTag: string;
   userEmail: string;
   userPass: string;
   label: string;

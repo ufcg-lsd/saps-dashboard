@@ -47,8 +47,8 @@ export const getJobTask = async (
   const url = createFinalUrl(apiUrl, `/processings`);
 
   const headers: Record<string, string> = {
-    userEmail: "",
-    userPass: "",
+    userEmail: "admin_email",
+    userPass: "admin_password",
     jobId,
     page: String(page),
     size: String(size),
@@ -74,23 +74,27 @@ export const addJob = async (job: JobBody) => {
   const url = createFinalUrl(apiUrl, '/processings');
 
   const headers: Record<string, string> = {
-    userEmail: "",
-    userPass: "",
+    'Content-Type': 'application/x-www-form-urlencoded',
+    userEmail: "admin_email",
+    userPass: "admin_password"
   };
 
-  const finalBody = {
-    label: job.label,
-    initialDate: job.initialDate,
-    finalDate: job.finalDate,
-    priority: job.priority,
-    inputDownloadingTag: job.inputGatheringTag,
-    inputPreprocessingTag: job.inputPreprocessingTag,
-    inputProcessingTag: job.algorithmExecutionTag,
-    userEmail: job.userEmail,
-    userPass: job.userPass,
-    email: job.email,
-    coordinates: job.coordinates
-  };
+  const [lowerLeftLat, lowerLeftLong] = job.coordinates.lowerLeft;
+  const [upperRightLat, upperRightLong] = job.coordinates.upperRight;
+
+  const finalBody = 
+  `label=${encodeURIComponent(job.label)}&` +
+  `initialDate=${encodeURIComponent(job.initialDate)}&` +
+  `finalDate=${encodeURIComponent(job.finalDate)}&` +
+  `priority=${encodeURIComponent(job.priority)}&` +
+  `inputDownloadingTag=${encodeURIComponent(job.inputGatheringTag)}&` +
+  `inputPreprocessingTag=${encodeURIComponent(job.inputPreprocessingTag)}&` +
+  `inputProcessingTag=${encodeURIComponent(job.inputProcessingTag)}&` +
+  `userEmail=${encodeURIComponent(job.userEmail)}&` +
+  `userPass=${encodeURIComponent(job.userPass)}&` +
+  `email=${encodeURIComponent(job.email)}&` +
+  `lowerLeft=${encodeURIComponent(lowerLeftLat + "," + lowerLeftLong)}&` +
+  `upperRight=${encodeURIComponent(upperRightLat + "," + upperRightLong)}`;
 
   const response = await fetcher.fetch(url, "POST", finalBody, {
     headers,
