@@ -31,9 +31,6 @@ const style = {
 const NewProcessingModal = (props: PropsTypes) => {
   const { open, onClose } = props;
 
-  console.log("testing if props is open");
-  console.log(open);
-
   const [label, setLabel] = useState("");
   const [latitudeUpperRight, setLatitudeUpperRight] = useState("");
   const [longitudeUpperRight, setLongitudeUpperRight] = useState("");
@@ -54,23 +51,8 @@ const NewProcessingModal = (props: PropsTypes) => {
   };
 
   async function handleProcessClick() {
-    console.log('handleProcessClick have been called');
-    
-    console.log("latitudeLL: ");
-    console.log(latitudeLowerLeft);
-
-    console.log("LongitudeLL: ")
-    console.log(longitudeLowerLeft);
-
-    console.log("LatitudeUR: ");
-    console.log(latitudeUpperRight);
-
-    console.log("LongitudeUR: ");
-    console.log(longitudeUpperRight);
-
     try {
       const response = await addJob(jobData);
-      console.log(response);
     } catch (error) {
       console.error("Failed to add job: ", error);
     }
@@ -84,9 +66,9 @@ const NewProcessingModal = (props: PropsTypes) => {
     inputGatheringTag: inputGatheringTag,
     inputPreprocessingTag: inputPreprocessingTag,
     inputProcessingTag: inputProcessingTag,
-    userEmail: localStorage.getItem('login') || '', 
-    userPass: localStorage.getItem('password') || '',
-    email: localStorage.getItem('login') || '',
+    userEmail:  'admin_email', 
+    userPass: 'admin_password',
+    email: 'admin_email',
     coordinates: {
       lowerLeft: [latitudeLowerLeft, longitudeLowerLeft],
       upperRight: [latitudeUpperRight, longitudeUpperRight],
@@ -322,7 +304,8 @@ const NewProcessingModal = (props: PropsTypes) => {
               }}
             >
               <Button variant="contained" onClick={() => 
-              {handleProcessClick()}}>Process</Button>
+              {handleProcessClick();
+              onClose();}}>Process</Button>
             </Box>
           </CardContent>
         </Card>
