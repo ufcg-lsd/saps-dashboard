@@ -1,14 +1,12 @@
+
 import {
   Box,
   Button,
   Card,
   CardContent,
-  FormControl,
-  InputLabel,
   MenuItem,
   Select,
   TextField,
-  Typography,
 } from "@mui/material";
 import { ArrowForwardIos } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
@@ -18,6 +16,14 @@ import useHandler, {
   PreProcessingPhase,
   ProcessingPhase,
 } from "./useHandler";
+import React from 'react';
+import SearchResultsModal from './SearchResultsModal';
+
+import { 
+  Typography
+} from '@mui/material';
+
+
 
 interface PropsTypes {
   area: {
@@ -32,8 +38,68 @@ interface PropsTypes {
   };
 }
 
+  function TableToolbar(props: any, ref: any) {
+    const { setOpenPopover, setShowNewProcessingModal } = props;
+
+    return (
+      <Toolbar
+        sx={{
+          pl: { sm: 2 },
+          pr: { xs: 1, sm: 1 },
+          ...{
+            bgcolor: (theme) =>
+              alpha(
+                theme.palette.primary.main,
+                theme.palette.action.activatedOpacity
+              ),
+          },
+        }}
+      >
+        <Typography
+          sx={{ flex: "1 1 100%" }}
+          variant="h6"
+          id="tableTitle"
+          component="div"
+        >
+          Jobs
+        </Typography>
+        <Tooltip title="New Processing">
+          <IconButton onClick={() => setShowNewProcessingModal(true)}>
+            <AddCircleOutline />
+            <div
+              ref={ref}
+              style={{
+                position: "absolute",
+                bottom: "0",
+                right: "0",
+              }}
+            />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Filter list">
+          <IconButton onClick={() => setOpenPopover(true)}>
+            <FilterListIcon />
+            <div
+              ref={ref}
+              style={{
+                position: "absolute",
+                bottom: "0",
+                right: "0",
+              }}
+            />
+          </IconButton>
+        </Tooltip>
+      </Toolbar>
+    );
+  }
+
 const DataProcessingForm = (props: PropsTypes) => {
   const { area } = props;
+
+  const [openModal, setOpenModal] = useState(false);
+
+  const [responseData, setResponseData] = useState(null);
+
 
   const [showForm, setShowForm] = useState(true);
   const [maxCardHeight, setMaxCardHeight] = useState(0);
@@ -60,6 +126,61 @@ const DataProcessingForm = (props: PropsTypes) => {
     clearArea,
   } = useHandler();
 
+  console.log(period.initialDate);
+  console.log(period.finalDate);
+  
+  const getRequestBody = () => {
+    return (
+        `userEmail=admin_email&` +
+        `userPass=admin_password&` +
+        `upperRight=${encodeURIComponent(upperRight.latitude + ',' + upperRight.longitude)}&` +  // Alterado aqui
+        `lowerLeft=${encodeURIComponent(lowerLeft.latitude + ',' + lowerLeft.longitude)}&` +      // Alterado aqui
+        `initialDate=${encodeURIComponent(period.initialDate)}&` +
+        `finalDate=${encodeURIComponent(period.finalDate)}&` +
+        `inputGatheringTag=${encodeURIComponent(inputDownloadingPhase)}&` + 
+        `inputPreprocessingTag=${encodeURIComponent(preProcessingPhase)}&` + 
+        `algorithmExecutionTag=${encodeURIComponent(processingPhase)}`
+    );
+};
+
+const headers = {
+  "Content-Type": "application/x-www-form-urlencoded"
+};
+
+
+async function handleSearch() {
+
+    const url = `http://10.11.19.229:8091/regions/search`;
+
+    console.log("Enviando requisição para:", url);
+    console.log("Headers:", headers);
+    console.log("Body:", getRequestBody());
+
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: headers,
+            body: getRequestBody()
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log("Search response: ", responseData);
+            setResponseData(responseData);
+            setOpenModal(true);
+
+        } else {
+            console.error("Error searching: ", response.statusText);
+        }
+    } catch (error) {
+        console.error("Error searching: ", error);
+    }
+
+   
+}
+
+  
   useEffect(() => {
     setUpperRight(area.upperRight);
     setLowerLeft(area.lowerLeft);
@@ -351,7 +472,7 @@ const DataProcessingForm = (props: PropsTypes) => {
                 justifyContent: "space-around",
               }}
             >
-              <Button variant="contained">Search</Button>
+              <Button variant="contained" onClick={() => {handleSearch();}}>Search</Button>
               <Button
                 variant="contained"
                 disabled={
@@ -368,6 +489,9 @@ const DataProcessingForm = (props: PropsTypes) => {
           </CardContent>
         </Card>
       </Box>
+
+      <SearchResultsModal openModal={openModal} onClose={() => setOpenModal(false)}responseData={responseData}/>
+
     </Box>
   );
 };
