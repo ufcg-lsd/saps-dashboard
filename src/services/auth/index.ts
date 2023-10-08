@@ -1,6 +1,8 @@
 import axios from 'axios';
+import { createFinalUrl } from '../utils';
 
-const authEndpoint = 'http://10.11.19.26:8091/users?auth';
+const apiUrl = process.env["NEXT_PUBLIC_API_URL"] || "150.165.15.82:8091";
+const authEndpoint = createFinalUrl(apiUrl, "/users?auth");
 
 export const loginUser = async (email: string, passwd: string, loginType: string) => {
     const data = `userEmail=${encodeURIComponent(email)}&userPass=${encodeURIComponent(passwd)}&REQUEST_ATTR_USER_EGI=${encodeURIComponent(loginType === 'egi' ? 'EGI_VALUE' : '')}`;
