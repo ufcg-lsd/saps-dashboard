@@ -37,10 +37,6 @@ const NavigationModal = () => {
       icon: <></>,
       action: handleLogout
     },
-    Register: {
-      route: "/register",
-      icon: <></>,
-    },
     Processing: {
       route: "/processing",
       icon: <></>,

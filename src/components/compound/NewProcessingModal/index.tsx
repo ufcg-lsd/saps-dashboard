@@ -13,6 +13,7 @@ import {
 import { DatePicker } from "@mui/x-date-pickers";
 import { useState } from "react";
 import { addJob } from "@src/services/job";
+import { ModeComment } from "@mui/icons-material";
 
 
 
@@ -43,11 +44,11 @@ const NewProcessingModal = (props: PropsTypes) => {
   const [inputProcessingTag, setInputProcessingTag] = useState("");
 
   const handleInitialDateChange = (date: Date) => {
-    setInitialDate(date); 
+    setInitialDate(date.toISOString().slice(0, 11)); 
   };
   
   const handleFinalDateChange = (date: Date) => {
-    setFinalDate(date); 
+    setFinalDate(date.toISOString().slice(0, 11)); 
   };
 
   async function handleProcessClick() {
