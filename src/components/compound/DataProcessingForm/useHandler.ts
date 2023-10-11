@@ -1,6 +1,7 @@
 import { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 
+/*
 export enum InputDownloadingPhase {
   GOOGLEAPIS,
   USGSAPIS,
@@ -16,6 +17,7 @@ export enum ProcessingPhase {
   SECKC_SEBAL,
   SEBKC_TSEB,
 }
+*/
 
 const useHandler = () => {
   const [upperRight, setUpperRight] = useState<{
@@ -35,24 +37,20 @@ const useHandler = () => {
   });
 
   const [period, setPeriod] = useState<{
-    initialDate: Dayjs | null;
-    finalDate: Dayjs | null;
+    initialDate: Date | null;
+    finalDate: Date | null;
   }>({
     initialDate: null,
     finalDate: null,
   });
 
-  const [inputDownloadingPhase, setInputDownloadingPhase] =
-    useState<InputDownloadingPhase>(InputDownloadingPhase.GOOGLEAPIS);
+  const [inputDownloadingPhase, setInputDownloadingPhase] = useState("");
 
-  const [preProcessingPhase, setPreProcessingPhase] =
-    useState<PreProcessingPhase>(PreProcessingPhase.DEFAULT);
+  const [preProcessingPhase, setPreProcessingPhase] = useState("");
 
-  const [processingPhase, setProcessingPhase] = useState<ProcessingPhase>(
-    ProcessingPhase.UFCG_SEBAL
-  );
+  const [processingPhase, setProcessingPhase] = useState("");
 
-  const setInitialDate = (date: Dayjs | null) => {
+  const setInitialDate = (date: any) => {
     if (!date || (period.finalDate && date > period.finalDate)) return;
 
     setPeriod((prev) => ({
@@ -61,7 +59,7 @@ const useHandler = () => {
     }));
   };
 
-  const setFinalDate = (date: Dayjs | null) => {
+  const setFinalDate = (date: any) => {
     if (!date || !period.initialDate || date < period.initialDate) return;
 
     setPeriod((prev) => ({
@@ -75,11 +73,11 @@ const useHandler = () => {
     return date > now;
   };
 
-  const disableBeforeInitialDateAndFutureDates = (date: Dayjs) => {
+  const disableBeforeInitialDateAndFutureDates = (date: Date) => {
     if (!period.initialDate) return false;
 
     const now = dayjs();
-    return date > now || date < period.initialDate;
+    return date > now.toDate() || date < period.initialDate;
   };
 
   const clearArea = () => {

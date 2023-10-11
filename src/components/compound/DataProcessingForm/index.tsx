@@ -18,6 +18,8 @@ import useHandler, {
 } from "./useHandler";
 import React from 'react';
 import SearchResultsModal from './SearchResultsModal';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 import { 
   Typography
@@ -97,15 +99,22 @@ const DataProcessingForm = (props: PropsTypes) => {
   const { area } = props;
 
   const [openModal, setOpenModal] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const [responseData, setResponseData] = useState(null);
-
 
   const [showForm, setShowForm] = useState(true);
   const [maxCardHeight, setMaxCardHeight] = useState(0);
   const [maxCardWidth, setMaxCardWidth] = useState(0);
   const [cardTranslate, setCardTranslate] = useState(-150);
   const transitionTimeout = useRef<NodeJS.Timeout>(null);
+  
+  const handleInitalDateChange = (date: Date) => {
+    setInitialDate(date.toISOString().slice(0, 11)); 
+  };
+
+  const handleFinalDateChange = (date: Date) => {
+    setFinalDate(date.toISOString().slice(0, 11)); 
+  };
 
   const {
     upperRight,
@@ -149,6 +158,8 @@ const headers = {
 
 
 async function handleSearch() {
+    setLoading(true);
+
 
     const url = `http://10.11.19.229:8091/regions/search`;
 
@@ -166,14 +177,17 @@ async function handleSearch() {
 
         if (response.ok) {
             const responseData = await response.json();
+            setLoading(false);
             console.log("Search response: ", responseData);
             setResponseData(responseData);
             setOpenModal(true);
 
         } else {
+            setLoading(false);
             console.error("Error searching: ", response.statusText);
         }
     } catch (error) {
+        setLoading(false);
         console.error("Error searching: ", error);
     }
 
@@ -357,8 +371,13 @@ async function handleSearch() {
               >
                 <DatePicker
                   label="Initial Date"
-                  shouldDisableDate={disableFutureDates}
-                  onChange={setInitialDate}
+                  shouldDisableDate={(day) => {
+                    return false;
+                  }}
+                  onChange={(date: Date | null) => {
+                    if (date !== null) {
+                      handleInitalDateChange(date)}}
+                    }
                 />
               </Box>
               <Box
@@ -372,8 +391,13 @@ async function handleSearch() {
                 <DatePicker
                   label="Final Date"
                   disabled={!period.initialDate}
-                  shouldDisableDate={disableBeforeInitialDateAndFutureDates}
-                  onChange={setFinalDate}
+                  shouldDisableDate={(day) => {
+                    return false;
+                  }}
+                  onChange={(date: Date | null) => {
+                    if (date !== null) {
+                      handleFinalDateChange(date)}}
+                    }
                 />
               </Box>
             </Box>
@@ -397,17 +421,15 @@ async function handleSearch() {
                 id="demo-simple-select-standard"
                 value={inputDownloadingPhase}
                 onChange={(event) => {
-                  setInputDownloadingPhase(
-                    event.target.value as InputDownloadingPhase
-                  );
+                  setInputDownloadingPhase(event.target.value);
                 }}
                 label="Age"
                 variant="standard"
               >
-                <MenuItem value={InputDownloadingPhase.GOOGLEAPIS}>
+                <MenuItem value={"googleapis"}>
                   googleapis
                 </MenuItem>
-                <MenuItem value={InputDownloadingPhase.USGSAPIS}>
+                <MenuItem value={"usgapis"}>
                   usgapis
                 </MenuItem>
               </Select>
@@ -425,15 +447,13 @@ async function handleSearch() {
                 id="demo-simple-select-standard"
                 value={preProcessingPhase}
                 onChange={(event) => {
-                  setPreProcessingPhase(
-                    event.target.value as PreProcessingPhase
-                  );
+                  setPreProcessingPhase(event.target.value);
                 }}
                 label="Age"
                 variant="standard"
               >
-                <MenuItem value={PreProcessingPhase.DEFAULT}>default</MenuItem>
-                <MenuItem value={PreProcessingPhase.LEGACY}>legacy</MenuItem>
+                <MenuItem value={"default"}>default</MenuItem>
+                <MenuItem value={"legacy"}>legacy</MenuItem>
               </Select>
               <Typography
                 variant="body2"
@@ -449,43 +469,46 @@ async function handleSearch() {
                 id="demo-simple-select-standard"
                 value={processingPhase}
                 onChange={(event) => {
-                  setProcessingPhase(event.target.value as ProcessingPhase);
+                  setProcessingPhase(event.target.value);
                 }}
                 label="Age"
                 variant="standard"
               >
-                <MenuItem value={ProcessingPhase.UFCG_SEBAL}>
+                <MenuItem value={"ufcg-sebal"}>
                   ufcg-sebal
                 </MenuItem>
-                <MenuItem value={ProcessingPhase.SECKC_SEBAL}>
+                <MenuItem value={"sebkc-sebal"}>
                   sebkc-sebal
                 </MenuItem>
-                <MenuItem value={ProcessingPhase.SEBKC_TSEB}>
+                <MenuItem value={"sebkc-tseb"}>
                   sebkc-tseb
                 </MenuItem>
               </Select>
             </Box>
             <Box
               sx={{
-                mt: "24px",
-                display: "flex",
-                justifyContent: "space-around",
+                  mt: "24px",
+                  display: "flex",
+                  justifyContent: "space-around",
+                  alignItems: "center",  
               }}
-            >
-              <Button variant="contained" onClick={() => {handleSearch();}}>Search</Button>
+          >
+              {loading ? <CircularProgress size={30} sx={{ marginRight: "16px" }} /> : null} 
+              <Button variant="contained" onClick={() => { handleSearch(); }}>Search</Button>
               <Button
-                variant="contained"
-                disabled={
-                  !upperRight.latitude &&
-                  !upperRight.longitude &&
-                  !lowerLeft.latitude &&
-                  !lowerLeft.longitude
-                }
-                onClick={clearArea}
+                  variant="contained"
+                  disabled={
+                      !upperRight.latitude &&
+                      !upperRight.longitude &&
+                      !lowerLeft.latitude &&
+                      !lowerLeft.longitude
+                  }
+                  onClick={clearArea}
               >
-                Clear Search
+                  Clear Search
               </Button>
-            </Box>
+          </Box>
+
           </CardContent>
         </Card>
       </Box>
