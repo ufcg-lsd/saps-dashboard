@@ -19,7 +19,7 @@ Devido às configurações de grupos de segurança, é necessário alterar a por
 
 Crie um arquivo chamado `.env.local` na raiz do projeto e adicione os seguintes parâmetros:
 
-```json
+```
 NEXT_PUBLIC_API_URL=<IP e Porta do Dispatcher>
 NEXT_PUBLIC_MAP_API_KEY=<Seu Token Aqui>
 ```
@@ -40,3 +40,18 @@ Depois de concluir as etapas de configuração, você pode rodar o projeto com o
 ```bash
 npm run dev
 ``````
+
+### 3. Mudando o IP da URL
+
+Para garantir que o dashboard se conecte corretamente ao backend, é necessário atualizar o IP em alguns arquivos:
+
+Nos arquivos abaixo, procure pela constante `URL` e atualize-a com o IP correto:
+
+- `saps-dashboard/src/components/compound/DataProcessingForm/index.tsx`
+- `saps-dashboard/src/components/compound/DataProcessingForm/SearchResultsModal.tsx`
+
+### 4. Atualizando o Endpoint de Autenticação
+
+No arquivo `/home/ubuntu/saps-dashboard/src/components/compound/RegisterForm/index.tsx`, 
+
+procure por `authEndpoint` e altere para o IP correto do dispatcher.
