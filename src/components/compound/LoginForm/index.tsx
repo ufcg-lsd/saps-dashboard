@@ -16,8 +16,6 @@ import { useAuth } from '@src/services/auth/authContext.js';
 import { useEffect } from 'react';
 import { loginUser } from '@src/services/auth/index.ts';
 
-const authEndpoint = 'http://10.11.19.26:8091/users?auth';
-
 const LoginForm = () => {
   const [loginType, setLoginType] = useState("regular");
   const [email, setEmail] = useState("");
@@ -34,7 +32,7 @@ const LoginForm = () => {
         const response = await loginUser(email, passwd, loginType);
 
         if (response === 'Success') {
-            setIsAuthenticated(true); // Aqui, você atualiza o estado de autenticação
+            setIsAuthenticated(true); 
             setShowError(false);
         } 
     } catch (error) {
@@ -82,7 +80,7 @@ const LoginForm = () => {
             flexDirection: "column",
             gap: "12px",
             position: "relative",
-            transform: `translateX(${loginType === "egi" ? -110 : 0}%)`, // Correção na transformação
+            transform: `translateX(${loginType === "egi" ? -110 : 0}%)`, 
             transition: "transform 0.3s ease-in-out",
           }}
         >
@@ -118,7 +116,7 @@ const LoginForm = () => {
           />
           <Button
             variant="contained"
-            onClick={handleLogin} // Correção na chamada da função
+            onClick={handleLogin}
           >
             Enter
           </Button>
@@ -127,8 +125,8 @@ const LoginForm = () => {
         {showError && (
         <Box
           sx={{
-            backgroundColor: "#FFC1C1",   // Fundo vermelho pastel
-            color: "black",               // Texto preto
+            backgroundColor: "#FFC1C1",  
+            color: "black",               
             textAlign: "center",
             marginTop: "12px",
             padding: "8px",
