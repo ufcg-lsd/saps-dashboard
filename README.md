@@ -19,9 +19,10 @@ Devido às configurações de grupos de segurança, é necessário alterar a por
 
 Crie um arquivo chamado `.env.local` na raiz do projeto e adicione os seguintes parâmetros:
 
+```json
 NEXT_PUBLIC_API_URL=<IP e Porta do Dispatcher>
 NEXT_PUBLIC_MAP_API_KEY=<Seu Token Aqui>
-
+```
 
 #### Gerando o Token para o Mapa
 
