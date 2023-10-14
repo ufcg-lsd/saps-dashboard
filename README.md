@@ -32,15 +32,6 @@ NEXT_PUBLIC_MAP_API_KEY=<Seu Token Aqui>
 4. Copie esse token e cole no campo `<Seu Token Aqui>` no arquivo `.env.local`.
 
 
-## Executando o Projeto
-
-Depois de concluir as etapas de configuração, você pode rodar o projeto com os comandos abaixo:
-
-### Usando npm:
-```bash
-npm run dev
-``````
-
 ### 3. Mudando o IP da URL
 
 Para garantir que o dashboard se conecte corretamente ao backend, é necessário atualizar o IP em alguns arquivos:
@@ -55,3 +46,13 @@ Nos arquivos abaixo, procure pela constante `URL` e atualize-a com o IP correto:
 No arquivo `/home/ubuntu/saps-dashboard/src/components/compound/RegisterForm/index.tsx`, 
 
 procure por `authEndpoint` e altere para o IP correto do dispatcher.
+
+
+## Executando o Projeto
+
+Depois de concluir as etapas de configuração, você pode rodar o projeto com os comandos abaixo:
+
+### Usando npm:
+```bash
+npm run dev
+``````
