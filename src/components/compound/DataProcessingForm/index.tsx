@@ -19,6 +19,7 @@ import useHandler, {
 import React from 'react';
 import SearchResultsModal from './SearchResultsModal';
 import CircularProgress from '@mui/material/CircularProgress';
+import { createFinalUrl } from '@src/services/utils';
 
 
 import { 
@@ -160,8 +161,8 @@ const headers = {
 async function handleSearch() {
     setLoading(true);
 
-
-    const url = `http://10.11.19.229:8091/regions/search`;
+    const apiUrl = process.env["NEXT_PUBLIC_API_URL"] || "";
+    const url = createFinalUrl(apiUrl, "/regions/search");
 
     console.log("Enviando requisição para:", url);
     console.log("Headers:", headers);

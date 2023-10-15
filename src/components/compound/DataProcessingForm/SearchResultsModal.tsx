@@ -5,6 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 import { Button } from "@mui/material";
 import { styled } from '@mui/system';
+import { createFinalUrl } from '@src/services/utils';
 
 const InfoContainer = styled('div')({
   marginBottom: '8px', // Adiciona um espaço entre cada linha
@@ -41,6 +42,9 @@ const SearchResultsModal: React.FC<Props> = ({ openModal, onClose, responseData 
     const selectedRegions = selectedItems.map((index) => responseData.result[index]);
     console.log(selectedRegions);
 
+    const apiUrl = process.env["NEXT_PUBLIC_API_URL"] || "";
+    const url = createFinalUrl(apiUrl, "/email");
+
     const requestData = {
       userEmail: "admin_email",
       userPass: "admin_password",
@@ -48,7 +52,7 @@ const SearchResultsModal: React.FC<Props> = ({ openModal, onClose, responseData 
       "tasks_id[]": selectedRegions.map(region => region.taskId)};
 
     try {
-      const response = await fetch("http://10.11.19.229:8091/email", {
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
