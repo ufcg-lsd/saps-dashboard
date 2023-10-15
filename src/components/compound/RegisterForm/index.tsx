@@ -7,6 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import axios from "axios";
+import { createFinalUrl } from '@src/services/utils';
 
 const RegisterForm = () => {
   const [isSuccess, setIsSuccess] = useState(null);
@@ -19,7 +20,8 @@ const RegisterForm = () => {
     userNotify: "",
   });
 
-  const authEndpoint = 'http://10.11.19.229:8091/users?register';
+  const apiUrl = process.env["NEXT_PUBLIC_API_URL"] || "";
+  const authEndpoint = createFinalUrl(apiUrl, "/users?register");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
