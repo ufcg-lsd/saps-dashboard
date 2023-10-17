@@ -15,8 +15,6 @@ import { useState } from "react";
 import { addJob } from "@src/services/job";
 import { ModeComment } from "@mui/icons-material";
 
-
-
 interface PropsTypes {
   open: boolean;
   onClose: () => void;
@@ -67,16 +65,15 @@ const NewProcessingModal = (props: PropsTypes) => {
     inputGatheringTag: inputGatheringTag,
     inputPreprocessingTag: inputPreprocessingTag,
     inputProcessingTag: inputProcessingTag,
-    userEmail:  'admin_email', 
-    userPass: 'admin_password',
-    email: 'admin_email',
+    userEmail:  localStorage.getItem('email'), 
+    userPass: localStorage.getItem('passwd'),
+    email: localStorage.getItem('email'),
     coordinates: {
       lowerLeft: [latitudeLowerLeft, longitudeLowerLeft],
       upperRight: [latitudeUpperRight, longitudeUpperRight],
     }
   }
   
-
   return (
     <Modal
       open={open}

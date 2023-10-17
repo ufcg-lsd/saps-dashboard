@@ -15,8 +15,8 @@ export const getAllJobs = async (
   const url = createFinalUrl(apiUrl, "/processings");
 
   const headers: Record<string, string> = {
-    userEmail: "admin_email",
-    userPass: "admin_password",
+    userEmail: localStorage.getItem('email'),
+    userPass: localStorage.getItem('passwd'),
     page: String(page),
     size: String(size),
     sort: JSON.stringify(sort),
@@ -47,8 +47,8 @@ export const getJobTask = async (
   const url = createFinalUrl(apiUrl, `/processings`);
 
   const headers: Record<string, string> = {
-    userEmail: "admin_email",
-    userPass: "admin_password",
+    userEmail: localStorage.getItem('email'),
+    userPass: localStorage.getItem('passwd'),
     jobId,
     page: String(page),
     size: String(size),
@@ -75,8 +75,8 @@ export const addJob = async (job: JobBody) => {
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/x-www-form-urlencoded',
-    userEmail: "admin_email",
-    userPass: "admin_password"
+    userEmail: localStorage.getItem('email'),
+    userPass: localStorage.getItem('passwd')
   };
 
   const [lowerLeftLat, lowerLeftLong] = job.coordinates.lowerLeft;
@@ -113,8 +113,8 @@ export const searchProcessings = async (job: JobBody) => {
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/x-www-form-urlencoded',
-    userEmail: "admin_email",
-    userPass: "admin_password"
+    userEmail: localStorage.getItem('email'),
+    userPass: localStorage.getItem('passwd')
   };
 
   const [lowerLeftLat, lowerLeftLong] = job.coordinates.lowerLeft;

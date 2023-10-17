@@ -21,12 +21,9 @@ import SearchResultsModal from './SearchResultsModal';
 import CircularProgress from '@mui/material/CircularProgress';
 import { createFinalUrl } from '@src/services/utils';
 
-
 import { 
   Typography
 } from '@mui/material';
-
-
 
 interface PropsTypes {
   area: {
@@ -136,13 +133,10 @@ const DataProcessingForm = (props: PropsTypes) => {
     clearArea,
   } = useHandler();
 
-  console.log(period.initialDate);
-  console.log(period.finalDate);
-  
   const getRequestBody = () => {
     return (
-        `userEmail=admin_email&` +
-        `userPass=admin_password&` +
+        `userEmail=${localStorage.getItem('email')}&` +
+        `userPass=${localStorage.getItem('passwd')}&` +
         `upperRight=${encodeURIComponent(upperRight.latitude + ',' + upperRight.longitude)}&` +  // Alterado aqui
         `lowerLeft=${encodeURIComponent(lowerLeft.latitude + ',' + lowerLeft.longitude)}&` +      // Alterado aqui
         `initialDate=${encodeURIComponent(period.initialDate)}&` +
@@ -157,17 +151,11 @@ const headers = {
   "Content-Type": "application/x-www-form-urlencoded"
 };
 
-
 async function handleSearch() {
     setLoading(true);
 
     const apiUrl = process.env["NEXT_PUBLIC_API_URL"] || "";
     const url = createFinalUrl(apiUrl, "/regions/search");
-
-    console.log("Enviando requisição para:", url);
-    console.log("Headers:", headers);
-    console.log("Body:", getRequestBody());
-
 
     try {
         const response = await fetch(url, {
@@ -191,10 +179,7 @@ async function handleSearch() {
         setLoading(false);
         console.error("Error searching: ", error);
     }
-
-   
 }
-
   
   useEffect(() => {
     setUpperRight(area.upperRight);

@@ -20,6 +20,12 @@ const LoginForm = () => {
   const [loginType, setLoginType] = useState("regular");
   const [email, setEmail] = useState("");
   const [passwd, setPasswd] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem('email', email);
+    localStorage.setItem('passwd', passwd); 
+  }, [email, passwd]);
+
   const router = useRouter();
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");

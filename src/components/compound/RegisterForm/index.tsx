@@ -26,19 +26,12 @@ const RegisterForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // 2. Converta formData em uma string URL-encoded
     const formattedData = 
-    `userName=${encodeURIComponent(formData.name)}&` + // Modificado para userName
-    `userEmail=${encodeURIComponent(formData.email)}&` + // Modificado para userEmail
-    `userPass=${encodeURIComponent(formData.password)}&` + // Modificado para userPass
+    `userName=${encodeURIComponent(formData.name)}&` + 
+    `userEmail=${encodeURIComponent(formData.email)}&` + 
+    `userPass=${encodeURIComponent(formData.password)}&` + 
     `userPassConfirm=${encodeURIComponent(formData.confirmPassword)}&` +
     `userNotify=${encodeURIComponent("")}`;
-
-
-    console.log("formData:", formData);
-    console.log("formattedData:", formattedData);
-
-
 
     try {
       const response = await axios.post(authEndpoint, formattedData, {

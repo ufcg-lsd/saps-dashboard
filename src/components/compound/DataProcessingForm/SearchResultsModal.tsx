@@ -8,26 +8,35 @@ import { styled } from '@mui/system';
 import { createFinalUrl } from '@src/services/utils';
 
 const InfoContainer = styled('div')({
-  marginBottom: '8px', // Adiciona um espaço entre cada linha
+  marginBottom: '8px', 
 });
 
 const Label = styled(Typography)({
-  fontWeight: 'bold', // Destaca o nome da categoria
-  marginRight: '5px',  // Adiciona um pequeno espaço entre o nome da categoria e seu valor
-  display: 'inline',  // Permite que o nome da categoria e seu valor fiquem na mesma linha
+  fontWeight: 'bold', 
+  marginRight: '5px', 
+  display: 'inline',  
 });
 
 const Value = styled(Typography)({
-  display: 'inline',  // Mantém o valor na mesma linha do nome da categoria
+  display: 'inline',
 });
 
 interface Props {
   openModal: boolean;
+  tittle: "teste",
   onClose: () => void;
   responseData: any; 
 }
 
 const SearchResultsModal: React.FC<Props> = ({ openModal, onClose, responseData }) => {
+
+  const handleClose = () => {
+    setIsFeedbackVisible(false); 
+    onClose();  
+  }
+
+  const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+  const [isFeedbackVisible, setIsFeedbackVisible] = useState<boolean>(false);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
 
   const handleCheckboxChange = (index: number, isChecked: boolean) => {
@@ -39,15 +48,13 @@ const SearchResultsModal: React.FC<Props> = ({ openModal, onClose, responseData 
   };
 
   const handleSend = async () => {
-    const selectedRegions = selectedItems.map((index) => responseData.result[index]);
-    console.log(selectedRegions);
 
+    const selectedRegions = selectedItems.map((index) => responseData.result[index]);
     const apiUrl = process.env["NEXT_PUBLIC_API_URL"] || "";
     const url = createFinalUrl(apiUrl, "/email");
-
     const requestData = {
-      userEmail: "admin_email",
-      userPass: "admin_password",
+      userEmail: localStorage.getItem('email'),
+      userPass: localStorage.getItem('passwd'),
       userEGI: "",
       "tasks_id[]": selectedRegions.map(region => region.taskId)};
 
@@ -65,25 +72,26 @@ const SearchResultsModal: React.FC<Props> = ({ openModal, onClose, responseData 
       const result = await response.text();
       console.log(result);
 
-      // Handle successful response or show error messages based on your logic
       if (response.ok) {
-        alert("Email will be sent soon.");
+        setFeedbackMessage("Email will be sent soon.");
+        setIsFeedbackVisible(true);
       } else {
-        alert("An error occurred while sending the email, please try again later.");
+        setFeedbackMessage("Email will be sent soon.");
+        setIsFeedbackVisible(true);
       }
 
     } catch (error) {
       console.error("Error sending data:", error);
-      alert("An error occurred. Please try again.");
+      setFeedbackMessage("Email will be sent soon.");
+      setIsFeedbackVisible(true);
     }
 };
 
-
-  
   return (
+    
     <Modal
       open={openModal}
-      onClose={onClose}
+      onClose={handleClose} 
       aria-labelledby="modal-title"
       aria-describedby="modal-description"
       disableEscapeKeyDown={true} 
@@ -106,14 +114,14 @@ const SearchResultsModal: React.FC<Props> = ({ openModal, onClose, responseData 
         }}
       >
         <div style={{ textAlign: 'center' , paddingBottom: '20px', color: '#2f9688'}}>
-          <Typography variant="h4">Resultados</Typography>
+          <Typography variant="h4">Results</Typography>
         </div>
 
         <IconButton 
-          aria-label="close" 
-          onClick={onClose}
-          sx={{ position: 'absolute', right: '10px', top: '10px', zIndex: 1000 }}>
-          <CloseIcon />
+            aria-label="close" 
+            onClick={handleClose}  // Aqui
+            sx={{ position: 'absolute', right: '10px', top: '10px', zIndex: 1000 }}>
+            <CloseIcon />
         </IconButton>
 
         {responseData && responseData.result && responseData.result.map((item, index) => (
@@ -164,7 +172,13 @@ const SearchResultsModal: React.FC<Props> = ({ openModal, onClose, responseData 
               marginTop: '20px' 
           }}
       >
-          <Button variant="contained" onClick={handleSend}>ENVIAR</Button>
+          {isFeedbackVisible ? (
+              <Typography variant="body1" color="#2f9688">
+                  {feedbackMessage}
+              </Typography>
+          ) : (
+              <Button variant="contained" onClick={handleSend}>SEND</Button>
+          )}
       </Box>
 
     </Box>

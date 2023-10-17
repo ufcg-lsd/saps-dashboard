@@ -1,6 +1,5 @@
 import Head from "next/head";
 import { Roboto } from "next/font/google";
-import NavigationModal from "@components/compound/NavigationModal";
 import { Box, Container, Divider, Fade } from "@mui/material";
 import StyledLink from "@components/styled/StyledLink";
 import RegisterForm from "@components/compound/RegisterForm";
@@ -79,8 +78,6 @@ export default function Register() {
           </Box>
         </Container>
       </Fade>
-
-      <NavigationModal />
     </>
   );
 }
