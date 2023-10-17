@@ -31,6 +31,14 @@ NEXT_PUBLIC_API_URL=<IP:Porta do Dispatcher>
 NEXT_PUBLIC_MAP_API_KEY=<Seu Token Aqui>
 ```
 
+### 4. Baixando dependência necessária
+
+instale o AXIOS para que seja possivel realizar as requisições
+
+```
+npm install axios
+```
+
 ## Executando o Projeto
 
 Depois de concluir as etapas de configuração, você pode rodar o projeto com os comandos abaixo:
