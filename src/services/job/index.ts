@@ -2,7 +2,7 @@ import { AllJobsArgs, JobBody } from "@src/types/services/job";
 import Fetcher from "../fetcher";
 import { createFinalUrl } from "../utils";
 
-const apiUrl = process.env["NEXT_PUBLIC_API_URL"] || "150.165.15.82:8091";
+const apiUrl = process.env["NEXT_PUBLIC_API_URL"] || "";
 console.log(apiUrl);
 
 export const getAllJobs = async (

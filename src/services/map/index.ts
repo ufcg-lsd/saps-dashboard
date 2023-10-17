@@ -50,11 +50,10 @@ export class Map {
       data: geojson,
     });
 
-    // Add a new layer to visualize the polygon.
     this.map.addLayer({
       id: sourceName + "-fills",
       type: "fill",
-      source: sourceName, // reference the data source
+      source: sourceName, 
       layout: {},
       paint: {
         "fill-color": [
@@ -62,17 +61,16 @@ export class Map {
           ["boolean", ["feature-state", "hover"], false],
           "#22A699",
           "#F24C3D",
-        ], // blue color fill
+        ], 
         "fill-opacity": [
           "case",
           ["boolean", ["feature-state", "hover"], false],
           0.9,
           ["get", "opacity"],
         ],
-        "fill-outline-color": "#000", // blue color outline
+        "fill-outline-color": "#000", 
       },
     });
-    // Add a black outline around the polygon.
     this.map.addLayer({
       id: "outline " + sourceName,
       type: "line",

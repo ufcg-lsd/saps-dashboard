@@ -55,7 +55,6 @@ const LoginForm = () => {
       }
   }, [isAuthenticated]);
     
-  
   return (
     <Fade in={true} unmountOnExit>
       <Box

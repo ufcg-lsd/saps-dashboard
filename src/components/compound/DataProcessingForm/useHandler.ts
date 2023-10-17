@@ -1,24 +1,6 @@
 import { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 
-/*
-export enum InputDownloadingPhase {
-  GOOGLEAPIS,
-  USGSAPIS,
-}
-
-export enum PreProcessingPhase {
-  DEFAULT,
-  LEGACY,
-}
-
-export enum ProcessingPhase {
-  UFCG_SEBAL,
-  SECKC_SEBAL,
-  SEBKC_TSEB,
-}
-*/
-
 const useHandler = () => {
   const [upperRight, setUpperRight] = useState<{
     latitude: number;

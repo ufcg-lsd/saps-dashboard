@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { createFinalUrl } from '../utils';
 
-const apiUrl = process.env["NEXT_PUBLIC_API_URL"] || "150.165.15.82:8091";
+const apiUrl = process.env["NEXT_PUBLIC_API_URL"] || "";
 const authEndpoint = createFinalUrl(apiUrl, "/users?auth");
 
 export const loginUser = async (email: string, passwd: string, loginType: string) => {
