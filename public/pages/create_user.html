@@ -1,0 +1,73 @@
+<!-- Begin: Content -->
+<div ng-controller="LoginController">
+
+  <div class="row panel-heading" style="height:110px">
+    <div align="center" class="create-account-logo">
+      <img src="/images/logo-topo.png" class="sb-logo-sm"/>
+    </div>
+  </div>
+  <div class="create-account-panel">
+    <div class="panel panel-default">
+    <div class="panel-heading" style="padding: 15px 15px 15px 15px;">
+      <div >
+        <h3 class="panel-title">{{languageContent.createAccount.title}}</h3>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div id="formContent" ng-show="create === true">
+        <form action="/" id="createUserFormId">
+ 
+          <div align="center" ng-show="errorMsg" class="sb-error sb-lg" id="alert-login" style="background-color: rgb(255,150,120); padding: 5px 10px 5px 5px;  margin-bottom: 5px; border-radius: 10px;">
+                <button type="button" class="close" ng-click="clearLoginMsg()" aria-hidden="true">×</button>
+                <i class="fa fa-info"></i>
+                {{errorMsg}}
+          </div>
+     
+          <div class="row creat-user-form">
+     
+              <div>{{languageContent.createAccount.labels.name}}</div>
+              <input type="text" class="saps-input input-small sb-wpercent-lg"  id="createNameInput" ng-model="username" required placeholder="">
+              </input>
+
+              <div>{{languageContent.createAccount.labels.email}}</div>
+              <input type="text" class="saps-input input-small sb-wpercent-lg" id="createEmailInput" ng-model="email" required placeholder="">
+              </input>
+
+              <div>{{languageContent.createAccount.labels.password}}</div>
+              <input type="password" class="saps-input input-small sb-wpercent-lg" id="createPasswordInput" ng-model="password" required placeholder="">
+
+              <div>{{languageContent.createAccount.labels.confirmPassword}}</div>
+              <input type="password" class="saps-input input-small sb-wpercent-lg" id="createPasswordConfirmInput" ng-model="passwordConfirm" required placeholder="">
+              </input>
+
+          </div>
+
+          <div class="row creat-user-form">
+            <div class="col-lg-8 col-md-8 col-sm-8">
+              <div align="center" ng-click="createNewUser()" class="sb-button btn-sm sb-main">{{languageContent.createAccount.buttons.create}}</div>
+            </div>
+            <div align="right" class="col-lg-3 col-md-3 col-sm-3">
+              <a href="/">
+                <span class="glyphicon glyphicon-arrow-left span-button main" aria-hidden="true">
+                </span>
+              </a>
+            </div>
+          </div>
+
+        </form>
+        
+      </div>
+      <div id="successContent" ng-show="create === false">
+        {{msg}}
+        <div align="right">
+            <a href="/">
+              <span class="glyphicon glyphicon-arrow-left span-button main" aria-hidden="true">
+              </span>
+            </a>
+        </div>
+      </div>
+    </div>
+    </div>
+
+  </div>
+</div>

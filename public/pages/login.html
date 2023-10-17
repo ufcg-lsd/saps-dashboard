@@ -1,0 +1,39 @@
+<!-- Begin: Content -->
+<div class="sb-login-box" ng-controller="LoginController">
+
+  <div align="center" class="row"><img src="/images/logo-abertura.png" class="sb-logo-lg"/></div>
+  <div align="center" class="row" style="margin-top: 5%;">
+    <form action="/" id="loginFormId">
+      <div>
+          <input type="text" class="saps-input" id="nameInput"
+           ng-model="username" required placeholder="{{languageContent.login.placeholdName}}">
+          </input>
+      </div>
+      <div>
+          <input type="password" class="saps-input" id="passwordInput" 
+           ng-model="password" required placeholder="{{languageContent.login.placeholdEmail}}">
+          </input>
+      </div>
+      <div>
+          <div ng-show="errorMsg !== undefined" class="saps-label sb-error sb-md" id="alert-login">
+                <button type="button" class="close" ng-click="clearLoginMsg()" aria-hidden="true">×</button>
+                <i class="fa fa-info"></i>
+                {{errorMsg}}
+          </div>
+      </div>
+      <div>
+          <div ng-click="doLogin()" class="sb-button sb-main">{{languageContent.login.buttonEnter}}</div>
+          <div style="margin-bottom: 20px">
+            <a ng-click="forgotPassword()" style="color: rgb(30,100,80); cursor: pointer; margin-bottom: 20px">{{languageContent.login.forgotPassword}}</a>
+          </div>
+          <div ng-click="doEGICheckInLogin()" class="sb-button sb-main" style="margin-bottom: 30px">{{languageContent.loginEGICheckIn.buttonLogin}}</div>
+          <span ng-click="loadCreateNewUser()" class="glyphicon glyphicon-plus-sign span-button main" aria-hidden="true"></span>
+          <div style="color: rgb(30,100,80)">{{languageContent.login.createAccount}}</div>
+          <div style="position: absolute; left: 0; bottom: 10px; width: 100%; text-align: center;">
+              <a href="/SAPS_privacy_policy.pdf" target="_blank" style="color: rgb(30,100,80); cursor: pointer; padding-right: 10px">Privacy Policy</a>
+              <a href="/SAPS_terms_of_usage.pdf" target="_blank" style="color: rgb(30,100,80); cursor: pointer; padding-left: 10px">Terms of Usage</a>
+          </div>
+      </div>
+    </form>
+  </div>
+</div>

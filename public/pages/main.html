@@ -1,0 +1,67 @@
+<!-- HEADER AND NAVBAR OF saps DASHBOARD-->
+<header>
+  <div class="row sb-head-panel-bar">
+    <div class="sb-col-lg-18 sb-col-md-18"></div>
+    <div class="sb-col-lg-2 sb-col-md-2">
+      <div class="sb-dropdown">
+        <div class="sb-dropdown-button" align="right">
+          {{user.name}}&nbsp;&nbsp;
+          <a href="">
+            <img src="/images/avatar.png" />
+          </a>
+        </div>
+        <div class="sb-dropdown-menu">
+          <div class="sb-dropdown-item">{{languageContent.navbar.menu.settings}}</div>
+          <div class="sb-dropdown-group">
+            <div class="sb-dropdown-group-title">{{languageContent.navbar.menu.langopt}}</div>
+            <div class="sb-dropdown-option" ng-repeat="langOpt in $parent.languageOptions" ng-click="loadLanguagebyShortName(langOpt)">{{langOpt.langName}}</div>
+          </div>
+          <div class="sb-dropdown-option">
+            <div class="option" ng-click="doLogout()">{{languageContent.navbar.menu.logout}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="row sb-nav">
+    <div align="center" class="col-lg-3 col-md-3 col-sm-3">
+      <a href="#!/regions-map">
+        <img src="/images/logo-topo.png" class="sb-logo-sm" />
+      </a>
+    </div>
+    <div class="col-lg-7">
+      <div class="row" align="center">
+        <!--  <a href="#monitor">
+              <div id="homeBtn" class="col-lg-2 col-md-2 col-sm-2 nav-button">
+                 <img src="/images/menu/home.png"/>&nbsp;Home
+              </div>
+            </a> -->
+        <a href="#!/submissions-list">
+          <div id="submitBtn" class="col-lg-4 col-md-3 col-sm-3 nav-button">
+            <img src="/images/menu/submissions.png" />&nbsp;{{languageContent.navbar.menu.button1}}
+          </div>
+        </a>
+        <a href="#!/regions-map" ng-click="activateButton('selectRegionBtn')">
+          <div id="selectRegionBtn" class="col-lg-4 col-md-2 col-sm-2 nav-button">
+            <img src="/images/menu/map.png" />&nbsp;{{languageContent.navbar.menu.button2}}
+          </div>
+        </a>
+        <!--    <a href="#contact" ng-click="activateButton('selectRegionBtn')">
+              <div id="contactBtn" class="col-lg-3 col-md-3 col-sm-3 nav-button" >
+                <img src="/images/menu/contact.png"/>&nbsp;Contact
+              </div>
+            </a> -->
+      </div>
+      <div class="col-lg-2 col-md-2 col-sm-2"></div>
+    </div>
+  </div>
+</header>
+<div id="global-error-msg" style="position: fixed;width: 98%;z-index: 9999;">
+  <div ng-show="globalMsg.getContent() !== undefined" style="margin-left:2%" class="alert {{globalMsg.getLevel()}} light alert-dismissable"
+    id="alert-demo-2">
+    <button type="button" class="close" ng-click="clearGlobalMsg()" aria-hidden="true">×</button>
+    <i class="fa fa-info pr10"></i>
+    {{globalMsg.getContent()}}
+  </div>
+</div>

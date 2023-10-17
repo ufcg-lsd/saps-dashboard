@@ -1,0 +1,237 @@
+<div id="header" class="sb-header">
+  <div ng-include="'pages/main.html'"></div>
+</div>
+
+<br>
+
+<div id="sb-content" class="sb-content" ng-controller="ListSubmissionsController as ls" ng-controller-init="init()">
+  <div id="steps-panel">
+    <div>
+      <div class="row panel-default" style="margin-bottom: 10px">
+        <div>
+          <div ng-click="openCloseModal('submissionsModal', true)" style="cursor: pointer; font-size: 1.5em; width: 70%;">
+            <img src="/images/create-subm.png" height="42" width="42" />&nbsp;{{languageContent.submissionsList.button.newSubmission}}
+          </div>
+        </div>
+      </div>
+
+      <div class="container-fluid">
+        <div class="row panel-default">
+          <div class="col-lg-12" align="right">
+            <div class="saps-input-image" style="display: inline-block; margin-right: -40px; font-size: 14px">
+              <input type="text" class="saps-input sb-md sb-height-sm" id="filter-all" ng-model="listFilter" 
+              placeholder="{{languageContent.submissionsList.filterBox.placeholder}}" ng-change="filterTable(listFilter)" />
+              <div class="input-icon">
+                <img src="/images/search.png" />
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <div id="filter-box" class="sb-hidden">
+        <div id="submissions-list-filter-box" class="submissions-list-filter">
+          <form>
+            <div>
+              <b>{{languageContent.submissionsList.filterPanel.label.name}}</b>
+            </div>
+            <div>
+              <input type="text" class="saps-input sb-width-lg sb-height-sm" id="search-region-filter" ng-model="searchFilters.name">
+            </div>
+            <div>
+              <b>{{languageContent.submissionsList.filterPanel.label.tags}}</b>
+            </div>
+            <div>
+              <input type="text" class="saps-input sb-width-lg sb-height-sm" id="search-term" ng-model="searchFilters.tags">
+            </div>
+            <div class="row">
+              <div class="col-lg-4 col-md-4 col-sm-4">
+                <b>{{languageContent.submissionsList.filterPanel.label.region}}</b>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-2">
+                <b>{{languageContent.submissionsList.filterPanel.label.initialDate}}</b>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-2">
+                <b>{{languageContent.submissionsList.filterPanel.label.finalDate}}</b>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-4 col-md-4 col-sm-4">
+                <div>
+                  <input type="text" class="saps-input sb-width-lg sb-height-sm" id="search-term" ng-model="searchFilters.region">
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-2">
+                <div id="filter-initial-date">
+                  <input type="text" class="saps-input sb-width-sm sb-height-sm saps-datepicker" id="filter-initial-date-input">
+                </div>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-2">
+                <div id="filter-final-date">
+                  <input type="text" class="saps-input sb-width-sm sb-height-sm saps-datepicker" id="filter-final-date-input">
+                </div>
+              </div>
+            </div>
+
+            <!-- Satellite field -->
+            <br>
+            <div id="satellite-field">
+              <div>
+                <b>{{languageContent.submissionsList.filterPanel.label.satellite}}</b>
+              </div>
+              <label class="radio-inline" ng-repeat="sat in satelliteOpts">
+                <input type="radio" name="inlineRadioOptions" id="radio-satellite-{{$index + 1}}" value="{{sat.value}}" ng-model="searchFilters.satellite">{{sat.label}}
+              </label>
+            </div>
+
+            <!-- Dropdown for Processing Script -->
+            <br>
+            <div class="row">
+              <div class="col-lg-2 col-md-2 col-sm-2">
+                <b>{{languageContent.submissionsList.filterPanel.label.processingScript}}</b>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-2">
+                <b>{{languageContent.submissionsList.filterPanel.label.preProcessingScript}}</b>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-2 col-md-2 col-sm-2">
+                <div class="dropdown" style="display: inline;">
+                  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownProcScript" aria-haspopup="true" aria-expanded="true"
+                    ng-click="showHide('dropdown-proc-script-opt')" style="min-width: 150px; text-align: left">
+                    <div style="display: inline; float: left">
+                      {{searchFilters.processingScriptName}}
+                    </div>
+                    <div style="display: inline; float: right">
+                      <span class="caret"></span>
+                    </div>
+                  </button>
+                  <ul id="dropdown-proc-script-opt" class="dropdown-menu" aria-labelledby="dropdownProcScript">
+                    <li ng-repeat="procScript in processingScripts" ng-click="showHide('dropdown-proc-script-opt');changeProcScript(procScript)">{{procScript.name}}</li>
+                  </ul>
+                </div>
+                <span class="glyphicon glyphicon-info-sign sb-tooltip" aria-hidden="true">
+              </div>
+              <!-- Dropdown for Pre Processing Script -->
+              <div class="col-lg-2 col-md-2 col-sm-2">
+                <div class="dropdown" style="display: inline;">
+                  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownPreProcScript" ng-click="showHide('dropdown-pre-proc-script-opt')"
+                    aria-haspopup="true" aria-expanded="true" style="min-width: 150px;">
+                    <div style="display: inline; float: left">
+                      {{searchFilters.preProcessingScriptName}}
+                    </div>
+                    <div style="display: inline; float: right">
+                      <span class="caret"></span>
+                    </div>
+                  </button>
+                  <ul id='dropdown-pre-proc-script-opt' class="dropdown-menu" aria-labelledby="dropdownPreProcScript">
+                    <li ng-repeat="preProcScript in preProcessingScripts" ng-click="showHide('dropdown-pre-proc-script-opt');changePreProcScript(preProcScript)">{{preProcScript.name}}</li>
+                  </ul>
+                </div>
+                <span class="glyphicon glyphicon-info-sign sb-tooltip" aria-hidden="true">
+              </div>
+            </div>
+            <br>
+            <br>
+            <div class="row">
+              <div class="col-lg-8 col-md-8 col-sm-8" align="right">
+                <div ng-click="filterSubmissions()" class="sb-button sb-main sb-width-xs" align="center" style="margin-right: 30px;">
+                  {{languageContent.submissionsList.filterPanel.button.filter}}
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- END SEARCH BOX -->
+
+    <div id="tables-box" class="sb-submissions-panel">
+      <div class="tray tray-center pn">
+        <div class="panel panel-default sb-submission-panel">
+          <!-- Ongoing Table -->
+          <div class="panel-heading">
+            <div align="left" class="sb-col-lg-11 sb-col-md-11 sb-col-sm-11 sb-col-xs-20">
+              <h4 ng-click="switchVisibility('panel-body-ongoing')" style="cursor:pointer">
+                {{languageContent.submissionsList.table.titleOngoing}} ({{ongoingTasksCount}})
+              </h4>
+            </div>
+          </div>
+          <div id="panel-body-ongoing" class="panel-body sb-hidden">
+            <div id="table-div-ongoing">
+              <!-- message listings table -->
+              <table id="image-table-ongoing" class="saps-table table" ng-table="tableOngoing">
+                <tr ng-repeat="i in $data">
+                  <td title="languageContent.submissionsList.table.date" sortable="'imageDate'">
+                    {{i.imageDate}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.dataset" sortable="'dataset'">
+                    {{i.dataset}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.landsatTile" sortable="'taskId'">
+                    {{i.region}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.inputGathering" sortable="'inputGatheringTag'">
+                    {{i.inputGatheringTag}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.inputPreprocessing" sortable="'inputPreprocessingTag'">
+                    {{i.inputPreprocessingTag}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.algorithmExecution" sortable="'algorithmExecutionTag'">
+                    {{i.algorithmExecutionTag}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.state" sortable="'state'">
+                    {{i.state}}
+                    <span ng-show="i.state == 'error'" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                  </td>
+                </tr>
+              </table>
+	           </div>
+          </div>
+
+          <!-- Completed Table -->
+          <div class="panel-heading">
+            <div align="left" class="sb-col-lg-11 sb-col-md-11 sb-col-sm-11 sb-col-xs-20">
+              <h4 ng-click="switchVisibility('panel-body-completed')" style="cursor:pointer">
+                {{languageContent.submissionsList.table.titleCompleted}} ({{completedTasksCount}})
+              </h4>
+            </div>
+          </div>
+          <div id="panel-body-completed" class="panel-body sb-hidden">
+            <div id="table-div-completed">
+              <!-- message listings table -->
+              <table id="image-table-completed" class="saps-table table" ng-table="tableCompleted">
+                <tr ng-repeat="i in $data">
+                  <td title="languageContent.submissionsList.table.date" sortable="'imageDate'">
+                    {{i.imageDate}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.dataset" sortable="'dataset'">
+                    {{i.dataset}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.landsatTile" sortable="'taskId'">
+                    {{i.region}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.inputGathering" sortable="'inputGatheringTag'">
+                    {{i.inputGatheringTag}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.inputPreprocessing" sortable="'inputPreprocessingTag'">
+                    {{i.inputPreprocessingTag}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.algorithmExecution" sortable="'algorithmExecutionTag'">
+                    {{i.algorithmExecutionTag}}
+                  </td>
+                  <td title="languageContent.submissionsList.table.state" sortable="'state'">
+                    {{i.state}}
+                    <span ng-show="i.state == 'error'" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                  </td>
+                </tr>
+              </table>
+	          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- END CONTENT -->
+
+  </div>
+</div>
