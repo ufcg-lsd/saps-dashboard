@@ -1,0 +1,26 @@
+[
+{
+	"name":"member 1",
+	"memUsage":80,
+	"cpuUsage":70,
+	"instanceUsage":70,
+	"instancesInUse":9,
+	"intancesQuota":20
+},
+{
+	"name":"member 2",
+	"memUsage":0,
+	"cpuUsage":0,
+	"instanceUsage":0,
+	"instancesInUse":3,
+	"intancesQuota":10
+},
+{
+	"name":"member 3",
+	"memUsage":50,
+	"cpuUsage":65,
+	"instanceUsage":40,
+	"instancesInUse":12,
+	"intancesQuota":22
+}
+]

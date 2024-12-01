@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8">
+  <style>
+	.div1 {
+		background-color: rgba(155,155,155,1);
+		border-color: rgba(100,150,0,1);
+		min-height: 500px;
+		max-height: 95%;
+		width: 400px;
+		position: absolute;
+		z-index: 1000;
+		overflow-y: auto;
+    	overflow-x: hidden;
+	}
+	.div2 {
+		background-color: rgba(200,230,210,1);
+		border-color: rgba(100,150,0,1);
+		height: 100%;
+		width: 100%;
+		min-height: 400px;
+		position: fixed;
+	}
+  </style>
+</head>
+
+<body>
+   
+<div id='div1' class="div1">
+	
+</div>
+<div class="div2">
+	
+</div>
+
+<script type="text/javascript">
+
+	for(var count=0; count < 100; count++){
+		var para = document.createElement("p");
+		var node = document.createTextNode(count+" - This is new paragraph.");
+		para.appendChild(node);
+		
+		var element = document.getElementById("div1");
+		element.appendChild(para);
+	}
+
+	
+</script>
+
+</body>
+
+</html>
+
