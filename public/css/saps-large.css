@@ -1,0 +1,373 @@
+@media screen and (min-width: 1200px) {
+	.sb-header{
+		position: fixed;
+	    width: 100%;
+	    height: 140px;
+	}
+	.sb-content{
+		width: 100%;
+		padding-top: 140px;
+	}
+	.sb-body{
+		min-height: 750px !important;
+		/*overflow-x: hidden;*/
+		/*overflow-y: hidden;*/
+	}
+	.sb-search-box{
+		margin-bottom: 10px;
+	}
+	.lang-choser{
+		position: fixed;
+		left: 10px;
+	    top: 10px;
+	}
+	.lang-choser img{
+		width: 35px;
+		height: 35px;
+	}
+	.lang-chosen{
+		position: fixed !important;
+	    left: 30px !important;
+	    top: 30px !important;
+	    width: 22px !important;
+	    height: 22px !important;
+	}
+	.sb-head-panel-bar{
+		height: 60px;
+	}
+	.logo-nav-bar{
+		background: rgb(237,237,237);
+		height: 140px;
+		width: 150px;
+	    position: absolute;
+	    left: -140px;
+	    top: -51px;
+	}
+	.sb-nav{
+		margin-bottom: 5px;
+	}
+    .sb-nav, .sb-nav-buttons, .nav-button{
+        height: 80px;
+    }
+    .sb-steps-panel{
+		height: 140px;
+    }
+    .nav-button{
+    	font-size: 1.3em;
+    	padding-top: 20px;
+    }
+
+    .nav-button span{
+    	color: rgb(255,255,255) !important;
+    	padding: 20px 60px 20px 60px;
+    }
+    .sb-login-box{
+    	width: 500px;
+    	height: 800px;
+	    padding-top:100px;
+	    margin: auto;
+    }
+    .panel-default{
+    	width: 70%;
+    	margin-left:15%;
+    }
+    .creat-user-form{
+    	width: 60%;
+    	margin-left:20%;
+    }
+    .sb-logo-sm{
+	   	height: 70px;
+	    width: 67px;
+    }
+    .sb-logo-md{
+    	height: 230px;
+    	width: 222px;
+    }
+    .sb-logo-lg{
+    	height: 320px;
+    	width: 310px;
+    }
+    /*SUBMISSION MODAL*/
+    .sb-sub-modal{
+    	width: 450px!important;
+    }
+    div.sb-sub-modal .modal-body{
+    	padding-left: 50px;
+    	padding-right: 50px;
+    }
+    /*CREATE ACCOUNT*/
+    .create-account-logo{
+		background: rgb(211, 211, 211);
+		border-radius: 50%;
+		width: 90px;
+		height: 90px;
+		margin-left: 80px;
+		margin-top: 10px;
+    }
+    .create-account-panel{
+	    width: 60%;
+	    margin-left: 20%;
+	    margin-top: 50px;
+	}
+    /*MAP*/
+    .sb-map-features{
+    	left: 20px;
+    	top: 150px;
+    	width: 450px;
+    	padding-bottom: 3px;
+    	border-style: solid;
+    	border-width: 1px;
+    }
+    .sb-map-feature-label{
+    	height: 37px;
+    	margin-top: 3px;
+    }
+	.sb-map-feature-options{
+		padding-left: 30px;
+		padding-right: 30px;
+		padding-top: 15px;
+		font-size: 0.8em;
+	}
+	.sb-map-feature-details{
+		font-size: 0.8em;
+	}
+	.sb-region-detail-line{
+		min-height: 32px;
+		padding-top: 5px;
+		margin-bottom: 3px;
+	}
+	.sb-image-detail-line{
+		min-height: 32px;
+		padding-top: 5px;
+		padding-left: 15px;
+		margin-bottom: 3px;
+	}
+    .sb-map-controls{
+    	position: fixed;
+    	right: 20px;
+    	top: 150px;
+    	cursor: pointer;
+    }
+    .sb-heat-map-legends{
+    	position: fixed;
+    	padding-right: 15px;
+    	padding-bottom: 15px;
+    	right: 25px;
+    	bottom: 25px;
+    	border-style: solid;
+    	border-width: 1px;
+    }
+
+	/*BUTTON*/
+	.sb-span-round-button{
+		cursor: pointer;
+	    background-color: rgb(255,255,255);
+    	/*width: 25px;*/
+    	padding: 2px 3px 1px 1px;
+	}
+	.sb-rb-small{
+		border-radius: 20px;
+	    width: 20px;
+	    height: 20px;
+	    font-size: 1em;
+	    padding-top: 4px !important;
+	}
+	.sb-rb-med{
+		border-radius: 25px;
+	    width: 25px;
+	    height: 25px;
+	    font-size: 1.1em;
+	    padding-top: 3px !important;
+	    padding-left: 2px;
+	}
+	.sb-rb-big{
+		border-radius: 35px;
+		width: 35px;
+		height: 35px;
+		font-size: 1.5em;
+		padding-top: 5px !important;
+	}
+    .sb-button{
+		padding-top: 9px;
+		border-radius: 10px;
+	}
+
+	/* INPUTS */
+	.sb-checkbox-map{
+		width: 20px;
+	    height: 20px;
+	    margin-top: 0px !important;
+	}
+	.saps-input{
+		padding-left: 10px;
+		padding-right: 10px;
+		
+	}
+	.sb-checkbox-sub-list{
+		width: 70px;
+	    height: 30px;
+	    background-color: rgb(255,255,255);
+	    border: 1px solid rgb(190,190,190);
+	    padding: 0px 0px 0px 5px;
+	}
+	.sb-checkbox-sub-list input{
+		width: 20px;
+	    height: 20px;
+	}
+	.sb-checkbox-sub-list img{
+		position: relative;
+		left: 5px;
+		bottom: 5px;
+	}
+	/* FORM ITENS */
+	.sb-button, .saps-input{
+		margin-top: 5px;
+		margin-bottom: 5px;
+
+		font-size: 1em;
+		height:40px;
+		width: 250px;
+	}
+
+	.sb-modal-sucess .modal-body{
+		width: 100%;
+		min-height: 150px;
+	}
+	.sb-modal-sucess .modal-dialog{
+		width: 400px !important;
+	}
+
+	/* SIZES */
+	.sb-width-xs{
+		width: 100px !important;
+	}
+	.sb-width-sm{
+		width: 150px !important;
+	}
+	.sb-width-md{
+		width: 250px !important;
+	}
+	.sb-width-lg{
+		width: 350px !important;
+	}
+	.sb-width-xl{
+		width: 550px !important;
+	}
+	.sb-wpercent-sm{
+		width: 25% !important;
+	}
+	.sb-wpercent-md{
+		width: 55% !important;
+	}
+	.sb-wpercent-lg{
+		width: 95% !important;
+	}
+	.sb-height-sm{
+		height:35px;
+	}
+	.sb-height-md{
+		height:50px;
+	}
+
+	/* SIZES IN PERCENT */
+	.sb-col-lg-1{
+		width: 5%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+	.sb-col-lg-2{
+		width: 10%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+	.sb-col-lg-3{
+		width: 15%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+	.sb-col-lg-4{
+		width: 20%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+	.sb-col-lg-5{
+		width: 25%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+	.sb-col-lg-6{
+		width: 30%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+	.sb-col-lg-7{
+		width: 35%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+	.sb-col-lg-8{
+		width: 40%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+	.sb-col-lg-9{
+		width: 45%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+	.sb-col-lg-10{
+		width: 50%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+	.sb-col-lg-11{
+		width: 55%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+	.sb-col-lg-12{
+		width: 60%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+	.sb-col-lg-13{
+		width: 65%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+	.sb-col-lg-14{
+		width: 70%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+	.sb-col-lg-15{
+		width: 75%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+	.sb-col-lg-16{
+		width: 80%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+	.sb-col-lg-17{
+		width: 85%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+	.sb-col-lg-18{
+		width: 90%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+	.sb-col-lg-19{
+		width: 95%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+	.sb-col-lg-20{
+		width: 100%;
+		display: inline-block;
+		margin-right: -4px;
+	}
+}

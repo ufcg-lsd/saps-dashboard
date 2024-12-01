@@ -1,0 +1,53 @@
+<div id="header" class="sb-header">
+	<div ng-include="'pages/main.html'"></div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+
+<br>
+<br>
+<br>
+<br>
+
+<div class="container-fluid" ng-controller="NewSubmissionsController as ctrl">
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="col-lg-2">Landsat Tile</th>
+            <th class="col-lg-2">Date</th>
+            <th class="col-lg-2">Input Gathering</th>
+            <th class="col-lg-2">Input Preprocessing</th>
+            <th class="col-lg-2">Algorithm Execution</th>
+            <th class="col-lg-2">State</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="i in [1,2,3,4,5,6]">
+            <td>
+              <!-- checkbox and tile -->
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-lg-4">
+                    <input type="checkbox">
+                  </div>
+                  <div class="col-lg-8">
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+            <td>add</td>
+            <td>add</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,8 @@
+<div class="sb-map-feature-label" 
+	ng-click="switchVisibility('sb-map-sub-form-id')">
+	<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> - {{languageContent.mapFeature.submissionBox.title}}
+	
+</div>
+<div id="sb-map-sub-form-id" class="sb-map-feature-options sb-hidden">
+	<div ng-include="'pages/submission-form.html'" ></div>
+</div>
