@@ -1,0 +1,5 @@
+[
+	{"userEmail":"admin@admin.com","userPass":"admin","status":"active"},
+	{"userEmail":"fogbow@fogbow.com","userPass":"fogbow","status":"active"},
+	{"userEmail":"gustavo@fogbow.com","userPass":"gustavo","status":"blocked"}
+]
